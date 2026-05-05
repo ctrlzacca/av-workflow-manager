@@ -14,4 +14,5 @@ export type Project = {
   category: "Ableton" | "TouchDesigner";
   notes: string;
   tasks: Task[];
+  folder: string;
 };

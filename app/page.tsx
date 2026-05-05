@@ -61,35 +61,29 @@ function sortProjects(projects: Project[], sort: SortOption): Project[] {
 
   switch (sort) {
     case "created_desc":
-      return sorted; // già ordinati per created_at desc da Supabase
-
+      return sorted;
     case "created_asc":
       return sorted.reverse();
-
     case "priority_desc":
       return sorted.sort(
         (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
       );
-
     case "priority_asc":
       return sorted.sort(
         (a, b) => PRIORITY_ORDER[b.priority] - PRIORITY_ORDER[a.priority]
       );
-
     case "deadline_asc":
       return sorted.sort((a, b) => {
         if (!a.deadline) return 1;
         if (!b.deadline) return -1;
         return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
       });
-
     case "deadline_desc":
       return sorted.sort((a, b) => {
         if (!a.deadline) return 1;
         if (!b.deadline) return -1;
         return new Date(b.deadline).getTime() - new Date(a.deadline).getTime();
       });
-
     default:
       return sorted;
   }
@@ -101,6 +95,7 @@ export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState("");
   const [filter, setFilter] = useState<Filter>("All");
+  const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>("created_desc");
   const [loading, setLoading] = useState(true);
 
@@ -141,6 +136,7 @@ export default function Home() {
       category: "Ableton",
       notes: "",
       tasks: [],
+      folder: "",
     };
 
     const { error } = await supabase.from("projects").insert(newProj);
@@ -199,13 +195,34 @@ export default function Home() {
     setProjects((prev) => prev.filter((p) => p.slug !== slug));
   }
 
-  // ── FILTER + SORT ─────────────────────────────────────────────────────────
+  // ── FILTER + FOLDER + SORT ────────────────────────────────────────────────
 
-  const filtered = projects.filter(
+  // progetti filtrati per categoria
+  const filteredByCategory = projects.filter(
     (p) => filter === "All" || p.category === filter
   );
 
-  const sorted = sortProjects(filtered, sort);
+  // cartelle disponibili per la categoria selezionata (escluse le vuote)
+  const availableFolders = Array.from(
+    new Set(
+      filteredByCategory
+        .map((p) => p.folder?.trim())
+        .filter((f) => f && f.length > 0)
+    )
+  ).sort();
+
+  // se il filtro categoria cambia, resetta la cartella attiva
+  function handleFilterChange(f: Filter) {
+    setFilter(f);
+    setActiveFolder(null);
+  }
+
+  // progetti filtrati per categoria + cartella
+  const filteredByFolder = activeFolder
+    ? filteredByCategory.filter((p) => p.folder?.trim() === activeFolder)
+    : filteredByCategory;
+
+  const sorted = sortProjects(filteredByFolder, sort);
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
@@ -221,14 +238,14 @@ export default function Home() {
       </p>
 
       {/* FILTERS + SORT */}
-      <div className="flex flex-wrap gap-2 mb-6 justify-between items-center">
+      <div className="flex flex-wrap gap-2 mb-3 justify-between items-center">
 
-        {/* FILTERS */}
+        {/* CATEGORY FILTERS */}
         <div className="flex gap-2">
           {FILTERS.map((f) => (
             <button
               key={f}
-              onClick={() => setFilter(f)}
+              onClick={() => handleFilterChange(f)}
               className={`flex items-center gap-1.5 px-3 py-1 text-sm border transition-colors ${
                 filter === f
                   ? "border-white text-white"
@@ -260,6 +277,41 @@ export default function Home() {
           ))}
         </select>
       </div>
+
+      {/* FOLDER SUBFILTERS */}
+      {availableFolders.length > 0 && (
+        <div className="flex gap-2 mb-6 flex-wrap">
+          <button
+            onClick={() => setActiveFolder(null)}
+            className={`px-3 py-1 text-xs border transition-colors ${
+              activeFolder === null
+                ? "border-white/60 text-white/60"
+                : "border-white/10 text-white/30 hover:border-white/30"
+            }`}
+          >
+            Tutte le cartelle
+          </button>
+          {availableFolders.map((folder) => {
+            const count = filteredByCategory.filter(
+              (p) => p.folder?.trim() === folder
+            ).length;
+            return (
+              <button
+                key={folder}
+                onClick={() => setActiveFolder(folder)}
+                className={`px-3 py-1 text-xs border transition-colors ${
+                  activeFolder === folder
+                    ? "border-white/60 text-white/60"
+                    : "border-white/10 text-white/30 hover:border-white/30"
+                }`}
+              >
+                {folder}
+                <span className="ml-1 text-white/20">({count})</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* ADD PROJECT */}
       <div className="flex gap-2 mb-10">
@@ -310,6 +362,11 @@ export default function Home() {
                   }
                   className="text-xl font-semibold bg-transparent w-full focus:outline-none focus:border-b focus:border-white/20"
                 />
+                {project.folder?.trim() && (
+                  <span className="text-xs text-white/30 border border-white/10 px-2 py-0.5 rounded-full flex-shrink-0">
+                    {project.folder}
+                  </span>
+                )}
               </div>
 
               {/* META CONTROLS */}

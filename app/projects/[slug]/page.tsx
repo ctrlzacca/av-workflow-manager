@@ -211,6 +211,13 @@ export default function ProjectPage() {
           onChange={(e) => updateField("deadline", e.target.value)}
           className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none"
         />
+        <input
+          type="text"
+          value={project.folder ?? ""}
+          onChange={(e) => updateField("folder", e.target.value)}
+          placeholder="Folder..."
+          className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none w-32"
+        />
       </div>
 
       {/* PROGRESS */}
