@@ -26,6 +26,23 @@ function getProgress(project: Project): number {
 const FILTERS = ["All", "Ableton", "TouchDesigner"] as const;
 type Filter = (typeof FILTERS)[number];
 
+const SORT_OPTIONS = [
+  { value: "created_desc", label: "Più recenti" },
+  { value: "created_asc", label: "Più vecchi" },
+  { value: "priority_desc", label: "Priorità (High → Low)" },
+  { value: "priority_asc", label: "Priorità (Low → High)" },
+  { value: "deadline_asc", label: "Deadline (prima i urgenti)" },
+  { value: "deadline_desc", label: "Deadline (ultimi)" },
+] as const;
+
+type SortOption = (typeof SORT_OPTIONS)[number]["value"];
+
+const PRIORITY_ORDER: Record<Project["priority"], number> = {
+  High: 0,
+  Medium: 1,
+  Low: 2,
+};
+
 const PRIORITY_COLOR: Record<Project["priority"], string> = {
   Low: "text-white/40",
   Medium: "text-yellow-400",
@@ -37,12 +54,54 @@ const CATEGORY_LOGO: Record<Project["category"], string> = {
   TouchDesigner: "/touchdesigner.svg",
 };
 
+// ─── SORT FUNCTION ────────────────────────────────────────────────────────────
+
+function sortProjects(projects: Project[], sort: SortOption): Project[] {
+  const sorted = [...projects];
+
+  switch (sort) {
+    case "created_desc":
+      return sorted; // già ordinati per created_at desc da Supabase
+
+    case "created_asc":
+      return sorted.reverse();
+
+    case "priority_desc":
+      return sorted.sort(
+        (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
+      );
+
+    case "priority_asc":
+      return sorted.sort(
+        (a, b) => PRIORITY_ORDER[b.priority] - PRIORITY_ORDER[a.priority]
+      );
+
+    case "deadline_asc":
+      return sorted.sort((a, b) => {
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+      });
+
+    case "deadline_desc":
+      return sorted.sort((a, b) => {
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        return new Date(b.deadline).getTime() - new Date(a.deadline).getTime();
+      });
+
+    default:
+      return sorted;
+  }
+}
+
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState("");
   const [filter, setFilter] = useState<Filter>("All");
+  const [sort, setSort] = useState<SortOption>("created_desc");
   const [loading, setLoading] = useState(true);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
@@ -140,12 +199,13 @@ export default function Home() {
     setProjects((prev) => prev.filter((p) => p.slug !== slug));
   }
 
-  // ── FILTER ────────────────────────────────────────────────────────────────
+  // ── FILTER + SORT ─────────────────────────────────────────────────────────
 
-  const filtered =
-    filter === "All"
-      ? projects
-      : projects.filter((p) => p.category === filter);
+  const filtered = projects.filter(
+    (p) => filter === "All" || p.category === filter
+  );
+
+  const sorted = sortProjects(filtered, sort);
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
@@ -160,28 +220,45 @@ export default function Home() {
         {projects.length} project{projects.length !== 1 ? "s" : ""}
       </p>
 
-      {/* FILTERS */}
-      <div className="flex gap-2 mb-6">
-        {FILTERS.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`flex items-center gap-1.5 px-3 py-1 text-sm border transition-colors ${
-              filter === f
-                ? "border-white text-white"
-                : "border-white/20 text-white/50 hover:border-white/40"
-            }`}
-          >
-            {f !== "All" && (
-              <img
-                src={CATEGORY_LOGO[f as Project["category"]]}
-                alt={f}
-                className="w-3.5 h-3.5 object-contain invert"
-              />
-            )}
-            {f}
-          </button>
-        ))}
+      {/* FILTERS + SORT */}
+      <div className="flex flex-wrap gap-2 mb-6 justify-between items-center">
+
+        {/* FILTERS */}
+        <div className="flex gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`flex items-center gap-1.5 px-3 py-1 text-sm border transition-colors ${
+                filter === f
+                  ? "border-white text-white"
+                  : "border-white/20 text-white/50 hover:border-white/40"
+              }`}
+            >
+              {f !== "All" && (
+                <img
+                  src={CATEGORY_LOGO[f as Project["category"]]}
+                  alt={f}
+                  className="w-3.5 h-3.5 object-contain invert"
+                />
+              )}
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {/* SORT */}
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          className="bg-black border border-white/20 text-white/50 text-sm px-2 py-1 focus:outline-none hover:border-white/40 transition-colors"
+        >
+          {SORT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* ADD PROJECT */}
@@ -206,12 +283,12 @@ export default function Home() {
         <p className="text-white/30 text-sm">Loading projects...</p>
       )}
 
-      {!loading && filtered.length === 0 && (
+      {!loading && sorted.length === 0 && (
         <p className="text-white/30 text-sm">No projects yet.</p>
       )}
 
       <div className="space-y-4">
-        {filtered.map((project) => {
+        {sorted.map((project) => {
           const progress = getProgress(project);
 
           return (
