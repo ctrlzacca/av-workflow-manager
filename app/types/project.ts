@@ -15,4 +15,11 @@ export type Project = {
   notes: string;
   tasks: Task[];
   folder: string;
+  bpm: string;
+  key: string;
+  resolution: string;
+  fps: string;
+  plugins: string;
+  links: string;
+  extra_info: string;
 };
