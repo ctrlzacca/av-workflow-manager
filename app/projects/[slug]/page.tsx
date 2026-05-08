@@ -130,7 +130,7 @@ export default function ProjectPage() {
     async function loadAllFolders() {
       const { data } = await supabase
         .from("projects")
-        .select("folder, category");
+        .select("*");
       setAllProjects(data ?? []);
     }
     loadAllFolders();
