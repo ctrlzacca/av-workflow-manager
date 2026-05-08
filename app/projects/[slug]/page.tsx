@@ -446,11 +446,11 @@ export default function ProjectPage() {
   {project.links?.trim() ? (
     <div className="flex items-center gap-2 flex-1">
       
-        href={project.links}
+      <a  href={project.links}
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-400 hover:text-blue-300 text-sm truncate flex-1 transition-colors"
-      <a>
+      >
         {project.links}
       </a>
       <button
