@@ -29,6 +29,7 @@ export default function ProjectPage() {
   const [newTask, setNewTask] = useState("");
   const [loading, setLoading] = useState(true);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [showNewFolder, setShowNewFolder] = useState(false);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -234,58 +235,73 @@ export default function ProjectPage() {
           className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none"
         />
                 <div className="flex gap-1 items-center">
-          <select
-            value={project.folder?.trim() || ""}
-            onChange={(e) => {
-              if (e.target.value !== "__new__") {
-                updateField("folder", e.target.value);
-              }
-            }}
-            className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none"
-          >
-            <option value="">Nessuna cartella</option>
-            {availableFolders.map((f) => (
-              <option key={f} value={f}>{f}</option>
-            ))}
-            <option value="__new__">+ Nuova cartella...</option>
-          </select>
+  {!showNewFolder ? (
+    <>
+      <select
+        value={project.folder?.trim() || ""}
+        onChange={(e) => {
+          if (e.target.value === "__new__") {
+            setShowNewFolder(true);
+            updateField("folder", "");
+          } else {
+            updateField("folder", e.target.value);
+          }
+        }}
+        className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none"
+      >
+        <option value="">Nessuna cartella</option>
+        {availableFolders.map((f) => (
+          <option key={f} value={f}>{f}</option>
+        ))}
+        <option value="__new__">+ Nuova cartella...</option>
+      </select>
 
-          {project.folder?.trim() === "" && (
-            <input
-              type="text"
-              placeholder="Nome cartella..."
-              className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none w-36"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  const val = (e.target as HTMLInputElement).value.trim();
-                  if (val) updateField("folder", val);
-                }
-              }}
-            />
-          )}
-
-          {project.folder?.trim() && (
-            <button
-              onClick={async () => {
-                const confirmed = window.confirm(
-                  `Eliminare la cartella "${project.folder}" da tutti i progetti? I progetti non verranno eliminati.`
-                );
-                if (!confirmed) return;
-                await supabase
-                  .from("projects")
-                  .update({ folder: "" })
-                  .eq("folder", project.folder)
-                  .eq("category", project.category);
-                updateField("folder", "");
-              }}
-              className="text-xs text-white/20 hover:text-red-400 transition-colors ml-1"
-              title="Elimina cartella da tutti i progetti"
-            >
-              🗑
-            </button>
-          )}
-        </div>
+      {project.folder?.trim() && (
+        <button
+          onClick={async () => {
+            const confirmed = window.confirm(
+              `Eliminare la cartella "${project.folder}" da tutti i progetti? I progetti non verranno eliminati.`
+            );
+            if (!confirmed) return;
+            await supabase
+              .from("projects")
+              .update({ folder: "" })
+              .eq("folder", project.folder)
+              .eq("category", project.category);
+            updateField("folder", "");
+          }}
+          className="text-xs text-white/30 hover:text-red-400 transition-colors ml-1 border border-white/20 px-1.5 py-1 rounded"
+          title="Elimina cartella da tutti i progetti"
+        >
+          🗑
+        </button>
+      )}
+    </>
+  ) : (
+    <input
+      autoFocus
+      type="text"
+      placeholder="Nome nuova cartella..."
+      className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none w-44"
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          const val = (e.target as HTMLInputElement).value.trim();
+          if (val) updateField("folder", val);
+          setShowNewFolder(false);
+        }
+        if (e.key === "Escape") {
+          setShowNewFolder(false);
+        }
+      }}
+      onBlur={(e) => {
+        const val = e.target.value.trim();
+        if (val) updateField("folder", val);
+        setShowNewFolder(false);
+      }}
+    />
+  )}
       </div>
+    </div>
 
       {/* PROGRESS */}
       <div className="mt-6">

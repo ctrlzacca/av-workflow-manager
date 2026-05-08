@@ -362,11 +362,24 @@ export default function Home() {
                   }
                   className="text-xl font-semibold bg-transparent w-full focus:outline-none focus:border-b focus:border-white/20"
                 />
-                {project.folder?.trim() && (
-                  <span className="text-xs text-white/30 border border-white/10 px-2 py-0.5 rounded-full flex-shrink-0">
-                    {project.folder}
-                  </span>
-                )}
+                {/* FOLDER BADGE */}
+<select
+  value={project.folder?.trim() || ""}
+  onChange={(e) => updateField(project.slug, "folder", e.target.value)}
+  className="text-xs text-white/30 border border-white/10 px-2 py-0.5 bg-black focus:outline-none hover:border-white/30 transition-colors"
+>
+  <option value="">Nessuna cartella</option>
+  {Array.from(
+    new Set(
+      projects
+        .filter((p) => p.category === project.category)
+        .map((p) => p.folder?.trim())
+        .filter((f): f is string => !!f)
+    )
+  ).sort().map((f) => (
+    <option key={f} value={f}>{f}</option>
+  ))}
+</select>
               </div>
 
               {/* META CONTROLS */}
