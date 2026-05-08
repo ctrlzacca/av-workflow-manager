@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import type { Project } from "@/app/types/project";
@@ -28,6 +28,7 @@ export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [newTask, setNewTask] = useState("");
   const [loading, setLoading] = useState(true);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -123,6 +124,27 @@ export default function ProjectPage() {
     return Math.round((done / project.tasks.length) * 100);
   }, [project]);
 
+  // ── AVAILABLE FOLDERS ─────────────────────────────────────────────────────
+
+  useEffect(() => {
+    async function loadAllFolders() {
+      const { data } = await supabase
+        .from("projects")
+        .select("folder, category");
+      setAllProjects(data ?? []);
+    }
+    loadAllFolders();
+  }, [project?.folder]);
+
+  const availableFolders = Array.from(
+    new Set(
+      allProjects
+        .filter((p) => p.category === project?.category)
+        .map((p) => p.folder?.trim())
+        .filter((f): f is string => !!f)
+    )
+  ).sort();
+
   // ─── LOADING / NOT FOUND ──────────────────────────────────────────────────
 
   if (loading) {
@@ -211,13 +233,58 @@ export default function ProjectPage() {
           onChange={(e) => updateField("deadline", e.target.value)}
           className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none"
         />
-        <input
-          type="text"
-          value={project.folder ?? ""}
-          onChange={(e) => updateField("folder", e.target.value)}
-          placeholder="Folder..."
-          className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none w-32"
-        />
+                <div className="flex gap-1 items-center">
+          <select
+            value={project.folder?.trim() || ""}
+            onChange={(e) => {
+              if (e.target.value !== "__new__") {
+                updateField("folder", e.target.value);
+              }
+            }}
+            className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none"
+          >
+            <option value="">Nessuna cartella</option>
+            {availableFolders.map((f) => (
+              <option key={f} value={f}>{f}</option>
+            ))}
+            <option value="__new__">+ Nuova cartella...</option>
+          </select>
+
+          {project.folder?.trim() === "" && (
+            <input
+              type="text"
+              placeholder="Nome cartella..."
+              className="bg-black border border-white/20 text-white/70 text-sm px-2 py-1 focus:outline-none w-36"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const val = (e.target as HTMLInputElement).value.trim();
+                  if (val) updateField("folder", val);
+                }
+              }}
+            />
+          )}
+
+          {project.folder?.trim() && (
+            <button
+              onClick={async () => {
+                const confirmed = window.confirm(
+                  `Eliminare la cartella "${project.folder}" da tutti i progetti? I progetti non verranno eliminati.`
+                );
+                if (!confirmed) return;
+                await supabase
+                  .from("projects")
+                  .update({ folder: "" })
+                  .eq("folder", project.folder)
+                  .eq("category", project.category);
+                updateField("folder", "");
+              }}
+              className="text-xs text-white/20 hover:text-red-400 transition-colors ml-1"
+              title="Elimina cartella da tutti i progetti"
+            >
+              🗑
+            </button>
+          )}
+        </div>
       </div>
 
       {/* PROGRESS */}
