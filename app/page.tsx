@@ -185,7 +185,7 @@ export default function Home() {
       {/* HEADER FISSO */}
       <header className="sticky top-0 z-10 bg-black/90 backdrop-blur border-b border-white/5 px-4 pt-12 pb-3">
         <div className="flex items-center justify-between mb-3">
-          <h1 className="text-lg font-bold tracking-tight">AV Workflow</h1>
+          <h1 className="text-lg font-bold tracking-tight">AV Workflow Manager</h1>
           <div className="flex items-center gap-2">
             <select
               value={sort}
