@@ -128,16 +128,23 @@ export default function Home() {
     const slug = `${slugify(newProject)}-${Date.now()}`;
 
     const newProj: Project = {
-      title: newProject.trim(),
-      slug,
-      status: "Active",
-      priority: "Low",
-      deadline: "",
-      category: "Ableton",
-      notes: "",
-      tasks: [],
-      folder: "",
-    };
+  title: newProject.trim(),
+  slug,
+  status: "Active",
+  priority: "Low",
+  deadline: "",
+  category: "Ableton",
+  notes: "",
+  tasks: [],
+  folder: "",
+  bpm: "",
+  key: "",
+  resolution: "",
+  fps: "",
+  plugins: "",
+  links: "",
+  extra_info: "",
+};
 
     const { error } = await supabase.from("projects").insert(newProj);
 
