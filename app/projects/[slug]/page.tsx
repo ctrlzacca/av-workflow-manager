@@ -379,11 +379,11 @@ export default function ProjectPage() {
               {project.links?.trim() ? (
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <a
-                    href={project.links}
+                    href={project.links.startsWith("http") ? project.links : `https://${project.links}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 text-sm truncate flex-1 min-w-0"
-                  >
+                    >
                     {project.links.replace(/^https?:\/\//, "")}
                   </a>
                   <button
