@@ -370,130 +370,117 @@ export default function ProjectPage() {
         )}
       </div>
 
-      {/* INFO */}
-<h2 className="mt-10 text-lg font-semibold tracking-wide">Info</h2>
+{/* INFO */}
+      <h2 className="mt-10 text-lg font-semibold tracking-wide">Info</h2>
 
-<div className="mt-3 space-y-2">
+      <div className="mt-3 space-y-2">
 
-  {/* CAMPI ABLETON */}
-  {project.category === "Ableton" && (
-    <>
-      <div className="flex items-center gap-3">
-        <span className="text-white/30 text-sm w-24 flex-shrink-0">BPM</span>
-        <input
-          type="text"
-          value={project.bpm ?? ""}
-          onChange={(e) => updateField("bpm", e.target.value)}
-          placeholder="es. 120"
-          className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-        />
+        {/* CAMPI ABLETON */}
+        {project.category === "Ableton" && (
+          <>
+            <div className="flex items-center gap-3">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">BPM</span>
+              <input
+                type="text"
+                value={project.bpm ?? ""}
+                onChange={(e) => updateField("bpm", e.target.value)}
+                placeholder="es. 120"
+                className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">Tonalità</span>
+              <input
+                type="text"
+                value={project.key ?? ""}
+                onChange={(e) => updateField("key", e.target.value)}
+                placeholder="es. C minor"
+                className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+              />
+            </div>
+          </>
+        )}
+
+        {/* CAMPI TOUCHDESIGNER */}
+        {project.category === "TouchDesigner" && (
+          <>
+            <div className="flex items-center gap-3">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">Risoluzione</span>
+              <input
+                type="text"
+                value={project.resolution ?? ""}
+                onChange={(e) => updateField("resolution", e.target.value)}
+                placeholder="es. 1920x1080"
+                className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">FPS</span>
+              <input
+                type="text"
+                value={project.fps ?? ""}
+                onChange={(e) => updateField("fps", e.target.value)}
+                placeholder="es. 60"
+                className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+              />
+            </div>
+          </>
+        )}
+
+        {/* CAMPI COMUNI */}
+        <div className="flex items-center gap-3">
+          <span className="text-white/30 text-sm w-24 flex-shrink-0">Plugin</span>
+          <input
+            type="text"
+            value={project.plugins ?? ""}
+            onChange={(e) => updateField("plugins", e.target.value)}
+            placeholder="es. Serum, Reverb"
+            className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
+          {project.links?.trim() ? (
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              
+              <a  href={project.links}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 text-sm transition-colors truncate min-w-0 flex-1"
+              >
+                {project.links.replace(/^https?:\/\//, "")}
+              </a>
+              <button
+                onClick={() => updateField("links", "")}
+                className="text-white/30 hover:text-red-400 transition-colors flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/10 hover:border-red-400 rounded text-xs"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <input
+              type="text"
+              value={project.links ?? ""}
+              onChange={(e) => updateField("links", e.target.value)}
+              placeholder="es. https://soundcloud.com/..."
+              className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+            />
+          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-white/30 text-sm w-24 flex-shrink-0">Extra</span>
+          <input
+            type="text"
+            value={project.extra_info ?? ""}
+            onChange={(e) => updateField("extra_info", e.target.value)}
+            placeholder="Info aggiuntive..."
+            className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+          />
+        </div>
+
       </div>
-
-      <div className="flex items-center gap-3">
-        <span className="text-white/30 text-sm w-24 flex-shrink-0">Tonalità</span>
-        <input
-          type="text"
-          value={project.key ?? ""}
-          onChange={(e) => updateField("key", e.target.value)}
-          placeholder="es. C minor"
-          className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-        />
-      </div>
-    </>
-  )}
-
-  {/* CAMPI TOUCHDESIGNER */}
-  {project.category === "TouchDesigner" && (
-    <>
-      <div className="flex items-center gap-3">
-        <span className="text-white/30 text-sm w-24 flex-shrink-0">Risoluzione</span>
-        <input
-          type="text"
-          value={project.resolution ?? ""}
-          onChange={(e) => updateField("resolution", e.target.value)}
-          placeholder="es. 1920x1080"
-          className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-        />
-      </div>
-
-      <div className="flex items-center gap-3">
-        <span className="text-white/30 text-sm w-24 flex-shrink-0">FPS</span>
-        <input
-          type="text"
-          value={project.fps ?? ""}
-          onChange={(e) => updateField("fps", e.target.value)}
-          placeholder="es. 60"
-          className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-        />
-      </div>
-    </>
-  )}
-
-  {/* CAMPI COMUNI */}
-  <div className="flex items-center gap-3">
-    <span className="text-white/30 text-sm w-24 flex-shrink-0">Plugin</span>
-    <input
-      type="text"
-      value={project.plugins ?? ""}
-      onChange={(e) => updateField("plugins", e.target.value)}
-      placeholder="es. Serum, Reverb"
-      className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-    />
-  </div>
-
-  <div className="flex items-center gap-3">
-  <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
-  {project.links?.trim() ? (
-    <div className="flex items-center gap-2 flex-1 min-w-0">
-      
-      <a  href={project.links}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-400 hover:text-blue-300 text-sm transition-colors truncate min-w-0 flex-1"
-      >
-        {project.links.replace(/^https?:\/\//, "")}
-      </a>
-      <button
-        onClick={() => updateField("links", "")}
-        className="text-white/30 hover:text-red-400 transition-colors flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/10 hover:border-red-400 rounded text-xs"
-      >
-        ✕
-      </button>
-    </div>
-  ) : (
-    <input
-      type="text"
-      value={project.links ?? ""}
-      onChange={(e) => updateField("links", e.target.value)}
-      placeholder="es. https://soundcloud.com/..."
-      className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-    />
-  )}
-</div>
-
-  ) : (
-    <input
-      type="text"
-      value={project.links ?? ""}
-      onChange={(e) => updateField("links", e.target.value)}
-      placeholder="es. https://soundcloud.com/..."
-      className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-    />
-  )}
-</div>
-
-  <div className="flex items-center gap-3">
-    <span className="text-white/30 text-sm w-24 flex-shrink-0">Extra</span>
-    <input
-      type="text"
-      value={project.extra_info ?? ""}
-      onChange={(e) => updateField("extra_info", e.target.value)}
-      placeholder="Info aggiuntive..."
-      className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
-    />
-  </div>
-
-</div>
 
       {/* NOTES */}
       <h2 className="mt-10 text-lg font-semibold tracking-wide">Notes</h2>
