@@ -444,22 +444,33 @@ export default function ProjectPage() {
   <div className="flex items-center gap-3">
   <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
   {project.links?.trim() ? (
-    <div className="flex items-center gap-2 flex-1">
+    <div className="flex items-center gap-2 flex-1 min-w-0">
       
       <a  href={project.links}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-400 hover:text-blue-300 text-sm truncate flex-1 transition-colors"
+        className="text-blue-400 hover:text-blue-300 text-sm transition-colors truncate min-w-0 flex-1"
       >
-        {project.links}
+        {project.links.replace(/^https?:\/\//, "")}
       </a>
       <button
         onClick={() => updateField("links", "")}
-        className="text-white/20 hover:text-red-400 transition-colors text-xs flex-shrink-0"
+        className="text-white/30 hover:text-red-400 transition-colors flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/10 hover:border-red-400 rounded text-xs"
       >
         ✕
       </button>
     </div>
+  ) : (
+    <input
+      type="text"
+      value={project.links ?? ""}
+      onChange={(e) => updateField("links", e.target.value)}
+      placeholder="es. https://soundcloud.com/..."
+      className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
+    />
+  )}
+</div>
+
   ) : (
     <input
       type="text"
