@@ -442,7 +442,25 @@ export default function ProjectPage() {
   </div>
 
   <div className="flex items-center gap-3">
-    <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
+  <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
+  {project.links?.trim() ? (
+    <div className="flex items-center gap-2 flex-1">
+      
+        href={project.links}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400 hover:text-blue-300 text-sm truncate flex-1 transition-colors"
+      <a>
+        {project.links}
+      </a>
+      <button
+        onClick={() => updateField("links", "")}
+        className="text-white/20 hover:text-red-400 transition-colors text-xs flex-shrink-0"
+      >
+        ✕
+      </button>
+    </div>
+  ) : (
     <input
       type="text"
       value={project.links ?? ""}
@@ -450,7 +468,8 @@ export default function ProjectPage() {
       placeholder="es. https://soundcloud.com/..."
       className="flex-1 bg-transparent border-b border-white/10 text-white/80 text-sm py-1 focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/20"
     />
-  </div>
+  )}
+</div>
 
   <div className="flex items-center gap-3">
     <span className="text-white/30 text-sm w-24 flex-shrink-0">Extra</span>
