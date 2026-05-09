@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
-import type { Project } from "@/app/types/project";
+import type { Category } from "@/app/types/project";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -25,29 +25,41 @@ const SORT_OPTIONS = [
 export default function SettingsPage() {
   const router = useRouter();
 
-  const [defaultCategory, setDefaultCategory] = useState<"Ableton" | "TouchDesigner">("Ableton");
+  const [defaultCategory, setDefaultCategory] = useState("Ableton");
   const [defaultSort, setDefaultSort] = useState("created_desc");
-  const [defaultFilter, setDefaultFilter] = useState<"All" | "Ableton" | "TouchDesigner">("All");
+  const [defaultFilter, setDefaultFilter] = useState("All");
   const [projectCount, setProjectCount] = useState(0);
   const [saved, setSaved] = useState(false);
 
-  // ── LOAD SETTINGS ─────────────────────────────────────────────────────────
+  // ── CATEGORIE CUSTOM ──────────────────────────────────────────────────────
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [newCatName, setNewCatName] = useState("");
+  const [newCatIcon, setNewCatIcon] = useState("📁");
+  const [newCatFields, setNewCatFields] = useState("");
+  const [showAddCat, setShowAddCat] = useState(false);
+  const [editingCat, setEditingCat] = useState<Category | null>(null);
+
+  // ── LOAD ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    const category = localStorage.getItem("defaultCategory") as "Ableton" | "TouchDesigner";
+    const category = localStorage.getItem("defaultCategory");
     const sort = localStorage.getItem("defaultSort");
-    const filter = localStorage.getItem("defaultFilter") as "All" | "Ableton" | "TouchDesigner";
-
+    const filter = localStorage.getItem("defaultFilter");
     if (category) setDefaultCategory(category);
     if (sort) setDefaultSort(sort);
     if (filter) setDefaultFilter(filter);
 
-    async function loadCount() {
-      const { count } = await supabase.from("projects").select("*", { count: "exact", head: true });
-      setProjectCount(count ?? 0);
-    }
-    loadCount();
+    loadData();
   }, []);
+
+  async function loadData() {
+    const { count } = await supabase.from("projects").select("*", { count: "exact", head: true });
+    setProjectCount(count ?? 0);
+
+    const { data } = await supabase.from("categories").select("*").order("created_at", { ascending: true });
+    setCategories(data ?? []);
+  }
 
   // ── SAVE SETTINGS ─────────────────────────────────────────────────────────
 
@@ -59,12 +71,66 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   }
 
-  // ── EXPORT JSON ───────────────────────────────────────────────────────────
+  // ── ADD CATEGORY ──────────────────────────────────────────────────────────
+
+  async function addCategory() {
+    if (!newCatName.trim()) return;
+
+    const fields = newCatFields
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => f.length > 0);
+
+    const { error } = await supabase.from("categories").insert({
+      name: newCatName.trim(),
+      icon: newCatIcon.trim() || "📁",
+      fields,
+    });
+
+    if (error) { console.error("Error adding category:", error.message); return; }
+
+    setNewCatName("");
+    setNewCatIcon("📁");
+    setNewCatFields("");
+    setShowAddCat(false);
+    loadData();
+  }
+
+  // ── UPDATE CATEGORY ───────────────────────────────────────────────────────
+
+  async function updateCategory() {
+    if (!editingCat) return;
+
+    const fields = typeof editingCat.fields === "string"
+      ? (editingCat.fields as string).split(",").map((f) => f.trim()).filter((f) => f.length > 0)
+      : editingCat.fields;
+
+    const { error } = await supabase
+      .from("categories")
+      .update({ name: editingCat.name, icon: editingCat.icon, fields })
+      .eq("id", editingCat.id);
+
+    if (error) { console.error("Error updating category:", error.message); return; }
+    setEditingCat(null);
+    loadData();
+  }
+
+  // ── DELETE CATEGORY ───────────────────────────────────────────────────────
+
+  async function deleteCategory(cat: Category) {
+    const confirmed = window.confirm(`Eliminare la categoria "${cat.name}"? I progetti associati non verranno eliminati.`);
+    if (!confirmed) return;
+
+    const { error } = await supabase.from("categories").delete().eq("id", cat.id);
+    if (error) { console.error("Error deleting category:", error.message); return; }
+    loadData();
+  }
+
+  // ── EXPORT ────────────────────────────────────────────────────────────────
 
   async function exportProjects() {
     const { data, error } = await supabase.from("projects").select("*");
     if (error) { console.error("Export error:", error.message); return; }
-
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -81,9 +147,9 @@ export default function SettingsPage() {
     if (!first) return;
     const second = window.confirm("Questa azione è irreversibile. Continuare?");
     if (!second) return;
-
-    const { error } = await supabase.from("projects").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-    if (!error) { setProjectCount(0); router.push("/"); }
+    await supabase.from("projects").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    setProjectCount(0);
+    router.push("/");
   }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
@@ -114,9 +180,7 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
             Preferenze di default
           </h2>
-
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
-
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Categoria</p>
@@ -124,11 +188,14 @@ export default function SettingsPage() {
               </div>
               <select
                 value={defaultCategory}
-                onChange={(e) => setDefaultCategory(e.target.value as "Ableton" | "TouchDesigner")}
+                onChange={(e) => setDefaultCategory(e.target.value)}
                 className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 <option value="Ableton" className="bg-black">Ableton</option>
                 <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name} className="bg-black">{cat.icon} {cat.name}</option>
+                ))}
               </select>
             </div>
 
@@ -155,12 +222,15 @@ export default function SettingsPage() {
               </div>
               <select
                 value={defaultFilter}
-                onChange={(e) => setDefaultFilter(e.target.value as "All" | "Ableton" | "TouchDesigner")}
+                onChange={(e) => setDefaultFilter(e.target.value)}
                 className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 <option value="All" className="bg-black">Tutti</option>
                 <option value="Ableton" className="bg-black">Ableton</option>
                 <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name} className="bg-black">{cat.icon} {cat.name}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -175,36 +245,163 @@ export default function SettingsPage() {
           </button>
         </section>
 
+        {/* ── CATEGORIE CUSTOM ── */}
+        <section>
+          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+            Categorie personalizzate
+          </h2>
+
+          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+
+            {/* ABLETON E TD — fissi, non eliminabili */}
+            {["Ableton", "TouchDesigner"].map((name) => (
+              <div key={name} className="flex items-center justify-between px-4 py-4">
+                <div className="flex items-center gap-3">
+                  <img src={`/${name.toLowerCase()}.svg`} alt={name} className="w-5 h-5 object-contain invert opacity-50" />
+                  <p className="text-sm font-medium">{name}</p>
+                </div>
+                <span className="text-xs text-white/20 border border-white/8 px-2 py-1 rounded-lg">Built-in</span>
+              </div>
+            ))}
+
+            {/* CATEGORIE CUSTOM */}
+            {categories.map((cat) => (
+              <div key={cat.id}>
+                {editingCat?.id === cat.id ? (
+                  /* EDIT MODE */
+                  <div className="px-4 py-4 space-y-3">
+                    <div className="flex gap-2">
+                      <input
+                        value={editingCat.icon}
+                        onChange={(e) => setEditingCat({ ...editingCat, icon: e.target.value })}
+                        className="w-12 bg-white/5 border border-white/10 text-white text-center text-lg rounded-xl focus:outline-none"
+                      />
+                      <input
+                        value={editingCat.name}
+                        onChange={(e) => setEditingCat({ ...editingCat, name: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none"
+                        placeholder="Nome categoria"
+                      />
+                    </div>
+                    <input
+                      value={Array.isArray(editingCat.fields) ? editingCat.fields.join(", ") : editingCat.fields}
+                      onChange={(e) => setEditingCat({ ...editingCat, fields: e.target.value.split(",").map(f => f.trim()).filter(f => f) })}
+                      className="w-full bg-white/5 border border-white/10 text-white/70 text-sm px-3 py-2 rounded-xl focus:outline-none"
+                      placeholder="Campi Info (es. Codec, Durata, Formato)"
+                    />
+                    <p className="text-xs text-white/25">Separa i campi con una virgola</p>
+                    <div className="flex gap-2">
+                      <button onClick={() => setEditingCat(null)} className="flex-1 py-2 border border-white/10 rounded-xl text-white/40 text-xs">Annulla</button>
+                      <button onClick={updateCategory} className="flex-1 py-2 bg-white text-black rounded-xl text-xs font-semibold">Salva</button>
+                    </div>
+                  </div>
+                ) : (
+                  /* VIEW MODE */
+                  <div className="flex items-center justify-between px-4 py-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="text-xl flex-shrink-0">{cat.icon}</span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium">{cat.name}</p>
+                        {cat.fields.length > 0 && (
+                          <p className="text-xs text-white/25 truncate mt-0.5">{cat.fields.join(", ")}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => setEditingCat(cat)}
+                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:text-white transition-colors text-xs"
+                      >
+                        ✎
+                      </button>
+                      <button
+                        onClick={() => deleteCategory(cat)}
+                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {categories.length === 0 && (
+              <p className="text-white/20 text-xs text-center py-4">Nessuna categoria personalizzata</p>
+            )}
+          </div>
+
+          {/* ADD CATEGORY */}
+          {showAddCat ? (
+            <div className="mt-3 bg-white/3 border border-white/8 rounded-2xl p-4 space-y-3">
+              <div className="flex gap-2">
+                <input
+                  value={newCatIcon}
+                  onChange={(e) => setNewCatIcon(e.target.value)}
+                  className="w-12 bg-white/5 border border-white/10 text-white text-center text-lg rounded-xl focus:outline-none"
+                  placeholder="📁"
+                />
+                <input
+                  autoFocus
+                  value={newCatName}
+                  onChange={(e) => setNewCatName(e.target.value)}
+                  className="flex-1 bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                  placeholder="Nome categoria"
+                />
+              </div>
+              <input
+                value={newCatFields}
+                onChange={(e) => setNewCatFields(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 text-white/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                placeholder="Campi Info (es. Codec, Durata, Formato)"
+              />
+              <p className="text-xs text-white/25">Separa i campi con una virgola</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setShowAddCat(false); setNewCatName(""); setNewCatIcon("📁"); setNewCatFields(""); }}
+                  className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+                >
+                  Annulla
+                </button>
+                <button
+                  onClick={addCategory}
+                  className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold"
+                >
+                  Crea
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAddCat(true)}
+              className="w-full mt-3 py-4 border border-white/10 rounded-2xl text-white/40 text-sm hover:border-white/20 hover:text-white/60 transition-colors"
+            >
+              + Nuova categoria
+            </button>
+          )}
+        </section>
+
         {/* ── GESTIONE DATI ── */}
         <section>
           <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
             Gestione dati
           </h2>
-
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
-
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Esporta progetti</p>
                 <p className="text-xs text-white/30 mt-0.5">{projectCount} progetti · backup JSON</p>
               </div>
-              <button
-                onClick={exportProjects}
-                className="bg-white/5 border border-white/10 text-white/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors"
-              >
+              <button onClick={exportProjects} className="bg-white/5 border border-white/10 text-white/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
                 Esporta
               </button>
             </div>
-
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium text-red-400/80">Elimina tutto</p>
                 <p className="text-xs text-white/30 mt-0.5">Rimuove tutti i progetti dal database</p>
               </div>
-              <button
-                onClick={deleteAllProjects}
-                className="bg-red-400/10 border border-red-400/20 text-red-400/70 text-xs px-4 py-2 rounded-xl hover:bg-red-400/20 transition-colors"
-              >
+              <button onClick={deleteAllProjects} className="bg-red-400/10 border border-red-400/20 text-red-400/70 text-xs px-4 py-2 rounded-xl hover:bg-red-400/20 transition-colors">
                 Elimina
               </button>
             </div>
@@ -216,33 +413,23 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
             Info app
           </h2>
-
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
-
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Versione</p>
               <span className="text-xs text-white/30">{APP_VERSION}</span>
             </div>
-
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Repository</p>
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
                 GitHub →
               </a>
             </div>
-
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Progetti salvati</p>
               <span className="text-xs text-white/30">{projectCount}</span>
             </div>
           </div>
         </section>
-
       </div>
 
       {/* BOTTOM NAV */}

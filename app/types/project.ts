@@ -5,13 +5,21 @@ export type Task = {
   done: boolean;
 };
 
+export type Category = {
+  id: string;
+  name: string;
+  icon: string;
+  fields: string[];
+  created_at?: string;
+};
+
 export type Project = {
   title: string;
   slug: string;
   status: "Active" | "Blocked" | "Paused";
   priority: "Low" | "Medium" | "High";
   deadline: string;
-  category: "Ableton" | "TouchDesigner";
+  category: string;
   notes: string;
   tasks: Task[];
   folder: string;
@@ -22,4 +30,5 @@ export type Project = {
   plugins: string;
   links: string;
   extra_info: string;
+  custom_fields?: Record<string, string>;
 };
