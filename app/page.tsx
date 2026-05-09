@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
-import type { Project } from "@/app/types/project";
+import type { Project, Category } from "@/app/types/project";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -18,12 +18,10 @@ function getProgress(project: Project): number {
 }
 
 function getProjectBackground(slug: string): string {
-  // genera un hash numerico dallo slug
   let hash = 0;
   for (let i = 0; i < slug.length; i++) {
     hash = slug.charCodeAt(i) + ((hash << 5) - hash);
   }
-
   const palettes = [
     ["#1a1a2e", "#16213e", "#0f3460"],
     ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
@@ -34,17 +32,12 @@ function getProjectBackground(slug: string): string {
     ["#0a1e0a", "#102e10", "#0a2e1a"],
     ["#1e0a0a", "#2e1010", "#2e1a0a"],
   ];
-
   const palette = palettes[Math.abs(hash) % palettes.length];
   const angle = Math.abs(hash >> 4) % 360;
-
   return `linear-gradient(${angle}deg, ${palette[0]}, ${palette[1]}, ${palette[2]})`;
 }
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
-
-const FILTERS = ["All", "Ableton", "TouchDesigner"] as const;
-type Filter = (typeof FILTERS)[number];
 
 const SORT_OPTIONS = [
   { value: "created_desc", label: "Più recenti" },
@@ -79,7 +72,7 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   Blocked: "Bloccato",
 };
 
-const CATEGORY_LOGO: Record<Project["category"], string> = {
+const BUILTIN_LOGOS: Record<string, string> = {
   Ableton: "/ableton.svg",
   TouchDesigner: "/touchdesigner.svg",
 };
@@ -103,68 +96,85 @@ function sortProjects(projects: Project[], sort: SortOption): Project[] {
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [newProject, setNewProject] = useState("");
-  const [filter, setFilter] = useState<Filter>("All");
+  const [newProjectCategory, setNewProjectCategory] = useState("Ableton");
+  const [filter, setFilter] = useState("All");
   const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>("created_desc");
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [newProjectCategory, setNewProjectCategory] = useState<"Ableton" | "TouchDesigner">("Ableton");
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
-  async function loadProjects() {
-    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-    if (error) { console.error("Error loading projects:", error.message); return; }
-    setProjects(data ?? []);
+  async function loadData() {
+    const [projectsRes, categoriesRes] = await Promise.all([
+      supabase.from("projects").select("*").order("created_at", { ascending: false }),
+      supabase.from("categories").select("*").order("created_at", { ascending: true }),
+    ]);
+
+    if (projectsRes.error) { console.error("Error loading projects:", projectsRes.error.message); }
+    else { setProjects(projectsRes.data ?? []); }
+
+    if (!categoriesRes.error) { setCategories(categoriesRes.data ?? []); }
+
     setLoading(false);
   }
 
-useEffect(() => {
-  const savedCategory = localStorage.getItem("defaultCategory") as Filter;
-  const savedSort = localStorage.getItem("defaultSort");
-  const savedFilter = localStorage.getItem("defaultFilter") as Filter;
+  useEffect(() => {
+    // leggi preferenze di default
+    const savedFilter = localStorage.getItem("defaultFilter");
+    const savedSort = localStorage.getItem("defaultSort");
+    if (savedFilter) setFilter(savedFilter);
+    if (savedSort) setSort(savedSort as SortOption);
 
-  if (savedFilter) setFilter(savedFilter);
-  if (savedSort) setSort(savedSort as SortOption);
+    loadData();
+  }, []);
 
-  loadProjects();
-}, []);
+  // ── ALL FILTERS ───────────────────────────────────────────────────────────
+
+  const allFilters = [
+    "All",
+    "Ableton",
+    "TouchDesigner",
+    ...categories.map((c) => c.name),
+  ];
 
   // ── ADD PROJECT ───────────────────────────────────────────────────────────
 
   async function addProject() {
-  if (!newProject.trim()) return;
+    if (!newProject.trim()) return;
 
-  const slug = `${slugify(newProject)}-${Date.now()}`;
+    const slug = `${slugify(newProject)}-${Date.now()}`;
 
-  const abletonDefaultTasks = [
-    { title: "Produzione/Struttura", done: false },
-    { title: "Rec Voci", done: false },
-    { title: "Mix", done: false },
-    { title: "Master", done: false },
-    { title: "Video/Reel Promozionale", done: false },
-    { title: "SIAE", done: false },
-  ];
+    const abletonDefaultTasks = [
+      { title: "Produzione/Struttura", done: false },
+      { title: "Rec Voci", done: false },
+      { title: "Mix", done: false },
+      { title: "Master", done: false },
+      { title: "Video/Reel Promozionale", done: false },
+      { title: "SIAE", done: false },
+    ];
 
-  const newProj: Project = {
-    title: newProject.trim(), slug,
-    status: "Active", priority: "Low", deadline: "",
-    category: newProjectCategory,
-    notes: "", folder: "",
-    tasks: newProjectCategory === "Ableton" ? abletonDefaultTasks : [],
-    bpm: "", key: "", resolution: "", fps: "",
-    plugins: "", links: "", extra_info: "",
-  };
+    const newProj: Project = {
+      title: newProject.trim(), slug,
+      status: "Active", priority: "Low", deadline: "",
+      category: newProjectCategory,
+      notes: "", folder: "",
+      tasks: newProjectCategory === "Ableton" ? abletonDefaultTasks : [],
+      bpm: "", key: "", resolution: "", fps: "",
+      plugins: "", links: "", extra_info: "",
+      custom_fields: {},
+    };
 
-  const { error } = await supabase.from("projects").insert(newProj);
-  if (error) { console.error("Error adding project:", error.message); return; }
+    const { error } = await supabase.from("projects").insert(newProj);
+    if (error) { console.error("Error adding project:", error.message); return; }
 
-  setNewProject("");
-  setNewProjectCategory("Ableton");
-  setShowAdd(false);
-  loadProjects();
-}
+    setNewProject("");
+    setNewProjectCategory("Ableton");
+    setShowAdd(false);
+    loadData();
+  }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") addProject();
@@ -196,13 +206,43 @@ useEffect(() => {
     new Set(filteredByCategory.map((p) => p.folder?.trim()).filter((f) => f && f.length > 0))
   ).sort();
 
-  function handleFilterChange(f: Filter) { setFilter(f); setActiveFolder(null); }
+  function handleFilterChange(f: string) { setFilter(f); setActiveFolder(null); }
 
   const filteredByFolder = activeFolder
     ? filteredByCategory.filter((p) => p.folder?.trim() === activeFolder)
     : filteredByCategory;
 
   const sorted = sortProjects(filteredByFolder, sort);
+
+  // ── CATEGORY ICON ─────────────────────────────────────────────────────────
+
+  function getCategoryIcon(categoryName: string) {
+    if (BUILTIN_LOGOS[categoryName]) {
+      return (
+        <img
+          src={BUILTIN_LOGOS[categoryName]}
+          alt={categoryName}
+          className="w-4 h-4 object-contain invert opacity-70"
+        />
+      );
+    }
+    const cat = categories.find((c) => c.name === categoryName);
+    return <span className="text-sm">{cat?.icon ?? "📁"}</span>;
+  }
+
+  function getCategoryIconSmall(categoryName: string) {
+    if (BUILTIN_LOGOS[categoryName]) {
+      return (
+        <img
+          src={BUILTIN_LOGOS[categoryName]}
+          alt={categoryName}
+          className="w-3.5 h-3.5 object-contain invert"
+        />
+      );
+    }
+    const cat = categories.find((c) => c.name === categoryName);
+    return <span className="text-xs">{cat?.icon ?? "📁"}</span>;
+  }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
@@ -212,26 +252,26 @@ useEffect(() => {
       {/* HEADER FISSO */}
       <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
 
-        {/* TITOLO */}
-        <h1 className="text-2xl font-bold tracking-tight mb-4">AV Workflow Manager</h1>
-
-        {/* SORT */}
+        {/* TITOLO + SORT */}
         <div className="flex items-center justify-between mb-4">
-        <p className="text-white/30 text-xs">{sorted.length} progetti</p>
-        <select
-        value={sort}
-        onChange={(e) => setSort(e.target.value as SortOption)}
-        className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
-        >
-        {SORT_OPTIONS.map((o) => (
-        <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
-        ))}
-        </select>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">AV Workflow Manager</h1>
+            <p className="text-white/30 text-xs mt-0.5">{sorted.length} progetti</p>
+          </div>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortOption)}
+            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
+            ))}
+          </select>
         </div>
 
         {/* CATEGORY FILTERS */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {FILTERS.map((f) => (
+          {allFilters.map((f) => (
             <button
               key={f}
               onClick={() => handleFilterChange(f)}
@@ -241,9 +281,7 @@ useEffect(() => {
                   : "border-white/10 text-white/40 hover:border-white/20 hover:text-white/60"
               }`}
             >
-              {f !== "All" && (
-                <img src={CATEGORY_LOGO[f as Project["category"]]} alt={f} className="w-4 h-4 object-contain invert" />
-              )}
+              {f !== "All" && getCategoryIconSmall(f)}
               {f}
             </button>
           ))}
@@ -285,35 +323,27 @@ useEffect(() => {
           <p className="text-white/20 text-sm text-center mt-16">Nessun progetto ancora.</p>
         )}
 
-          <div className="space-y-3">
+        <div className="space-y-3">
           {sorted.map((project) => {
-          const progress = getProgress(project);
-          return (
-          <Link
-          key={project.slug}
-          href={`/projects/${project.slug}`}
-          style={{ background: getProjectBackground(project.slug) }}
-          className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:brightness-110 transition-all"
-          >
-      {/* TOP ROW */}
-        <div className="flex items-start justify-between gap-3">
+            const progress = getProgress(project);
+            return (
+              <Link
+                key={project.slug}
+                href={`/projects/${project.slug}`}
+                style={{ background: getProjectBackground(project.slug) }}
+                className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:brightness-110 transition-all"
+              >
+                {/* TOP ROW */}
+                <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
-                      <img
-                        src={CATEGORY_LOGO[project.category]}
-                        alt={project.category}
-                        className="w-4 h-4 object-contain invert opacity-70"
-                      />
+                      {getCategoryIcon(project.category)}
                     </div>
                     <span className="font-semibold text-base truncate">{project.title}</span>
                   </div>
-
-                  {/* STATUS + PRIORITY DOTS */}
                   <div className="flex items-center gap-2 flex-shrink-0 mt-1">
-                    <div className="flex items-center gap-1">
-                      <span className={`w-2 h-2 rounded-full ${STATUS_DOT[project.status]}`} />
-                      <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[project.priority]}`} />
-                    </div>
+                    <span className={`w-2 h-2 rounded-full ${STATUS_DOT[project.status]}`} />
+                    <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[project.priority]}`} />
                   </div>
                 </div>
 
@@ -327,24 +357,17 @@ useEffect(() => {
                   {project.deadline && (
                     <span className="text-xs text-white/25">{project.deadline}</span>
                   )}
-                  <span className="text-xs text-white/20 ml-auto">
-                    {STATUS_LABEL[project.status]}
-                  </span>
+                  <span className="text-xs text-white/20 ml-auto">{STATUS_LABEL[project.status]}</span>
                 </div>
 
                 {/* PROGRESS */}
                 <div className="mt-3 ml-11">
-                <div className="flex items-center gap-3">
-                <div className="flex-1 h-1 bg-white/8 rounded-full overflow-hidden">
-                  <div
-                  className="h-full bg-white/50 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-                </div>
-                <span className="text-xs text-white/25 flex-shrink-0">
-                  {progress}%
-                </span>
-                </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-1 bg-white/8 rounded-full overflow-hidden">
+                      <div className="h-full bg-white/50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                    </div>
+                    <span className="text-xs text-white/25 flex-shrink-0">{progress}%</span>
+                  </div>
                 </div>
               </Link>
             );
@@ -353,60 +376,56 @@ useEffect(() => {
       </div>
 
       {/* ADD PROJECT MODAL */}
-{showAdd && (
-  <div className="fixed inset-0 z-20 bg-black/80 backdrop-blur flex items-end">
-    <div className="w-full bg-zinc-950 border-t border-white/10 p-6 rounded-t-3xl">
-      <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5" />
-      <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
+      {showAdd && (
+        <div className="fixed inset-0 z-20 bg-black/80 backdrop-blur flex items-end">
+          <div className="w-full bg-zinc-950 border-t border-white/10 p-6 rounded-t-3xl">
+            <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5" />
+            <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 
-      <input
-        autoFocus
-        value={newProject}
-        onChange={(e) => setNewProject(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Nome progetto..."
-        className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-base mb-4"
-      />
-
-      {/* CATEGORY SELECTOR */}
-      <div className="flex gap-3 mb-5">
-        {(["Ableton", "TouchDesigner"] as const).map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setNewProjectCategory(cat)}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-medium transition-all ${
-              newProjectCategory === cat
-                ? "border-white/50 bg-white/10 text-white"
-                : "border-white/10 text-white/30"
-            }`}
-          >
-            <img
-              src={CATEGORY_LOGO[cat]}
-              alt={cat}
-              className="w-4 h-4 object-contain invert opacity-70"
+            <input
+              autoFocus
+              value={newProject}
+              onChange={(e) => setNewProject(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Nome progetto..."
+              className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-base mb-4"
             />
-            {cat}
-          </button>
-        ))}
-      </div>
 
-      <div className="flex gap-3">
-        <button
-          onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
-          className="flex-1 py-4 border border-white/10 rounded-xl text-white/40 text-sm font-medium"
-        >
-          Annulla
-        </button>
-        <button
-          onClick={addProject}
-          className="flex-1 py-4 bg-white text-black rounded-xl font-semibold text-sm"
-        >
-          Crea progetto
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            {/* CATEGORY SELECTOR */}
+            <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
+              {["Ableton", "TouchDesigner", ...categories.map((c) => c.name)].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setNewProjectCategory(cat)}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
+                    newProjectCategory === cat
+                      ? "border-white/50 bg-white/10 text-white"
+                      : "border-white/10 text-white/30"
+                  }`}
+                >
+                  {getCategoryIconSmall(cat)}
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
+                className="flex-1 py-4 border border-white/10 rounded-xl text-white/40 text-sm font-medium"
+              >
+                Annulla
+              </button>
+              <button
+                onClick={addProject}
+                className="flex-1 py-4 bg-white text-black rounded-xl font-semibold text-sm"
+              >
+                Crea progetto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-8 pb-10 pt-4">

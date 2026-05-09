@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
-import type { Project } from "@/app/types/project";
+import type { Project, Category } from "@/app/types/project";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -14,7 +14,7 @@ const PRIORITY_COLOR: Record<Project["priority"], string> = {
   High: "text-red-400",
 };
 
-const CATEGORY_LOGO: Record<Project["category"], string> = {
+const BUILTIN_LOGOS: Record<string, string> = {
   Ableton: "/ableton.svg",
   TouchDesigner: "/touchdesigner.svg",
 };
@@ -27,6 +27,7 @@ export default function ProjectPage() {
   const slug = params?.slug as string;
 
   const [project, setProject] = useState<Project | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [newTask, setNewTask] = useState("");
   const [loading, setLoading] = useState(true);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
@@ -37,35 +38,48 @@ export default function ProjectPage() {
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
-    async function loadProject() {
-      const { data, error } = await supabase.from("projects").select("*").eq("slug", slug).single();
-      if (error) { console.error("Error loading project:", error.message); setLoading(false); return; }
-      setProject(data);
+    async function loadAll() {
+      const [projectRes, categoriesRes, allProjectsRes] = await Promise.all([
+        supabase.from("projects").select("*").eq("slug", slug).single(),
+        supabase.from("categories").select("*").order("created_at", { ascending: true }),
+        supabase.from("projects").select("*"),
+      ]);
+
+      if (projectRes.error) { console.error("Error loading project:", projectRes.error.message); setLoading(false); return; }
+      setProject(projectRes.data);
+      setCategories(categoriesRes.data ?? []);
+      setAllProjects(allProjectsRes.data ?? []);
       setLoading(false);
     }
-    loadProject();
+    loadAll();
   }, [slug]);
 
   useEffect(() => {
-    async function loadAllFolders() {
+    async function reloadFolders() {
       const { data } = await supabase.from("projects").select("*");
       setAllProjects(data ?? []);
     }
-    loadAllFolders();
+    reloadFolders();
   }, [project?.folder]);
 
   // ── UPDATE FIELD ──────────────────────────────────────────────────────────
 
   async function updateField<K extends keyof Project>(field: K, value: Project[K]) {
-  if (!project) return;
-  const { error } = await supabase.from("projects").update({ [field]: value }).eq("slug", slug);
-  if (error) { console.error("Error updating field:", error.message); return; }
-  setProject((prev) => (prev ? { ...prev, [field]: value } : prev));
+    if (!project) return;
+    const { error } = await supabase.from("projects").update({ [field]: value }).eq("slug", slug);
+    if (error) { console.error("Error updating field:", error.message); return; }
+    setProject((prev) => (prev ? { ...prev, [field]: value } : prev));
+    setShowSaved(true);
+    setTimeout(() => setShowSaved(false), 2000);
+  }
 
-  // feedback visivo
-  setShowSaved(true);
-  setTimeout(() => setShowSaved(false), 2000);
-}
+  // ── UPDATE CUSTOM FIELD ───────────────────────────────────────────────────
+
+  async function updateCustomField(fieldName: string, value: string) {
+    if (!project) return;
+    const updated = { ...(project.custom_fields ?? {}), [fieldName]: value };
+    await updateField("custom_fields", updated);
+  }
 
   // ── ADD TASK ──────────────────────────────────────────────────────────────
 
@@ -113,6 +127,22 @@ export default function ProjectPage() {
     return Math.round((done / project.tasks.length) * 100);
   }, [project]);
 
+  // ── CURRENT CATEGORY ──────────────────────────────────────────────────────
+
+  const currentCategory = categories.find((c) => c.name === project?.category);
+  const isBuiltin = project ? ["Ableton", "TouchDesigner"].includes(project.category) : false;
+
+  // ── CATEGORY ICON ─────────────────────────────────────────────────────────
+
+  function getCategoryIcon() {
+    if (!project) return null;
+    if (BUILTIN_LOGOS[project.category]) {
+      return <img src={BUILTIN_LOGOS[project.category]} alt={project.category} className="w-5 h-5 object-contain invert opacity-70" />;
+    }
+    const cat = categories.find((c) => c.name === project.category);
+    return <span className="text-lg">{cat?.icon ?? "📁"}</span>;
+  }
+
   // ─── LOADING / NOT FOUND ──────────────────────────────────────────────────
 
   if (loading) {
@@ -154,23 +184,24 @@ export default function ProjectPage() {
           </button>
 
           <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
-            <img src={CATEGORY_LOGO[project.category]} alt={project.category} className="w-5 h-5 object-contain invert opacity-70" />
+            {getCategoryIcon()}
           </div>
 
           <h1 className="font-bold text-base flex-1 truncate">{project.title}</h1>
 
+          {/* SAVE FEEDBACK */}
+          <div className={`flex-shrink-0 flex items-center gap-1.5 text-xs transition-all duration-300 ${
+            showSaved ? "text-green-400 opacity-100" : "text-white/0 opacity-0"
+          }`}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+            Salvato
+          </div>
+
           <span className={`text-xs font-medium flex-shrink-0 ${PRIORITY_COLOR[project.priority]}`}>
             {project.priority}
           </span>
-          {/* SAVE FEEDBACK */}
-          <div className={`flex-shrink-0 flex items-center gap-1.5 text-xs transition-all duration-300 ${
-          showSaved ? "text-green-400 opacity-100" : "text-white/0 opacity-0"
-          }`}>
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
-          Salvato
-          </div>
         </div>
 
         {/* META CONTROLS */}
@@ -197,11 +228,14 @@ export default function ProjectPage() {
 
           <select
             value={project.category}
-            onChange={(e) => updateField("category", e.target.value as Project["category"])}
+            onChange={(e) => updateField("category", e.target.value)}
             className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
             <option value="Ableton" className="bg-black">Ableton</option>
             <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.name} className="bg-black">{cat.icon} {cat.name}</option>
+            ))}
           </select>
 
           <input
@@ -239,7 +273,7 @@ export default function ProjectPage() {
                     await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
                     updateField("folder", "");
                   }}
-                  className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-red-400 hover:border-red-400/30 transition-colors text-xs"
+                  className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -301,17 +335,12 @@ export default function ProjectPage() {
                 className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 text-sm"
                 placeholder="Aggiungi task..."
               />
-              <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">
-                +
-              </button>
+              <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">+</button>
             </div>
 
             <div className="space-y-2">
               {project.tasks.map((task, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 border border-white/8 rounded-xl px-4 py-4"
-                >
+                <div key={i} className="flex items-center gap-4 border border-white/8 rounded-xl px-4 py-4">
                   <button
                     onClick={() => toggleTask(i)}
                     className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
@@ -346,6 +375,7 @@ export default function ProjectPage() {
         {activeTab === "info" && (
           <div className="divide-y divide-white/5">
 
+            {/* CAMPI ABLETON */}
             {project.category === "Ableton" && (
               <>
                 <div className="flex items-center gap-4 py-4">
@@ -359,6 +389,7 @@ export default function ProjectPage() {
               </>
             )}
 
+            {/* CAMPI TOUCHDESIGNER */}
             {project.category === "TouchDesigner" && (
               <>
                 <div className="flex items-center gap-4 py-4">
@@ -372,6 +403,21 @@ export default function ProjectPage() {
               </>
             )}
 
+            {/* CAMPI CUSTOM CATEGORY */}
+            {!isBuiltin && currentCategory?.fields.map((fieldName) => (
+              <div key={fieldName} className="flex items-center gap-4 py-4">
+                <span className="text-white/30 text-sm w-24 flex-shrink-0 truncate">{fieldName}</span>
+                <input
+                  type="text"
+                  value={project.custom_fields?.[fieldName] ?? ""}
+                  onChange={(e) => updateCustomField(fieldName, e.target.value)}
+                  placeholder={`es. ${fieldName}...`}
+                  className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15"
+                />
+              </div>
+            ))}
+
+            {/* CAMPI COMUNI */}
             <div className="flex items-center gap-4 py-4">
               <span className="text-white/30 text-sm w-24 flex-shrink-0">Plugin</span>
               <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
@@ -389,12 +435,7 @@ export default function ProjectPage() {
                   >
                     {project.links.replace(/^https?:\/\//, "")}
                   </a>
-                  <button
-                    onClick={() => updateField("links", "")}
-                    className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/10 rounded-lg text-xs"
-                  >
-                    ✕
-                  </button>
+                  <button onClick={() => updateField("links", "")} className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/10 rounded-lg text-xs">✕</button>
                 </div>
               ) : (
                 <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
@@ -406,20 +447,20 @@ export default function ProjectPage() {
               <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
             </div>
 
-          {/* DELETE PROJECT */}
+            {/* DELETE */}
             <div className="flex items-center gap-4 py-4">
-            <span className="text-white/30 text-sm w-24 flex-shrink-0">Progetto</span>
-            <button
-            onClick={async () => {
-            const confirmed = window.confirm(`Eliminare "${project.title}"? Questa azione è irreversibile.`);
-            if (!confirmed) return;
-            const { error } = await supabase.from("projects").delete().eq("slug", slug);
-            if (!error) router.push("/");
-            }}
-            className="text-red-400/60 hover:text-red-400 text-sm transition-colors border border-red-400/20 hover:border-red-400/40 px-4 py-2 rounded-xl"
-            >
-            Elimina progetto
-            </button>
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">Progetto</span>
+              <button
+                onClick={async () => {
+                  const confirmed = window.confirm(`Eliminare "${project.title}"? Questa azione è irreversibile.`);
+                  if (!confirmed) return;
+                  const { error } = await supabase.from("projects").delete().eq("slug", slug);
+                  if (!error) router.push("/");
+                }}
+                className="text-red-400/60 hover:text-red-400 text-sm transition-colors border border-red-400/20 hover:border-red-400/40 px-4 py-2 rounded-xl"
+              >
+                Elimina progetto
+              </button>
             </div>
           </div>
         )}
