@@ -109,6 +109,7 @@ export default function Home() {
   const [sort, setSort] = useState<SortOption>("created_desc");
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
+  const [newProjectCategory, setNewProjectCategory] = useState<"Ableton" | "TouchDesigner">("Ableton");
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -133,22 +134,37 @@ useEffect(() => {
   // ── ADD PROJECT ───────────────────────────────────────────────────────────
 
   async function addProject() {
-    if (!newProject.trim()) return;
-    const slug = `${slugify(newProject)}-${Date.now()}`;
-    const newProj: Project = {
-      title: newProject.trim(), slug,
-      status: "Active", priority: "Low", deadline: "",
-      category: filter !== "All" ? filter as Project["category"] : "Ableton",
-      notes: "", tasks: [], folder: "",
-      bpm: "", key: "", resolution: "", fps: "",
-      plugins: "", links: "", extra_info: "",
-    };
-    const { error } = await supabase.from("projects").insert(newProj);
-    if (error) { console.error("Error adding project:", error.message); return; }
-    setNewProject("");
-    setShowAdd(false);
-    loadProjects();
-  }
+  if (!newProject.trim()) return;
+
+  const slug = `${slugify(newProject)}-${Date.now()}`;
+
+  const abletonDefaultTasks = [
+    { title: "Produzione/Struttura", done: false },
+    { title: "Rec Voci", done: false },
+    { title: "Mix", done: false },
+    { title: "Master", done: false },
+    { title: "Video/Reel Promozionale", done: false },
+    { title: "SIAE", done: false },
+  ];
+
+  const newProj: Project = {
+    title: newProject.trim(), slug,
+    status: "Active", priority: "Low", deadline: "",
+    category: newProjectCategory,
+    notes: "", folder: "",
+    tasks: newProjectCategory === "Ableton" ? abletonDefaultTasks : [],
+    bpm: "", key: "", resolution: "", fps: "",
+    plugins: "", links: "", extra_info: "",
+  };
+
+  const { error } = await supabase.from("projects").insert(newProj);
+  if (error) { console.error("Error adding project:", error.message); return; }
+
+  setNewProject("");
+  setNewProjectCategory("Ableton");
+  setShowAdd(false);
+  loadProjects();
+}
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") addProject();
@@ -337,36 +353,60 @@ useEffect(() => {
       </div>
 
       {/* ADD PROJECT MODAL */}
-      {showAdd && (
-        <div className="fixed inset-0 z-20 bg-black/80 backdrop-blur flex items-end">
-          <div className="w-full bg-zinc-950 border-t border-white/10 p-6 rounded-t-3xl">
-            <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5" />
-            <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
-            <input
-              autoFocus
-              value={newProject}
-              onChange={(e) => setNewProject(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Nome progetto..."
-              className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-base mb-4"
+{showAdd && (
+  <div className="fixed inset-0 z-20 bg-black/80 backdrop-blur flex items-end">
+    <div className="w-full bg-zinc-950 border-t border-white/10 p-6 rounded-t-3xl">
+      <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5" />
+      <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
+
+      <input
+        autoFocus
+        value={newProject}
+        onChange={(e) => setNewProject(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Nome progetto..."
+        className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-base mb-4"
+      />
+
+      {/* CATEGORY SELECTOR */}
+      <div className="flex gap-3 mb-5">
+        {(["Ableton", "TouchDesigner"] as const).map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setNewProjectCategory(cat)}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-medium transition-all ${
+              newProjectCategory === cat
+                ? "border-white/50 bg-white/10 text-white"
+                : "border-white/10 text-white/30"
+            }`}
+          >
+            <img
+              src={CATEGORY_LOGO[cat]}
+              alt={cat}
+              className="w-4 h-4 object-contain invert opacity-70"
             />
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setShowAdd(false); setNewProject(""); }}
-                className="flex-1 py-4 border border-white/10 rounded-xl text-white/40 text-sm font-medium"
-              >
-                Annulla
-              </button>
-              <button
-                onClick={addProject}
-                className="flex-1 py-4 bg-white text-black rounded-xl font-semibold text-sm"
-              >
-                Crea progetto
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-3">
+        <button
+          onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
+          className="flex-1 py-4 border border-white/10 rounded-xl text-white/40 text-sm font-medium"
+        >
+          Annulla
+        </button>
+        <button
+          onClick={addProject}
+          className="flex-1 py-4 bg-white text-black rounded-xl font-semibold text-sm"
+        >
+          Crea progetto
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-8 pb-10 pt-4">
