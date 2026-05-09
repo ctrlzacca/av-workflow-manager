@@ -391,6 +391,22 @@ export default function ProjectPage() {
               <span className="text-white/30 text-sm w-24 flex-shrink-0">Extra</span>
               <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
             </div>
+
+          {/* DELETE PROJECT */}
+            <div className="flex items-center gap-4 py-4">
+            <span className="text-white/30 text-sm w-24 flex-shrink-0">Progetto</span>
+            <button
+            onClick={async () => {
+            const confirmed = window.confirm(`Eliminare "${project.title}"? Questa azione è irreversibile.`);
+            if (!confirmed) return;
+            const { error } = await supabase.from("projects").delete().eq("slug", slug);
+            if (!error) router.push("/");
+            }}
+            className="text-red-400/60 hover:text-red-400 text-sm transition-colors border border-red-400/20 hover:border-red-400/40 px-4 py-2 rounded-xl"
+            >
+            Elimina progetto
+            </button>
+            </div>
           </div>
         )}
 
