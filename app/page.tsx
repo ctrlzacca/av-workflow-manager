@@ -119,7 +119,16 @@ export default function Home() {
     setLoading(false);
   }
 
-  useEffect(() => { loadProjects(); }, []);
+useEffect(() => {
+  const savedCategory = localStorage.getItem("defaultCategory") as Filter;
+  const savedSort = localStorage.getItem("defaultSort");
+  const savedFilter = localStorage.getItem("defaultFilter") as Filter;
+
+  if (savedFilter) setFilter(savedFilter);
+  if (savedSort) setSort(savedSort as SortOption);
+
+  loadProjects();
+}, []);
 
   // ── ADD PROJECT ───────────────────────────────────────────────────────────
 

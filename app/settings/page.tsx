@@ -1,0 +1,273 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { supabase } from "@/app/lib/supabase";
+import type { Project } from "@/app/types/project";
+
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+
+const APP_VERSION = "1.0.0";
+const GITHUB_URL = "https://github.com/ctrlzacca/av-workflow-manager";
+
+const SORT_OPTIONS = [
+  { value: "created_desc", label: "Più recenti" },
+  { value: "created_asc", label: "Più vecchi" },
+  { value: "priority_desc", label: "Priorità (High → Low)" },
+  { value: "priority_asc", label: "Priorità (Low → High)" },
+  { value: "deadline_asc", label: "Deadline (urgenti)" },
+  { value: "deadline_desc", label: "Deadline (ultimi)" },
+];
+
+// ─── COMPONENT ───────────────────────────────────────────────────────────────
+
+export default function SettingsPage() {
+  const router = useRouter();
+
+  const [defaultCategory, setDefaultCategory] = useState<"Ableton" | "TouchDesigner">("Ableton");
+  const [defaultSort, setDefaultSort] = useState("created_desc");
+  const [defaultFilter, setDefaultFilter] = useState<"All" | "Ableton" | "TouchDesigner">("All");
+  const [projectCount, setProjectCount] = useState(0);
+  const [saved, setSaved] = useState(false);
+
+  // ── LOAD SETTINGS ─────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    const category = localStorage.getItem("defaultCategory") as "Ableton" | "TouchDesigner";
+    const sort = localStorage.getItem("defaultSort");
+    const filter = localStorage.getItem("defaultFilter") as "All" | "Ableton" | "TouchDesigner";
+
+    if (category) setDefaultCategory(category);
+    if (sort) setDefaultSort(sort);
+    if (filter) setDefaultFilter(filter);
+
+    async function loadCount() {
+      const { count } = await supabase.from("projects").select("*", { count: "exact", head: true });
+      setProjectCount(count ?? 0);
+    }
+    loadCount();
+  }, []);
+
+  // ── SAVE SETTINGS ─────────────────────────────────────────────────────────
+
+  function saveSettings() {
+    localStorage.setItem("defaultCategory", defaultCategory);
+    localStorage.setItem("defaultSort", defaultSort);
+    localStorage.setItem("defaultFilter", defaultFilter);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  // ── EXPORT JSON ───────────────────────────────────────────────────────────
+
+  async function exportProjects() {
+    const { data, error } = await supabase.from("projects").select("*");
+    if (error) { console.error("Export error:", error.message); return; }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `av-workflow-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── DELETE ALL ────────────────────────────────────────────────────────────
+
+  async function deleteAllProjects() {
+    const first = window.confirm("Sei sicuro di voler eliminare TUTTI i progetti?");
+    if (!first) return;
+    const second = window.confirm("Questa azione è irreversibile. Continuare?");
+    if (!second) return;
+
+    const { error } = await supabase.from("projects").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    if (!error) { setProjectCount(0); router.push("/"); }
+  }
+
+  // ─── RENDER ───────────────────────────────────────────────────────────────
+
+  return (
+    <main className="min-h-screen bg-black text-white flex flex-col">
+
+      {/* HEADER */}
+      <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.push("/")}
+            className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0"
+          >
+            <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="font-bold text-base">Settings</h1>
+        </div>
+      </header>
+
+      {/* CONTENT */}
+      <div className="flex-1 overflow-y-auto px-5 py-6 pb-36 space-y-8">
+
+        {/* ── PREFERENZE DI DEFAULT ── */}
+        <section>
+          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+            Preferenze di default
+          </h2>
+
+          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <div>
+                <p className="text-sm font-medium">Categoria</p>
+                <p className="text-xs text-white/30 mt-0.5">Categoria preselezionata per i nuovi progetti</p>
+              </div>
+              <select
+                value={defaultCategory}
+                onChange={(e) => setDefaultCategory(e.target.value as "Ableton" | "TouchDesigner")}
+                className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+              >
+                <option value="Ableton" className="bg-black">Ableton</option>
+                <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <div>
+                <p className="text-sm font-medium">Ordinamento</p>
+                <p className="text-xs text-white/30 mt-0.5">Ordine di visualizzazione all'apertura</p>
+              </div>
+              <select
+                value={defaultSort}
+                onChange={(e) => setDefaultSort(e.target.value)}
+                className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none max-w-32"
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <div>
+                <p className="text-sm font-medium">Filtro</p>
+                <p className="text-xs text-white/30 mt-0.5">Filtro attivo all'apertura dell'app</p>
+              </div>
+              <select
+                value={defaultFilter}
+                onChange={(e) => setDefaultFilter(e.target.value as "All" | "Ableton" | "TouchDesigner")}
+                className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+              >
+                <option value="All" className="bg-black">Tutti</option>
+                <option value="Ableton" className="bg-black">Ableton</option>
+                <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+              </select>
+            </div>
+          </div>
+
+          <button
+            onClick={saveSettings}
+            className={`w-full mt-3 py-4 rounded-2xl font-semibold text-sm transition-all ${
+              saved ? "bg-green-500 text-white" : "bg-white text-black"
+            }`}
+          >
+            {saved ? "✓ Salvato" : "Salva preferenze"}
+          </button>
+        </section>
+
+        {/* ── GESTIONE DATI ── */}
+        <section>
+          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+            Gestione dati
+          </h2>
+
+          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <div>
+                <p className="text-sm font-medium">Esporta progetti</p>
+                <p className="text-xs text-white/30 mt-0.5">{projectCount} progetti · backup JSON</p>
+              </div>
+              <button
+                onClick={exportProjects}
+                className="bg-white/5 border border-white/10 text-white/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors"
+              >
+                Esporta
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <div>
+                <p className="text-sm font-medium text-red-400/80">Elimina tutto</p>
+                <p className="text-xs text-white/30 mt-0.5">Rimuove tutti i progetti dal database</p>
+              </div>
+              <button
+                onClick={deleteAllProjects}
+                className="bg-red-400/10 border border-red-400/20 text-red-400/70 text-xs px-4 py-2 rounded-xl hover:bg-red-400/20 transition-colors"
+              >
+                Elimina
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ── INFO APP ── */}
+        <section>
+          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+            Info app
+          </h2>
+
+          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <p className="text-sm font-medium">Versione</p>
+              <span className="text-xs text-white/30">{APP_VERSION}</span>
+            </div>
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <p className="text-sm font-medium">Repository</p>
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                GitHub →
+              </a>
+            </div>
+
+            <div className="flex items-center justify-between px-4 py-4">
+              <p className="text-sm font-medium">Progetti salvati</p>
+              <span className="text-xs text-white/30">{projectCount}</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      {/* BOTTOM NAV */}
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-8 pb-10 pt-4">
+        <Link href="/" className="flex flex-col items-center gap-1.5">
+          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <span className="text-xs text-white/30 font-medium">Home</span>
+        </Link>
+
+        <div className="w-14 h-14" />
+
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <span className="text-xs text-white/60 font-medium">Settings</span>
+        </div>
+      </nav>
+    </main>
+  );
+}
