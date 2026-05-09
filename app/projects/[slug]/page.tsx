@@ -164,13 +164,41 @@ export default function ProjectPage() {
 
   const doneTasks = project.tasks.filter((t) => t.done).length;
 
+  // dopo CATEGORY_LOGO
+function getProjectBackground(slug: string): string {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const palettes = [
+    ["#1a1a2e", "#16213e", "#0f3460"],
+    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
+    ["#0a1628", "#0d2137", "#0a2818"],
+    ["#1e1a0a", "#2e2010", "#1e0a0a"],
+    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
+    ["#1a0a1a", "#2e102e", "#1a0a2e"],
+    ["#0a1e0a", "#102e10", "#0a2e1a"],
+    ["#1e0a0a", "#2e1010", "#2e1a0a"],
+  ];
+  const palette = palettes[Math.abs(hash) % palettes.length];
+  const angle = Math.abs(hash >> 4) % 360;
+  return `linear-gradient(${angle}deg, ${palette[0]}99, ${palette[1]}99, ${palette[2]}99)`;
+}
+
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col">
+    <main
+    className="min-h-screen text-white flex flex-col"
+    style={{ background: `#000000` }}
+    >
+      <div
+        className="fixed inset-0 -z-10 opacity-40"
+        style={{ background: getProjectBackground(slug) }}
+      />
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-10 bg-black backdrop-blur border-b border-white/8 px-5 pt-14 pb-0">
 
         {/* BACK + LOGO + TITOLO */}
         <div className="flex items-center gap-3 mb-4">
@@ -280,17 +308,35 @@ export default function ProjectPage() {
               )}
             </>
           ) : (
+            <div className="flex items-center gap-2">
             <input
               autoFocus
               type="text"
               placeholder="Nome cartella..."
-              className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-44"
+              className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 flex-1"
               onKeyDown={(e) => {
-                if (e.key === "Enter") { const val = (e.target as HTMLInputElement).value.trim(); if (val) updateField("folder", val); setShowNewFolder(false); }
+                if (e.key === "Enter") {
+                  const val = (e.target as HTMLInputElement).value.trim();
+                  if (val) updateField("folder", val);
+                  setShowNewFolder(false);
+                }
                 if (e.key === "Escape") setShowNewFolder(false);
               }}
-              onBlur={(e) => { const val = e.target.value.trim(); if (val) updateField("folder", val); setShowNewFolder(false); }}
+              ref={(input) => { if (input) (input as any)._ref = input; }}
+              id="new-folder-input"
             />
+            <button
+              onClick={() => {
+                const input = document.getElementById("new-folder-input") as HTMLInputElement;
+                const val = input?.value.trim();
+                if (val) updateField("folder", val);
+                setShowNewFolder(false);
+              }}
+              className="bg-white text-black text-xs px-3 py-2 rounded-xl font-semibold flex-shrink-0"
+            >
+              OK
+            </button>
+          </div>
           )}
         </div>
 
