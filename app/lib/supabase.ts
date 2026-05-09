@@ -1,6 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// ─── SUPABASE CLIENT ──────────────────────────────────────────────────────────
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Usa auth-helpers per gestire automaticamente le sessioni nei componenti client
+export const supabase = createClientComponentClient();

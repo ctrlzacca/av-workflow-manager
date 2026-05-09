@@ -11,6 +11,7 @@ export type Category = {
   icon: string;
   fields: string[];
   created_at?: string;
+  user_id?: string;
 };
 
 export type Project = {
@@ -31,4 +32,5 @@ export type Project = {
   links: string;
   extra_info: string;
   custom_fields?: Record<string, string>;
+  user_id?: string;
 };

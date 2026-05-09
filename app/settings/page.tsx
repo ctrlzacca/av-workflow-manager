@@ -74,27 +74,31 @@ export default function SettingsPage() {
   // ── ADD CATEGORY ──────────────────────────────────────────────────────────
 
   async function addCategory() {
-    if (!newCatName.trim()) return;
+  if (!newCatName.trim()) return;
 
-    const fields = newCatFields
-      .split(",")
-      .map((f) => f.trim())
-      .filter((f) => f.length > 0);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
-    const { error } = await supabase.from("categories").insert({
-      name: newCatName.trim(),
-      icon: newCatIcon.trim() || "📁",
-      fields,
-    });
+  const fields = newCatFields
+    .split(",")
+    .map((f) => f.trim())
+    .filter((f) => f.length > 0);
 
-    if (error) { console.error("Error adding category:", error.message); return; }
+  const { error } = await supabase.from("categories").insert({
+    name: newCatName.trim(),
+    icon: newCatIcon.trim() || "📁",
+    fields,
+    user_id: user.id,
+  });
 
-    setNewCatName("");
-    setNewCatIcon("📁");
-    setNewCatFields("");
-    setShowAddCat(false);
-    loadData();
-  }
+  if (error) { console.error("Error adding category:", error.message); return; }
+
+  setNewCatName("");
+  setNewCatIcon("📁");
+  setNewCatFields("");
+  setShowAddCat(false);
+  loadData();
+}
 
   // ── UPDATE CATEGORY ───────────────────────────────────────────────────────
 
@@ -427,6 +431,21 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Progetti salvati</p>
               <span className="text-xs text-white/30">{projectCount}</span>
+            </div>
+            <div className="flex items-center justify-between px-4 py-4">
+            <div>
+              <p className="text-sm font-medium text-red-400/80">Logout</p>
+              <p className="text-xs text-white/30 mt-0.5">Esci dal tuo account</p>
+            </div>
+              <button
+              onClick={async () => {
+              await supabase.auth.signOut();
+              router.push("/login");
+              }}
+              className="bg-red-400/10 border border-red-400/20 text-red-400/70 text-xs px-4 py-2 rounded-xl hover:bg-red-400/20 transition-colors"
+              >
+              Logout
+              </button>
             </div>
           </div>
         </section>

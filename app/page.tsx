@@ -143,38 +143,42 @@ export default function Home() {
   // ── ADD PROJECT ───────────────────────────────────────────────────────────
 
   async function addProject() {
-    if (!newProject.trim()) return;
+  if (!newProject.trim()) return;
 
-    const slug = `${slugify(newProject)}-${Date.now()}`;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
-    const abletonDefaultTasks = [
-      { title: "Produzione/Struttura", done: false },
-      { title: "Rec Voci", done: false },
-      { title: "Mix", done: false },
-      { title: "Master", done: false },
-      { title: "Video/Reel Promozionale", done: false },
-      { title: "SIAE", done: false },
-    ];
+  const slug = `${slugify(newProject)}-${Date.now()}`;
 
-    const newProj: Project = {
-      title: newProject.trim(), slug,
-      status: "Active", priority: "Low", deadline: "",
-      category: newProjectCategory,
-      notes: "", folder: "",
-      tasks: newProjectCategory === "Ableton" ? abletonDefaultTasks : [],
-      bpm: "", key: "", resolution: "", fps: "",
-      plugins: "", links: "", extra_info: "",
-      custom_fields: {},
-    };
+  const abletonDefaultTasks = [
+    { title: "Produzione/Struttura", done: false },
+    { title: "Rec Voci", done: false },
+    { title: "Mix", done: false },
+    { title: "Master", done: false },
+    { title: "Video/Reel Promozionale", done: false },
+    { title: "SIAE", done: false },
+  ];
 
-    const { error } = await supabase.from("projects").insert(newProj);
-    if (error) { console.error("Error adding project:", error.message); return; }
+  const newProj: Project = {
+    title: newProject.trim(), slug,
+    status: "Active", priority: "Low", deadline: "",
+    category: newProjectCategory,
+    notes: "", folder: "",
+    tasks: newProjectCategory === "Ableton" ? abletonDefaultTasks : [],
+    bpm: "", key: "", resolution: "", fps: "",
+    plugins: "", links: "", extra_info: "",
+    custom_fields: {},
+    user_id: user.id,
+  };
 
-    setNewProject("");
-    setNewProjectCategory("Ableton");
-    setShowAdd(false);
-    loadData();
-  }
+  const { error } = await supabase.from("projects").insert(newProj);
+  if (error) { console.error("Error adding project:", error.message); return; }
+
+  setNewProject("");
+  setNewProjectCategory("Ableton");
+  setShowAdd(false);
+  loadData();
+}
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") addProject();
