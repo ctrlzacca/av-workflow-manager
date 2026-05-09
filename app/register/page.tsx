@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
 
   // ── REGISTER ──────────────────────────────────────────────────────────────
 
@@ -33,20 +34,21 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error: authError } = await supabase.auth.signUp({ email, password });
 
-    if (error) {
-      setError("Errore durante la registrazione. Riprova.");
-      setLoading(false);
-      return;
+    if (authError) {
+    setError("Errore durante la registrazione. Riprova.");
+    setLoading(false);
+    return;
     }
 
-    router.push("/");
-  }
+    setRegistered(true);
+    setLoading(false);
+    }
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") handleRegister();
-  }
+    }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
@@ -100,6 +102,20 @@ export default function RegisterPage() {
         >
           {loading ? "Registrazione..." : "Crea account"}
         </button>
+        {registered && (
+        <div className="mt-5 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+        <p className="text-green-400 text-sm font-medium">Account creato!</p>
+        <p className="text-white/40 text-xs mt-1">
+        Controlla la tua casella email e clicca sul link di verifica per attivare l'account.
+        </p>
+        <button
+        onClick={() => router.push("/login")}
+        className="mt-3 text-xs text-white/60 hover:text-white transition-colors"
+        >
+        Vai al login →
+        </button>
+        </div>
+        )}
 
         {/* LOGIN LINK */}
         <p className="text-center text-white/30 text-xs mt-6">
