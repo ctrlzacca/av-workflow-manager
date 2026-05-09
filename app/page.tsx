@@ -166,7 +166,7 @@ export default function Home() {
         {/* TITOLO + SORT */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold tracking-tight">AV Workflow</h1>
+            <h1 className="text-xl font-bold tracking-tight">AV Workflow Manager</h1>
             <p className="text-white/30 text-xs mt-0.5">{sorted.length} progetti</p>
           </div>
           <select
