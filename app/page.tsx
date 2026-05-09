@@ -17,6 +17,30 @@ function getProgress(project: Project): number {
   return Math.round((done / project.tasks.length) * 100);
 }
 
+function getProjectBackground(slug: string): string {
+  // genera un hash numerico dallo slug
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const palettes = [
+    ["#1a1a2e", "#16213e", "#0f3460"],
+    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
+    ["#0a1628", "#0d2137", "#0a2818"],
+    ["#1e1a0a", "#2e2010", "#1e0a0a"],
+    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
+    ["#1a0a1a", "#2e102e", "#1a0a2e"],
+    ["#0a1e0a", "#102e10", "#0a2e1a"],
+    ["#1e0a0a", "#2e1010", "#2e1a0a"],
+  ];
+
+  const palette = palettes[Math.abs(hash) % palettes.length];
+  const angle = Math.abs(hash >> 4) % 360;
+
+  return `linear-gradient(${angle}deg, ${palette[0]}, ${palette[1]}, ${palette[2]})`;
+}
+
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 const FILTERS = ["All", "Ableton", "TouchDesigner"] as const;
@@ -245,6 +269,13 @@ export default function Home() {
                 href={`/projects/${project.slug}`}
                 className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:bg-white/5 transition-all"
               >
+                <Link
+                key={project.slug}
+                href={`/projects/${project.slug}`}
+                style={{ background: getProjectBackground(project.slug) }}
+                className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:bg-white/5 transition-all"
+                >
+                </Link>
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
