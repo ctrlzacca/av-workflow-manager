@@ -198,7 +198,7 @@ function getProjectBackground(slug: string): string {
       />
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-10 bg-black backdrop-blur border-b border-black/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-10 bg-black backdrop-blur border-b border-white/8 px-5 pt-14 pb-0">
 
         {/* BACK + LOGO + TITOLO */}
         <div className="flex items-center gap-3 mb-4">
