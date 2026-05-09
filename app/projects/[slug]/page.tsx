@@ -32,6 +32,7 @@ export default function ProjectPage() {
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [showNewFolder, setShowNewFolder] = useState(false);
   const [activeTab, setActiveTab] = useState<"tasks" | "info" | "notes">("tasks");
+  const [showSaved, setShowSaved] = useState(false);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -56,11 +57,15 @@ export default function ProjectPage() {
   // ── UPDATE FIELD ──────────────────────────────────────────────────────────
 
   async function updateField<K extends keyof Project>(field: K, value: Project[K]) {
-    if (!project) return;
-    const { error } = await supabase.from("projects").update({ [field]: value }).eq("slug", slug);
-    if (error) { console.error("Error updating field:", error.message); return; }
-    setProject((prev) => (prev ? { ...prev, [field]: value } : prev));
-  }
+  if (!project) return;
+  const { error } = await supabase.from("projects").update({ [field]: value }).eq("slug", slug);
+  if (error) { console.error("Error updating field:", error.message); return; }
+  setProject((prev) => (prev ? { ...prev, [field]: value } : prev));
+
+  // feedback visivo
+  setShowSaved(true);
+  setTimeout(() => setShowSaved(false), 2000);
+}
 
   // ── ADD TASK ──────────────────────────────────────────────────────────────
 
@@ -157,6 +162,15 @@ export default function ProjectPage() {
           <span className={`text-xs font-medium flex-shrink-0 ${PRIORITY_COLOR[project.priority]}`}>
             {project.priority}
           </span>
+          {/* SAVE FEEDBACK */}
+          <div className={`flex-shrink-0 flex items-center gap-1.5 text-xs transition-all duration-300 ${
+          showSaved ? "text-green-400 opacity-100" : "text-white/0 opacity-0"
+          }`}>
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+          Salvato
+          </div>
         </div>
 
         {/* META CONTROLS */}
