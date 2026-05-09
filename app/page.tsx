@@ -163,21 +163,21 @@ export default function Home() {
       {/* HEADER FISSO */}
       <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
 
-        {/* TITOLO + SORT */}
+        {/* TITOLO */}
+        <h1 className="text-2xl font-bold tracking-tight mb-4">AV Workflow Manager</h1>
+
+        {/* SORT */}
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">AV Workflow Manager</h1>
-            <p className="text-white/30 text-xs mt-0.5">{sorted.length} progetti</p>
-          </div>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
-          >
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
-            ))}
-          </select>
+        <p className="text-white/30 text-xs">{sorted.length} progetti</p>
+        <select
+        value={sort}
+        onChange={(e) => setSort(e.target.value as SortOption)}
+        className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
+        >
+        {SORT_OPTIONS.map((o) => (
+        <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
+        ))}
+        </select>
         </div>
 
         {/* CATEGORY FILTERS */}
@@ -284,17 +284,17 @@ export default function Home() {
 
                 {/* PROGRESS */}
                 <div className="mt-3 ml-11">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-1 bg-white/8 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-white/50 rounded-full transition-all duration-300"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                    <span className="text-xs text-white/25 flex-shrink-0">
-                      {project.tasks.filter((t) => t.done).length}/{project.tasks.length}
-                    </span>
-                  </div>
+                <div className="flex items-center gap-3">
+                <div className="flex-1 h-1 bg-white/8 rounded-full overflow-hidden">
+                  <div
+                  className="h-full bg-white/50 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+                </div>
+                <span className="text-xs text-white/25 flex-shrink-0">
+                  {progress}%
+                </span>
+                </div>
                 </div>
               </Link>
             );
