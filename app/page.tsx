@@ -260,24 +260,18 @@ export default function Home() {
           <p className="text-white/20 text-sm text-center mt-16">Nessun progetto ancora.</p>
         )}
 
-        <div className="space-y-3">
+          <div className="space-y-3">
           {sorted.map((project) => {
-            const progress = getProgress(project);
-            return (
-              <Link
-                key={project.slug}
-                href={`/projects/${project.slug}`}
-                className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:bg-white/5 transition-all"
-              >
-                <Link
-                key={project.slug}
-                href={`/projects/${project.slug}`}
-                style={{ background: getProjectBackground(project.slug) }}
-                className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:bg-white/5 transition-all"
-                >
-                </Link>
-                {/* TOP ROW */}
-                <div className="flex items-start justify-between gap-3">
+          const progress = getProgress(project);
+          return (
+          <Link
+          key={project.slug}
+          href={`/projects/${project.slug}`}
+          style={{ background: getProjectBackground(project.slug) }}
+          className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:brightness-110 transition-all"
+          >
+      {/* TOP ROW */}
+        <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
                       <img
