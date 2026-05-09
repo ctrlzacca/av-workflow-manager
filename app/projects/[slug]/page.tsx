@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import type { Project } from "@/app/types/project";
@@ -36,9 +37,7 @@ export default function ProjectPage() {
 
   useEffect(() => {
     async function loadProject() {
-      const { data, error } = await supabase
-        .from("projects").select("*").eq("slug", slug).single();
-
+      const { data, error } = await supabase.from("projects").select("*").eq("slug", slug).single();
       if (error) { console.error("Error loading project:", error.message); setLoading(false); return; }
       setProject(data);
       setLoading(false);
@@ -123,9 +122,7 @@ export default function ProjectPage() {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
         <p className="text-white/20 text-sm">Progetto non trovato.</p>
-        <button onClick={() => router.push("/")} className="text-sm text-white/40 hover:text-white">
-          ← Home
-        </button>
+        <button onClick={() => router.push("/")} className="text-sm text-white/40 hover:text-white">← Home</button>
       </div>
     );
   }
@@ -138,30 +135,36 @@ export default function ProjectPage() {
     <main className="min-h-screen bg-black text-white flex flex-col">
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-10 bg-black/90 backdrop-blur border-b border-white/5 px-4 pt-12 pb-3">
+      <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-0">
 
-        {/* BACK + TITLE */}
-        <div className="flex items-center gap-3 mb-3">
-          <button onClick={() => router.push("/")} className="text-white/30 hover:text-white transition-colors flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+        {/* BACK + LOGO + TITOLO */}
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={() => router.push("/")}
+            className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0"
+          >
+            <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <img src={CATEGORY_LOGO[project.category]} alt={project.category} className="w-4 h-4 object-contain invert opacity-60 flex-shrink-0" />
-            <h1 className="font-semibold text-sm truncate">{project.title}</h1>
+
+          <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
+            <img src={CATEGORY_LOGO[project.category]} alt={project.category} className="w-5 h-5 object-contain invert opacity-70" />
           </div>
-          <span className={`text-xs flex-shrink-0 ${PRIORITY_COLOR[project.priority]}`}>
+
+          <h1 className="font-bold text-base flex-1 truncate">{project.title}</h1>
+
+          <span className={`text-xs font-medium flex-shrink-0 ${PRIORITY_COLOR[project.priority]}`}>
             {project.priority}
           </span>
         </div>
 
         {/* META CONTROLS */}
-        <div className="flex gap-1.5 flex-wrap">
+        <div className="flex gap-2 flex-wrap mb-3">
           <select
             value={project.status}
             onChange={(e) => updateField("status", e.target.value as Project["status"])}
-            className="bg-transparent border border-white/10 text-white/40 text-xs px-2 py-1 rounded-full focus:outline-none"
+            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
             <option value="Active" className="bg-black">Active</option>
             <option value="Paused" className="bg-black">Paused</option>
@@ -171,7 +174,7 @@ export default function ProjectPage() {
           <select
             value={project.priority}
             onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
-            className={`bg-transparent border border-white/10 text-xs px-2 py-1 rounded-full focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
+            className={`bg-white/5 border border-white/10 text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
           >
             <option value="Low" className="bg-black">Low</option>
             <option value="Medium" className="bg-black">Medium</option>
@@ -181,7 +184,7 @@ export default function ProjectPage() {
           <select
             value={project.category}
             onChange={(e) => updateField("category", e.target.value as Project["category"])}
-            className="bg-transparent border border-white/10 text-white/40 text-xs px-2 py-1 rounded-full focus:outline-none"
+            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
             <option value="Ableton" className="bg-black">Ableton</option>
             <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
@@ -191,12 +194,12 @@ export default function ProjectPage() {
             type="date"
             value={project.deadline}
             onChange={(e) => updateField("deadline", e.target.value)}
-            className="bg-transparent border border-white/10 text-white/40 text-xs px-2 py-1 rounded-full focus:outline-none"
+            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           />
         </div>
 
         {/* FOLDER */}
-        <div className="flex items-center gap-1.5 mt-2">
+        <div className="flex items-center gap-2 mb-3">
           {!showNewFolder ? (
             <>
               <select
@@ -205,7 +208,7 @@ export default function ProjectPage() {
                   if (e.target.value === "__new__") { setShowNewFolder(true); updateField("folder", ""); }
                   else { updateField("folder", e.target.value); }
                 }}
-                className="bg-transparent border border-white/10 text-white/30 text-xs px-2 py-1 rounded-full focus:outline-none"
+                className="bg-white/5 border border-white/10 text-white/40 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 <option value="" className="bg-black">Nessuna cartella</option>
                 {availableFolders.map((f) => (
@@ -222,7 +225,7 @@ export default function ProjectPage() {
                     await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
                     updateField("folder", "");
                   }}
-                  className="text-white/20 hover:text-red-400 transition-colors border border-white/10 rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                  className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-red-400 hover:border-red-400/30 transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -233,7 +236,7 @@ export default function ProjectPage() {
               autoFocus
               type="text"
               placeholder="Nome cartella..."
-              className="bg-transparent border border-white/20 text-white/50 text-xs px-2 py-1 rounded-full focus:outline-none w-36"
+              className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 w-44"
               onKeyDown={(e) => {
                 if (e.key === "Enter") { const val = (e.target as HTMLInputElement).value.trim(); if (val) updateField("folder", val); setShowNewFolder(false); }
                 if (e.key === "Escape") setShowNewFolder(false);
@@ -244,23 +247,23 @@ export default function ProjectPage() {
         </div>
 
         {/* PROGRESS */}
-        <div className="mt-3">
-          <div className="flex justify-between text-xs text-white/20 mb-1">
-            <span>{doneTasks}/{project.tasks.length} tasks</span>
+        <div className="mb-4">
+          <div className="flex justify-between text-xs text-white/25 mb-1.5">
+            <span>{doneTasks}/{project.tasks.length} tasks completate</span>
             <span>{progress}%</span>
           </div>
-          <div className="w-full h-0.5 bg-white/8 rounded-full">
-            <div className="h-full bg-white/40 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+          <div className="w-full h-1 bg-white/8 rounded-full">
+            <div className="h-full bg-white/50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
         {/* TABS */}
-        <div className="flex gap-0 mt-3 border-b border-white/5">
+        <div className="flex border-b border-white/8">
           {(["tasks", "info", "notes"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-xs font-medium capitalize transition-colors border-b-2 -mb-px ${
+              className={`flex-1 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
                 activeTab === tab ? "border-white text-white" : "border-transparent text-white/30"
               }`}
             >
@@ -271,36 +274,33 @@ export default function ProjectPage() {
       </header>
 
       {/* CONTENT */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 pb-32">
+      <div className="flex-1 overflow-y-auto px-5 py-5 pb-36">
 
         {/* ── TAB TASKS ── */}
         {activeTab === "tasks" && (
           <div>
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-5">
               <input
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-                className="flex-1 p-3 bg-white/5 border border-white/8 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 text-sm"
+                className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 text-sm"
                 placeholder="Aggiungi task..."
               />
-              <button
-                onClick={addTask}
-                className="bg-white text-black px-4 rounded-lg font-bold text-sm"
-              >
+              <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">
                 +
               </button>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {project.tasks.map((task, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 border border-white/8 rounded-lg px-3 py-3"
+                  className="flex items-center gap-4 border border-white/8 rounded-xl px-4 py-4"
                 >
                   <button
                     onClick={() => toggleTask(i)}
-                    className={`w-5 h-5 rounded-full border flex-shrink-0 flex items-center justify-center transition-all ${
+                    className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                       task.done ? "bg-white border-white" : "border-white/20"
                     }`}
                   >
@@ -315,14 +315,14 @@ export default function ProjectPage() {
                   </span>
                   <button
                     onClick={() => deleteTask(i, task.title)}
-                    className="text-white/15 hover:text-red-400 transition-colors w-6 h-6 flex items-center justify-center"
+                    className="text-white/15 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm"
                   >
                     ✕
                   </button>
                 </div>
               ))}
               {project.tasks.length === 0 && (
-                <p className="text-white/15 text-sm text-center py-8">Nessuna task.</p>
+                <p className="text-white/15 text-sm text-center py-12">Nessuna task ancora.</p>
               )}
             </div>
           </div>
@@ -330,27 +330,16 @@ export default function ProjectPage() {
 
         {/* ── TAB INFO ── */}
         {activeTab === "info" && (
-          <div className="space-y-0 divide-y divide-white/5">
-
-            {/* TITLE EDIT */}
-            <div className="flex items-center gap-3 py-3">
-              <span className="text-white/25 text-xs w-20 flex-shrink-0">Titolo</span>
-              <input
-                type="text"
-                value={project.title}
-                onChange={(e) => updateField("title", e.target.value)}
-                className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none"
-              />
-            </div>
+          <div className="divide-y divide-white/5">
 
             {project.category === "Ableton" && (
               <>
-                <div className="flex items-center gap-3 py-3">
-                  <span className="text-white/25 text-xs w-20 flex-shrink-0">BPM</span>
+                <div className="flex items-center gap-4 py-4">
+                  <span className="text-white/30 text-sm w-24 flex-shrink-0">BPM</span>
                   <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
-                <div className="flex items-center gap-3 py-3">
-                  <span className="text-white/25 text-xs w-20 flex-shrink-0">Tonalità</span>
+                <div className="flex items-center gap-4 py-4">
+                  <span className="text-white/30 text-sm w-24 flex-shrink-0">Tonalità</span>
                   <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
               </>
@@ -358,37 +347,37 @@ export default function ProjectPage() {
 
             {project.category === "TouchDesigner" && (
               <>
-                <div className="flex items-center gap-3 py-3">
-                  <span className="text-white/25 text-xs w-20 flex-shrink-0">Risoluzione</span>
+                <div className="flex items-center gap-4 py-4">
+                  <span className="text-white/30 text-sm w-24 flex-shrink-0">Risoluzione</span>
                   <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
-                <div className="flex items-center gap-3 py-3">
-                  <span className="text-white/25 text-xs w-20 flex-shrink-0">FPS</span>
+                <div className="flex items-center gap-4 py-4">
+                  <span className="text-white/30 text-sm w-24 flex-shrink-0">FPS</span>
                   <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
               </>
             )}
 
-            <div className="flex items-center gap-3 py-3">
-              <span className="text-white/25 text-xs w-20 flex-shrink-0">Plugin</span>
+            <div className="flex items-center gap-4 py-4">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">Plugin</span>
               <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
             </div>
 
-            <div className="flex items-center gap-3 py-3">
-              <span className="text-white/25 text-xs w-20 flex-shrink-0">Link</span>
+            <div className="flex items-center gap-4 py-4">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
               {project.links?.trim() ? (
-                <div className="flex items-center gap-2 flex-1 min-w-0">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
                   <a
                     href={project.links.startsWith("http") ? project.links : `https://${project.links}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 text-sm truncate flex-1 min-w-0"
-                    >
+                  >
                     {project.links.replace(/^https?:\/\//, "")}
                   </a>
                   <button
                     onClick={() => updateField("links", "")}
-                    className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/10 rounded text-xs"
+                    className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/10 rounded-lg text-xs"
                   >
                     ✕
                   </button>
@@ -398,8 +387,8 @@ export default function ProjectPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-3 py-3">
-              <span className="text-white/25 text-xs w-20 flex-shrink-0">Extra</span>
+            <div className="flex items-center gap-4 py-4">
+              <span className="text-white/30 text-sm w-24 flex-shrink-0">Extra</span>
               <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
             </div>
           </div>
@@ -411,29 +400,33 @@ export default function ProjectPage() {
             value={project.notes ?? ""}
             onChange={(e) => updateField("notes", e.target.value)}
             placeholder="Scrivi qui le tue note..."
-            className="w-full h-64 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15 resize-none leading-relaxed"
+            className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15 resize-none leading-relaxed"
           />
         )}
       </div>
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/90 backdrop-blur border-t border-white/5 flex items-center justify-around px-6 pb-8 pt-3">
-        <button onClick={() => router.push("/")} className="flex flex-col items-center gap-1">
-          <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          <span className="text-xs text-white/30">Home</span>
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-8 pb-10 pt-4">
+        <button onClick={() => router.push("/")} className="flex flex-col items-center gap-1.5">
+          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <span className="text-xs text-white/30 font-medium">Home</span>
         </button>
 
-        <div className="w-12 h-12" />
+        <div className="w-14 h-14" />
 
-        <div className="flex flex-col items-center gap-1 opacity-20">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <span className="text-xs text-white/30">Settings</span>
-        </div>
+        <Link href="/settings" className="flex flex-col items-center gap-1.5">
+          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <span className="text-xs text-white/30 font-medium">Settings</span>
+        </Link>
       </nav>
     </main>
   );
