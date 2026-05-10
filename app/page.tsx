@@ -261,12 +261,11 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <img
               src="/icon-512.png"
-              alt="AV Workflow"
-              className="w-10 h-10 rounded-xl"
+              alt="AV"
+              className="w-14 h-14 rounded-2xl"
             />
             <div>
-              <h1 className="text-xl font-bold tracking-tight">AV Workflow Manager</h1>
-              <p className="text-white/30 text-xs mt-0.5">{sorted.length} progetti</p>
+              <p className="text-white/50 text-xs font-medium tracking-widest uppercase">Workflow Manager</p>
             </div>
           </div>
           <select
