@@ -169,7 +169,7 @@ export default function ProjectPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-white/20 text-sm">Caricamento...</p>
+        <p className="text-white/50 text-sm">Caricamento...</p>
       </div>
     );
   }
@@ -177,7 +177,7 @@ export default function ProjectPage() {
   if (!project) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
-        <p className="text-white/20 text-sm">Progetto non trovato.</p>
+        <p className="text-white/50 text-sm">Progetto non trovato.</p>
         <button onClick={() => router.push("/")} className="text-sm text-white/40 hover:text-white">← Home</button>
       </div>
     );
@@ -189,7 +189,7 @@ export default function ProjectPage() {
 
   return (
     <main
-      className="min-h-screen bg-black text-white flex flex-col" 
+      className="min-h-screen bg-black text-white flex flex-col relative" 
       >
       {/* HEADER FISSO */}
       <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-0">
@@ -336,7 +336,7 @@ export default function ProjectPage() {
 
         {/* PROGRESS */}
         <div className="mb-4">
-          <div className="flex justify-between text-xs text-white/25 mb-1.5">
+          <div className="flex justify-between text-xs text-white/60 mb-1.5">
             <span>{doneTasks}/{project.tasks.length} tasks completate</span>
             <span>{progress}%</span>
           </div>
@@ -359,9 +359,14 @@ export default function ProjectPage() {
             </button>
           ))}
         </div>
+          {/* SFONDO COLORATO — solo nel content */}
           <div
-            className="fixed inset-0 -z-10 opacity-80 pointer-events-none"
-            style={{ background: getProjectBackground(slug) }}
+            className="absolute left-0 right-0 -z-10 opacity-60 pointer-events-none"
+            style={{
+              background: getProjectBackground(slug),
+              top: "0",
+              bottom: "0",
+            }}
           />
       </header>
 
@@ -376,7 +381,7 @@ export default function ProjectPage() {
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-        className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 text-sm"
+        className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/50 focus:outline-none focus:border-white/20 text-sm"
         placeholder="Aggiungi task..."
       />
       <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">+</button>
@@ -416,7 +421,7 @@ export default function ProjectPage() {
           </button>
 
           {/* TITOLO */}
-          <span className={`flex-1 text-sm ${task.done ? "line-through text-white/30" : "text-white/80"}`}>
+          <span className={`flex-1 text-sm ${task.done ? "line-through text-white/70" : "text-white/80"}`}>
             {task.title}
           </span>
 
@@ -429,7 +434,7 @@ export default function ProjectPage() {
                 [updated[i - 1], updated[i]] = [updated[i], updated[i - 1]];
                 updateField("tasks", updated);
               }}
-              className="text-white/30 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
+              className="text-white/70 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
               disabled={i === 0}
             >
               ▲
@@ -441,7 +446,7 @@ export default function ProjectPage() {
                 [updated[i], updated[i + 1]] = [updated[i + 1], updated[i]];
                 updateField("tasks", updated);
               }}
-              className="text-white/30 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
+              className="text-white/70 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
               disabled={i === project.tasks.length - 1}
             >
               ▼
@@ -451,14 +456,14 @@ export default function ProjectPage() {
           {/* DELETE */}
           <button
             onClick={() => deleteTask(i, task.title)}
-            className="text-white/20 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm flex-shrink-0"
+            className="text-white/50 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm flex-shrink-0"
           >
             ✕
           </button>
         </div>
       ))}
       {project.tasks.length === 0 && (
-        <p className="text-white/20 text-sm text-center py-12">Nessuna task ancora.</p>
+        <p className="text-white/50 text-sm text-center py-12">Nessuna task ancora.</p>
       )}
     </div>
   </div>
@@ -473,11 +478,11 @@ export default function ProjectPage() {
               <>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-white/60 text-sm w-24 flex-shrink-0">BPM</span>
-                  <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+                  <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-white/60 text-sm w-24 flex-shrink-0">Tonalità</span>
-                  <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+                  <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
                 </div>
               </>
             )}
@@ -487,11 +492,11 @@ export default function ProjectPage() {
               <>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-white/60 text-sm w-24 flex-shrink-0">Risoluzione</span>
-                  <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+                  <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-white/60 text-sm w-24 flex-shrink-0">FPS</span>
-                  <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+                  <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
                 </div>
               </>
             )}
@@ -505,7 +510,7 @@ export default function ProjectPage() {
                   value={project.custom_fields?.[fieldName] ?? ""}
                   onChange={(e) => updateCustomField(fieldName, e.target.value)}
                   placeholder={`es. ${fieldName}...`}
-                  className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15"
+                  className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40"
                 />
               </div>
             ))}
@@ -513,7 +518,7 @@ export default function ProjectPage() {
             {/* CAMPI COMUNI */}
             <div className="flex items-center gap-4 py-4">
               <span className="text-white/60 text-sm w-24 flex-shrink-0">Plugin</span>
-              <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+              <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
             </div>
 
             <div className="flex items-center gap-4 py-4">
@@ -528,16 +533,16 @@ export default function ProjectPage() {
                   >
                     {project.links.replace(/^https?:\/\//, "")}
                   </a>
-                  <button onClick={() => updateField("links", "")} className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/10 rounded-lg text-xs">✕</button>
+                  <button onClick={() => updateField("links", "")} className="text-white/50 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/10 rounded-lg text-xs">✕</button>
                 </div>
               ) : (
-                <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+                <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
               )}
             </div>
 
             <div className="flex items-center gap-4 py-4">
               <span className="text-white/60 text-sm w-24 flex-shrink-0">Extra</span>
-              <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
+              <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
             </div>
 
             {/* DELETE */}
@@ -564,7 +569,7 @@ export default function ProjectPage() {
             value={project.notes ?? ""}
             onChange={(e) => updateField("notes", e.target.value)}
             placeholder="Scrivi qui le tue note..."
-            className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15 resize-none leading-relaxed"
+            className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40 resize-none leading-relaxed"
           />
         )}
       </div>
@@ -577,7 +582,7 @@ export default function ProjectPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Home</span>
+          <span className="text-xs text-white/70 font-medium">Home</span>
         </Link>
 
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
@@ -586,7 +591,7 @@ export default function ProjectPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Calendar</span>
+          <span className="text-xs text-white/70 font-medium">Calendar</span>
         </Link>
 
         <div className="w-10 h-10" />
@@ -598,7 +603,7 @@ export default function ProjectPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Settings</span>
+          <span className="text-xs text-white/70 font-medium">Settings</span>
         </Link>
       </nav>
     </main>
