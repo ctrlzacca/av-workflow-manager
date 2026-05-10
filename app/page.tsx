@@ -460,7 +460,7 @@ export default function Home() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
           </svg>
         </div>
-        <span className="text-xs text-white/60 font-medium">Nuovo</span>
+        <span className="text-xs text-white/60 font-medium">New Project</span>
       </button>
 
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
