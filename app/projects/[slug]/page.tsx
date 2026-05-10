@@ -189,14 +189,8 @@ export default function ProjectPage() {
 
   return (
     <main
-    className="min-h-screen text-white flex flex-col"
-    style={{ background: `#000000` }}
-    >
-      <div
-        className="fixed inset-0 -z-10 opacity-40"
-        style={{ background: getProjectBackground(slug) }}
-      />
-
+      className="min-h-screen bg-black text-white flex flex-col" 
+      >
       {/* HEADER FISSO */}
       <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-0">
 
@@ -365,6 +359,10 @@ export default function ProjectPage() {
             </button>
           ))}
         </div>
+      <div
+        className="fixed inset-0 -z-10 opacity-60"
+        style={{ background: getProjectBackground(slug) }}
+      />
       </header>
 
       {/* CONTENT */}
