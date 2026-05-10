@@ -254,7 +254,7 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white flex flex-col">
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
+      <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-0">
 
         {/* TITOLO + SORT */}
         <div className="flex items-center justify-between mb-4">

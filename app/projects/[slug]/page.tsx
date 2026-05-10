@@ -19,6 +19,27 @@ const BUILTIN_LOGOS: Record<string, string> = {
   TouchDesigner: "/touchdesigner.svg",
 };
 
+  // dopo CATEGORY_LOGO
+function getProjectBackground(slug: string): string {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const palettes = [
+    ["#1a1a2e", "#16213e", "#0f3460"],
+    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
+    ["#0a1628", "#0d2137", "#0a2818"],
+    ["#1e1a0a", "#2e2010", "#1e0a0a"],
+    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
+    ["#1a0a1a", "#2e102e", "#1a0a2e"],
+    ["#0a1e0a", "#102e10", "#0a2e1a"],
+    ["#1e0a0a", "#2e1010", "#2e1a0a"],
+  ];
+  const palette = palettes[Math.abs(hash) % palettes.length];
+  const angle = Math.abs(hash >> 4) % 360;
+  return `linear-gradient(${angle}deg, ${palette[0]}99, ${palette[1]}99, ${palette[2]}99)`;
+}
+
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 
 export default function ProjectPage() {
@@ -164,27 +185,6 @@ export default function ProjectPage() {
 
   const doneTasks = project.tasks.filter((t) => t.done).length;
 
-  // dopo CATEGORY_LOGO
-function getProjectBackground(slug: string): string {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const palettes = [
-    ["#1a1a2e", "#16213e", "#0f3460"],
-    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
-    ["#0a1628", "#0d2137", "#0a2818"],
-    ["#1e1a0a", "#2e2010", "#1e0a0a"],
-    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
-    ["#1a0a1a", "#2e102e", "#1a0a2e"],
-    ["#0a1e0a", "#102e10", "#0a2e1a"],
-    ["#1e0a0a", "#2e1010", "#2e1a0a"],
-  ];
-  const palette = palettes[Math.abs(hash) % palettes.length];
-  const angle = Math.abs(hash >> 4) % 360;
-  return `linear-gradient(${angle}deg, ${palette[0]}99, ${palette[1]}99, ${palette[2]}99)`;
-}
-
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
@@ -198,7 +198,7 @@ function getProjectBackground(slug: string): string {
       />
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-10 bg-black backdrop-blur border-b border-white/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-0">
 
         {/* BACK + LOGO + TITOLO */}
         <div className="flex items-center gap-3 mb-4">
