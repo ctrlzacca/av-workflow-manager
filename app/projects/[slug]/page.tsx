@@ -360,7 +360,7 @@ export default function ProjectPage() {
           ))}
         </div>
           <div
-            className="fixed inset-0 -z-10 opacity-60 pointer-events-none"
+            className="fixed inset-0 -z-10 opacity-80 pointer-events-none"
             style={{ background: getProjectBackground(slug) }}
           />
       </header>
