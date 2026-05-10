@@ -423,11 +423,11 @@ export default function ProjectPage() {
             {project.category === "Ableton" && (
               <>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/30 text-sm w-24 flex-shrink-0">BPM</span>
+                  <span className="text-white/60 text-sm w-24 flex-shrink-0">BPM</span>
                   <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/30 text-sm w-24 flex-shrink-0">Tonalità</span>
+                  <span className="text-white/60 text-sm w-24 flex-shrink-0">Tonalità</span>
                   <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
               </>
@@ -437,11 +437,11 @@ export default function ProjectPage() {
             {project.category === "TouchDesigner" && (
               <>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/30 text-sm w-24 flex-shrink-0">Risoluzione</span>
+                  <span className="text-white/60 text-sm w-24 flex-shrink-0">Risoluzione</span>
                   <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/30 text-sm w-24 flex-shrink-0">FPS</span>
+                  <span className="text-white/60 text-sm w-24 flex-shrink-0">FPS</span>
                   <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
                 </div>
               </>
@@ -450,7 +450,7 @@ export default function ProjectPage() {
             {/* CAMPI CUSTOM CATEGORY */}
             {!isBuiltin && currentCategory?.fields.map((fieldName) => (
               <div key={fieldName} className="flex items-center gap-4 py-4">
-                <span className="text-white/30 text-sm w-24 flex-shrink-0 truncate">{fieldName}</span>
+                <span className="text-white/60 text-sm w-24 flex-shrink-0 truncate">{fieldName}</span>
                 <input
                   type="text"
                   value={project.custom_fields?.[fieldName] ?? ""}
@@ -463,12 +463,12 @@ export default function ProjectPage() {
 
             {/* CAMPI COMUNI */}
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/30 text-sm w-24 flex-shrink-0">Plugin</span>
+              <span className="text-white/60 text-sm w-24 flex-shrink-0">Plugin</span>
               <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
             </div>
 
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/30 text-sm w-24 flex-shrink-0">Link</span>
+              <span className="text-white/60 text-sm w-24 flex-shrink-0">Link</span>
               {project.links?.trim() ? (
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <a
@@ -487,13 +487,13 @@ export default function ProjectPage() {
             </div>
 
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/30 text-sm w-24 flex-shrink-0">Extra</span>
+              <span className="text-white/60 text-sm w-24 flex-shrink-0">Extra</span>
               <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15" />
             </div>
 
             {/* DELETE */}
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/30 text-sm w-24 flex-shrink-0">Progetto</span>
+              <span className="text-white/60 text-sm w-24 flex-shrink-0">Progetto</span>
               <button
                 onClick={async () => {
                   const confirmed = window.confirm(`Eliminare "${project.title}"? Questa azione è irreversibile.`);
@@ -528,7 +528,7 @@ export default function ProjectPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Home</span>
+          <span className="text-xs text-white/60 font-medium">Home</span>
         </button>
 
         <div className="w-14 h-14" />
@@ -540,7 +540,7 @@ export default function ProjectPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Settings</span>
+          <span className="text-xs text-white/60 font-medium">Settings</span>
         </Link>
       </nav>
     </main>

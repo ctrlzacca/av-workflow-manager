@@ -2,7 +2,7 @@
   "name": "AV Workflow Manager",
   "short_name": "AV Workflow",
   "description": "Organizer per progetti Ableton e TouchDesigner",
-  "start_url": "/",
+  "start_url": "/splash",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
