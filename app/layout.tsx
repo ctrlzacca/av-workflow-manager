@@ -17,9 +17,10 @@ export const metadata: Metadata = {
   title: "AV Workflow Manager",
   description: "Organizer per progetti Ableton e TouchDesigner",
   manifest: "/manifest.json",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png", // Add this line
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "AV Workflow",
   },
 };
 
