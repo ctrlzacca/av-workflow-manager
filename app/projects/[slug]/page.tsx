@@ -9,7 +9,7 @@ import type { Project, Category } from "@/app/types/project";
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 const PRIORITY_COLOR: Record<Project["priority"], string> = {
-  Low: "text-white/30",
+  Low: "text-white/60",
   Medium: "text-yellow-400",
   High: "text-red-400",
 };
@@ -295,7 +295,7 @@ export default function ProjectPage() {
                     await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
                     updateField("folder", "");
                   }}
-                  className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors text-xs"
+                  className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-red-400 transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -352,7 +352,7 @@ export default function ProjectPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-                activeTab === tab ? "border-white text-white" : "border-transparent text-white/30"
+                activeTab === tab ? "border-white text-white" : "border-transparent text-white/60"
               }`}
             >
               {tab === "tasks" ? `Tasks (${project.tasks.length})` : tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -370,50 +370,99 @@ export default function ProjectPage() {
 
         {/* ── TAB TASKS ── */}
         {activeTab === "tasks" && (
-          <div>
-            <div className="flex gap-2 mb-5">
-              <input
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-                className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 text-sm"
-                placeholder="Aggiungi task..."
-              />
-              <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">+</button>
-            </div>
+  <div>
+    <div className="flex gap-2 mb-5">
+      <input
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
+        className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 text-sm"
+        placeholder="Aggiungi task..."
+      />
+      <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">+</button>
+    </div>
 
-            <div className="space-y-2">
-              {project.tasks.map((task, i) => (
-                <div key={i} className="flex items-center gap-4 border border-white/8 rounded-xl px-4 py-4">
-                  <button
-                    onClick={() => toggleTask(i)}
-                    className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                      task.done ? "bg-white border-white" : "border-white/20"
-                    }`}
-                  >
-                    {task.done && (
-                      <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </button>
-                  <span className={`flex-1 text-sm ${task.done ? "line-through text-white/20" : "text-white/80"}`}>
-                    {task.title}
-                  </span>
-                  <button
-                    onClick={() => deleteTask(i, task.title)}
-                    className="text-white/15 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              {project.tasks.length === 0 && (
-                <p className="text-white/15 text-sm text-center py-12">Nessuna task ancora.</p>
-              )}
-            </div>
+    <div className="space-y-2">
+      {project.tasks.map((task, i) => (
+        <div
+          key={i}
+          draggable
+          onDragStart={(e) => e.dataTransfer.setData("text/plain", String(i))}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const from = parseInt(e.dataTransfer.getData("text/plain"));
+            const to = i;
+            if (from === to) return;
+            const updated = [...project.tasks];
+            const [moved] = updated.splice(from, 1);
+            updated.splice(to, 0, moved);
+            updateField("tasks", updated);
+          }}
+          className="flex items-center gap-3 border border-white/8 rounded-xl px-4 py-4 cursor-grab active:cursor-grabbing active:border-white/30 active:bg-white/5 transition-all"
+        >
+          {/* TOGGLE */}
+          <button
+            onClick={() => toggleTask(i)}
+            className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+              task.done ? "bg-white border-white" : "border-white/20"
+            }`}
+          >
+            {task.done && (
+              <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+          </button>
+
+          {/* TITOLO */}
+          <span className={`flex-1 text-sm ${task.done ? "line-through text-white/30" : "text-white/80"}`}>
+            {task.title}
+          </span>
+
+          {/* BOTTONI MOBILE ↑↓ */}
+          <div className="flex flex-col gap-0.5 flex-shrink-0">
+            <button
+              onClick={() => {
+                if (i === 0) return;
+                const updated = [...project.tasks];
+                [updated[i - 1], updated[i]] = [updated[i], updated[i - 1]];
+                updateField("tasks", updated);
+              }}
+              className="text-white/20 hover:text-white/60 transition-colors text-xs leading-none px-1"
+              disabled={i === 0}
+            >
+              ▲
+            </button>
+            <button
+              onClick={() => {
+                if (i === project.tasks.length - 1) return;
+                const updated = [...project.tasks];
+                [updated[i], updated[i + 1]] = [updated[i + 1], updated[i]];
+                updateField("tasks", updated);
+              }}
+              className="text-white/20 hover:text-white/60 transition-colors text-xs leading-none px-1"
+              disabled={i === project.tasks.length - 1}
+            >
+              ▼
+            </button>
           </div>
-        )}
+
+          {/* DELETE */}
+          <button
+            onClick={() => deleteTask(i, task.title)}
+            className="text-white/20 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm flex-shrink-0"
+          >
+            ✕
+          </button>
+        </div>
+      ))}
+      {project.tasks.length === 0 && (
+        <p className="text-white/20 text-sm text-center py-12">Nessuna task ancora.</p>
+      )}
+    </div>
+  </div>
+)}
 
         {/* ── TAB INFO ── */}
         {activeTab === "info" && (
