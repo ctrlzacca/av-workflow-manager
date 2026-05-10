@@ -421,7 +421,7 @@ export default function ProjectPage() {
           </span>
 
           {/* BOTTONI MOBILE ↑↓ */}
-          <div className="flex flex-col gap-0.5 flex-shrink-0">
+          <div className="flex flex-col gap-1 flex-shrink-0">
             <button
               onClick={() => {
                 if (i === 0) return;
@@ -429,7 +429,7 @@ export default function ProjectPage() {
                 [updated[i - 1], updated[i]] = [updated[i], updated[i - 1]];
                 updateField("tasks", updated);
               }}
-              className="text-white/20 hover:text-white/60 transition-colors text-xs leading-none px-1"
+              className="text-white/30 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
               disabled={i === 0}
             >
               ▲
@@ -441,7 +441,7 @@ export default function ProjectPage() {
                 [updated[i], updated[i + 1]] = [updated[i + 1], updated[i]];
                 updateField("tasks", updated);
               }}
-              className="text-white/20 hover:text-white/60 transition-colors text-xs leading-none px-1"
+              className="text-white/30 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
               disabled={i === project.tasks.length - 1}
             >
               ▼
