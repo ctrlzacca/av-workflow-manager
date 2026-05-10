@@ -359,11 +359,11 @@ export default function ProjectPage() {
             </button>
           ))}
         </div>
-      <div
-        className="fixed inset-0 -z-10 opacity-60"
-        style={{ background: getProjectBackground(slug) }}
-      />
       </header>
+          <div
+            className="fixed inset-0 -z-10 opacity-60"
+            style={{ background: getProjectBackground(slug) }}
+          />
 
       {/* CONTENT */}
       <div className="flex-1 overflow-y-auto px-5 py-5 pb-36">
