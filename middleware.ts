@@ -26,7 +26,6 @@ export async function middleware(req: NextRequest) {
 const isAuthPage = req.nextUrl.pathname.startsWith("/login") ||
   req.nextUrl.pathname.startsWith("/register") ||
   req.nextUrl.pathname.startsWith("/splash");
-  req.nextUrl.pathname.startsWith("/register");
 
   if (!session && !isAuthPage) {
     return NextResponse.redirect(new URL("/login", req.url));
