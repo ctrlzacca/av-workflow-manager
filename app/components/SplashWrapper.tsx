@@ -12,14 +12,16 @@ export default function SplashWrapper() {
 
   if (!visible) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-[100] transition-opacity duration-500">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center">
-          <span className="text-black font-bold text-2xl">AV</span>
-        </div>
-        <p className="text-white font-semibold text-lg tracking-tight">AV Workflow Manager</p>
-      </div>
+return (
+  <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-[100]">
+    <div className="flex flex-col items-center gap-6">
+      <img
+        src="/icon-512.png"
+        alt="AV Workflow"
+        className="w-28 h-28 rounded-3xl"
+      />
+      <p className="text-white font-bold text-2xl tracking-tight">AV Workflow Manager</p>
     </div>
-  );
+  </div>
+);
 }
