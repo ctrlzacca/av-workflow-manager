@@ -107,6 +107,98 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
   );
 }
 
+// ─── MOOD ITEM ────────────────────────────────────────────────────────────────
+
+function MoodItem({
+  item,
+  onSave,
+  onDelete,
+}: {
+  item: { title: string; url: string; note: string };
+  onSave: (updated: { title: string; url: string; note: string }) => void;
+  onDelete: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(item.title);
+  const [url, setUrl] = useState(item.url);
+  const [note, setNote] = useState(item.note);
+
+  if (editing) {
+    return (
+      <div className="border border-white/20 rounded-xl p-4 space-y-3">
+        <input
+          autoFocus
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+          placeholder="Titolo"
+        />
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+          placeholder="Link"
+        />
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 resize-none h-20"
+          placeholder="Nota"
+        />
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setTitle(item.title); setUrl(item.url); setNote(item.note); setEditing(false); }}
+            className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+          >
+            Annulla
+          </button>
+          <button
+            onClick={() => { onSave({ title: title.trim(), url: url.trim(), note: note.trim() }); setEditing(false); }}
+            className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold"
+          >
+            Salva
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border border-white/8 rounded-xl p-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-white/80 truncate">{item.title}</p>
+          
+          <a  href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-blue-400 truncate block mt-0.5"
+          >
+            {item.url.replace(/^https?:\/\//, "")}
+          </a>
+          {item.note && (
+            <p className="text-xs text-white/40 mt-2 leading-relaxed">{item.note}</p>
+          )}
+        </div>
+        <div className="flex gap-1 flex-shrink-0">
+          <button
+            onClick={() => setEditing(true)}
+            className="text-white/30 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-xs"
+          >
+            ✎
+          </button>
+          <button
+            onClick={onDelete}
+            className="text-white/30 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-xs"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 
 export default function ProjectPage() {
@@ -660,43 +752,29 @@ export default function ProjectPage() {
           await updateField("moodboard", updated);
         }} />
 
-        {/* LIST */}
-        <div className="mt-4 space-y-3">
-          {(project.moodboard ?? []).length === 0 && (
-            <p className="text-white/40 text-sm text-center py-8">Nessun riferimento ancora.</p>
-          )}
-          {(project.moodboard ?? []).map((item, i) => (
-            <div key={i} className="border border-white/8 rounded-xl p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white/80 truncate">{item.title}</p>
-                  
-                    <a href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-blue-400 truncate block mt-0.5"
-                  >
-                    {item.url.replace(/^https?:\/\//, "")}
-                  </a>
-                  {item.note && (
-                    <p className="text-xs text-white/40 mt-2 leading-relaxed">{item.note}</p>
-                  )}
-                </div>
-                <button
-                  onClick={async () => {
-                    const confirmed = window.confirm(`Eliminare "${item.title}"?`);
-                    if (!confirmed) return;
-                    const updated = (project.moodboard ?? []).filter((_, j) => j !== i);
-                    await updateField("moodboard", updated);
-                  }}
-                  className="text-white/20 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* LIST */}
+      <div className="mt-4 space-y-3">
+        {(project.moodboard ?? []).length === 0 && (
+          <p className="text-white/40 text-sm text-center py-8">Nessun riferimento ancora.</p>
+        )}
+        {(project.moodboard ?? []).map((item, i) => (
+          <MoodItem
+            key={i}
+            item={item}
+            onSave={async (updated) => {
+              const list = [...(project.moodboard ?? [])];
+              list[i] = updated;
+              await updateField("moodboard", list);
+            }}
+            onDelete={async () => {
+              const confirmed = window.confirm(`Eliminare "${item.title}"?`);
+              if (!confirmed) return;
+              const updated = (project.moodboard ?? []).filter((_, j) => j !== i);
+              await updateField("moodboard", updated);
+            }}
+          />
+        ))}
+      </div>
       </div>
     )}
       </div>
