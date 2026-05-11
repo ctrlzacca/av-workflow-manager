@@ -40,6 +40,73 @@ function getProjectBackground(slug: string): string {
   return `linear-gradient(${angle}deg, ${palette[0]}99, ${palette[1]}99, ${palette[2]}99)`;
 }
 
+// ─── MOOD FORM ────────────────────────────────────────────────────────────────
+
+function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note: string }) => void }) {
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [note, setNote] = useState("");
+  const [open, setOpen] = useState(false);
+
+  function handleAdd() {
+    if (!title.trim() || !url.trim()) return;
+    onAdd({ title: title.trim(), url: url.trim(), note: note.trim() });
+    setTitle("");
+    setUrl("");
+    setNote("");
+    setOpen(false);
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="w-full py-4 border border-white/10 rounded-xl text-white/40 text-sm hover:border-white/20 hover:text-white/60 transition-colors"
+      >
+        + Aggiungi riferimento
+      </button>
+    );
+  }
+
+  return (
+    <div className="border border-white/10 rounded-xl p-4 space-y-3">
+      <input
+        autoFocus
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Titolo (es. Four Tet - Parallel Jalebi)"
+        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+      />
+      <input
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="Link (YouTube, Spotify, SoundCloud...)"
+        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+      />
+      <textarea
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Nota (es. il bassline al minuto 2:30 mi ispira molto)"
+        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 resize-none h-20"
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={() => { setOpen(false); setTitle(""); setUrl(""); setNote(""); }}
+          className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+        >
+          Annulla
+        </button>
+        <button
+          onClick={handleAdd}
+          className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold"
+        >
+          Aggiungi
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 
 export default function ProjectPage() {
@@ -53,7 +120,7 @@ export default function ProjectPage() {
   const [loading, setLoading] = useState(true);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [showNewFolder, setShowNewFolder] = useState(false);
-  const [activeTab, setActiveTab] = useState<"tasks" | "info" | "notes">("tasks");
+  const [activeTab, setActiveTab] = useState<"tasks" | "info" | "notes" | "mood">("tasks");
   const [showSaved, setShowSaved] = useState(false);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
@@ -347,7 +414,7 @@ export default function ProjectPage() {
 
         {/* TABS */}
         <div className="flex border-b border-white/8">
-          {(["tasks", "info", "notes"] as const).map((tab) => (
+          {(["tasks", "info", "notes", "mood"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -355,6 +422,7 @@ export default function ProjectPage() {
                 activeTab === tab ? "border-white text-white" : "border-transparent text-white/60"
               }`}
             >
+              
               {tab === "tasks" ? `Tasks (${project.tasks.length})` : tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
@@ -582,7 +650,57 @@ export default function ProjectPage() {
             className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40 resize-none leading-relaxed"
           />
         )}
+
+            {/* ── TAB MOOD ── */}
+    {activeTab === "mood" && (
+      <div>
+        {/* ADD REFERENCE */}
+        <MoodForm onAdd={async (item) => {
+          const updated = [...(project.moodboard ?? []), item];
+          await updateField("moodboard", updated);
+        }} />
+
+        {/* LIST */}
+        <div className="mt-4 space-y-3">
+          {(project.moodboard ?? []).length === 0 && (
+            <p className="text-white/40 text-sm text-center py-8">Nessun riferimento ancora.</p>
+          )}
+          {(project.moodboard ?? []).map((item, i) => (
+            <div key={i} className="border border-white/8 rounded-xl p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-white/80 truncate">{item.title}</p>
+                  
+                    <a href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-400 truncate block mt-0.5"
+                  >
+                    {item.url.replace(/^https?:\/\//, "")}
+                  </a>
+                  {item.note && (
+                    <p className="text-xs text-white/40 mt-2 leading-relaxed">{item.note}</p>
+                  )}
+                </div>
+                <button
+                  onClick={async () => {
+                    const confirmed = window.confirm(`Eliminare "${item.title}"?`);
+                    if (!confirmed) return;
+                    const updated = (project.moodboard ?? []).filter((_, j) => j !== i);
+                    await updateField("moodboard", updated);
+                  }}
+                  className="text-white/20 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+    )}
+      </div>
+
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">

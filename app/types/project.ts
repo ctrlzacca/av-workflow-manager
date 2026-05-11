@@ -33,4 +33,9 @@ export type Project = {
   extra_info: string;
   custom_fields?: Record<string, string>;
   user_id?: string;
+  moodboard?: Array<{
+  title: string;
+  url: string;
+  note: string;
+  }>;
 };
