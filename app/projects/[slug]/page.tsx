@@ -473,6 +473,16 @@ export default function ProjectPage() {
         {activeTab === "info" && (
           <div className="divide-y divide-white/5">
 
+            <div className="flex items-center gap-4 py-4">
+            <span className="text-white/70 text-sm w-24 flex-shrink-0">Titolo</span>
+            <input
+              type="text"
+              value={project.title}
+              onChange={(e) => updateField("title", e.target.value)}
+              className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none border-b border-white/10 focus:border-white/30 transition-colors pb-0.5"
+            />
+          </div>
+
             {/* CAMPI ABLETON */}
             {project.category === "Ableton" && (
               <>
