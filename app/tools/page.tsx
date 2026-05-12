@@ -574,8 +574,6 @@ function BottomNav({ activePage }: { activePage?: string }) {
         <span className="text-xs text-white/30 font-medium">Calendario</span>
       </Link>
 
-      <div className="w-10 h-10" />
-
       <div className="flex flex-col items-center gap-1.5">
         <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
