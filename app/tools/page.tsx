@@ -582,7 +582,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M45h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z" />
           </svg>
         </div>
-        <span className="text-xs text-white/60 font-medium">Tools</span>
+        <span className="text-xs text-white/30 font-medium">Tools</span>
       </div>
 
       <Link href="/settings" className="flex flex-col items-center gap-1.5">
