@@ -466,7 +466,7 @@ export default function Home() {
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
             <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 4v10m0 0a2 2 0 104 0m-4 0a2 2 0 114 0M18 4v4m0 0a2 2 0 104 0m-4 0a2 2 0 114 0M12 10v10m0 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
           <span className="text-xs text-white/30 font-medium">Tools</span>
