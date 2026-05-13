@@ -712,7 +712,7 @@ const TOOL_CATEGORIES = [
         icon: null,
         emoji: "🎨",
         tools: [
-          { id: "palette" as ToolId, name: "Palette da Mood", description: "Genera palette colori da un'atmosfera" },
+          { id: "palette" as ToolId, name: "Generatore Palette", description: "Genera palette colori" },
         ],
       },
     ],
