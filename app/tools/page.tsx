@@ -765,7 +765,6 @@ function deletePalette(id: number) {
         </div>
       ))}
     </div>
-
   </div>
     )}
     </div>
