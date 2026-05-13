@@ -442,6 +442,13 @@ function MoodPaletteTool() {
   >([]);
 
   const [copied, setCopied] = useState<string | null>(null);
+  const [savedPalettes, setSavedPalettes] = useState<
+  {
+    id: number;
+    name: string;
+    colors: { hex: string; locked: boolean }[];
+  }[]
+>([]);
 
   function randomHex(): string {
     return (
@@ -465,9 +472,15 @@ function MoodPaletteTool() {
     );
   }
 
-  useEffect(() => {
-    generatePalette();
-  }, []);
+useEffect(() => {
+  generatePalette();
+
+  const stored = localStorage.getItem("saved-palettes");
+
+  if (stored) {
+    setSavedPalettes(JSON.parse(stored));
+  }
+}, []);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -505,6 +518,74 @@ function MoodPaletteTool() {
     }, 1500);
   }
 
+  function saveCurrentPalette() {
+  if (palette.length === 0) return;
+
+  const name = prompt("Nome palette:");
+
+  if (!name) return;
+
+  const newPalette = {
+    id: Date.now(),
+    name,
+    colors: palette,
+  };
+
+  const updated = [...savedPalettes, newPalette];
+
+  setSavedPalettes(updated);
+
+  localStorage.setItem(
+    "saved-palettes",
+    JSON.stringify(updated)
+  );
+}
+
+function loadPalette(colors: { hex: string; locked: boolean }[]) {
+  setPalette(colors);
+}
+
+function renamePalette(id: number) {
+  const newName = prompt("Nuovo nome palette:");
+
+  if (!newName) return;
+
+  const updated = savedPalettes.map((p) =>
+    p.id === id
+      ? {
+          ...p,
+          name: newName,
+        }
+      : p
+  );
+
+  setSavedPalettes(updated);
+
+  localStorage.setItem(
+    "saved-palettes",
+    JSON.stringify(updated)
+  );
+}
+
+function deletePalette(id: number) {
+  const confirmed = window.confirm(
+    "Eliminare questa palette?"
+  );
+
+  if (!confirmed) return;
+
+  const updated = savedPalettes.filter(
+    (p) => p.id !== id
+  );
+
+  setSavedPalettes(updated);
+
+  localStorage.setItem(
+    "saved-palettes",
+    JSON.stringify(updated)
+  );
+}
+
   return (
     <div className="space-y-5">
 
@@ -536,98 +617,157 @@ function MoodPaletteTool() {
         🎲 Genera nuova palette
       </button>
 
+      <button
+      onClick={saveCurrentPalette}
+      className="w-full py-3 border border-white/10 rounded-xl text-sm text-white/60 hover:border-white/30"
+    >
+      💾 Salva palette
+    </button>
+
       {palette.length > 0 && (
-        <div className="space-y-3">
+  <div className="space-y-3">
 
-          <div className="flex h-20 rounded-xl overflow-hidden">
-            {palette.map((color, i) => (
-              <div
-                key={i}
-                className="relative flex-1 hover:flex-[2] transition-all duration-200 cursor-pointer group"
-                style={{ backgroundColor: color.hex }}
-                onClick={() => copyHex(color.hex)}
-              >
-
-                <input
-                  type="color"
-                  value={color.hex}
-                  onChange={(e) => {
-                    const updated = [...palette];
-
-                    updated[i] = {
-                      ...updated[i],
-                      hex: e.target.value,
-                    };
-
-                    setPalette(updated);
-                  }}
-                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                />
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    const updated = [...palette];
-
-                    updated[i] = {
-                      ...updated[i],
-                      locked: !updated[i].locked,
-                    };
-
-                    setPalette(updated);
-                  }}
-                  className="absolute top-2 right-2 text-sm bg-black/40 rounded-md px-2 py-1"
-                >
-                  {color.locked ? "🔒" : "🔓"}
-                </button>
-
-              </div>
-            ))}
-          </div>
-
-          <div className="space-y-2">
-            {palette.map((color, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 border border-white/8 rounded-xl px-4 py-3 cursor-pointer hover:border-white/20"
-                onClick={() => copyHex(color.hex)}
-              >
-                <div
-                  className="w-8 h-8 rounded-lg flex-shrink-0"
-                  style={{ backgroundColor: color.hex }}
-                />
-
-                <div className="flex-1">
-                  <p className="text-sm font-mono font-semibold">
-                    {color.hex}
-                  </p>
-
-                  <p className="text-xs text-white/40">
-                    {color.locked ? "Bloccato" : "Modificabile"}
-                  </p>
-                </div>
-
-                <span className="text-xs text-white/30">
-                  {copied === color.hex
-                    ? "✓ Copiato"
-                    : "Copia"}
-                </span>
-              </div>
-            ))}
-          </div>
+    <div className="flex h-20 rounded-xl overflow-hidden">
+      {palette.map((color, i) => (
+        <div
+          key={i}
+          className="relative flex-1 hover:flex-[2] transition-all duration-200 cursor-pointer group"
+          style={{ backgroundColor: color.hex }}
+          onClick={() => copyHex(color.hex)}
+        >
+          <input
+            type="color"
+            value={color.hex}
+            onChange={(e) => {
+              const updated = [...palette];
+              updated[i] = {
+                ...updated[i],
+                hex: e.target.value,
+              };
+              setPalette(updated);
+            }}
+            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+          />
 
           <button
-            onClick={copyAll}
-            className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30"
-          >
-            {copied === "all"
-              ? "✓ Tutti copiati"
-              : "Copia tutti gli hex"}
-          </button>
+            onClick={(e) => {
+              e.stopPropagation();
 
+              const updated = [...palette];
+              updated[i] = {
+                ...updated[i],
+                locked: !updated[i].locked,
+              };
+              setPalette(updated);
+            }}
+            className="absolute top-2 right-2 text-sm bg-black/40 rounded-md px-2 py-1"
+          >
+            {color.locked ? "🔒" : "🔓"}
+          </button>
         </div>
-      )}
+      ))}
+    </div>
+
+    <div className="space-y-2">
+      {palette.map((color, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-3 border border-white/8 rounded-xl px-4 py-3 cursor-pointer hover:border-white/20"
+          onClick={() => copyHex(color.hex)}
+        >
+          <div
+            className="w-8 h-8 rounded-lg flex-shrink-0"
+            style={{ backgroundColor: color.hex }}
+          />
+
+          <div className="flex-1">
+            <p className="text-sm font-mono font-semibold">
+              {color.hex}
+            </p>
+            <p className="text-xs text-white/40">
+              {color.locked ? "Bloccato" : "Modificabile"}
+            </p>
+          </div>
+
+          <span className="text-xs text-white/30">
+            {copied === color.hex ? "✓ Copiato" : "Copia"}
+          </span>
+        </div>
+      ))}
+    </div>
+
+    <button
+      onClick={copyAll}
+      className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30"
+    >
+      {copied === "all" ? "✓ Tutti copiati" : "Copia tutti gli hex"}
+    </button>
+
+  </div>
+)}
+
+{/* 👇 QUESTO È FUORI, NON DENTRO palette */}
+{savedPalettes.length > 0 && (
+  <div className="space-y-3 pt-4">
+
+    <div className="flex items-center justify-between">
+      <h3 className="text-sm font-semibold text-white/80">
+        Palette salvate
+      </h3>
+
+      <span className="text-xs text-white/30">
+        {savedPalettes.length}
+      </span>
+    </div>
+
+    <div className="space-y-2">
+      {savedPalettes.map((saved) => (
+        <div
+          key={saved.id}
+          className="border border-white/10 rounded-xl p-3 space-y-3"
+        >
+          <div className="flex items-center justify-between gap-2">
+
+            <button
+              onClick={() => loadPalette(saved.colors)}
+              className="text-sm font-medium text-left flex-1 hover:text-white"
+            >
+              {saved.name}
+            </button>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => renamePalette(saved.id)}
+                className="text-xs text-white/40 hover:text-white"
+              >
+                ✏️
+              </button>
+
+              <button
+                onClick={() => deletePalette(saved.id)}
+                className="text-xs text-white/40 hover:text-red-400"
+              >
+                🗑
+              </button>
+            </div>
+
+          </div>
+
+          <div className="flex h-10 rounded-lg overflow-hidden">
+            {saved.colors.map((color, i) => (
+              <div
+                key={i}
+                className="flex-1"
+                style={{ backgroundColor: color.hex }}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+    )}
     </div>
   );
 }
