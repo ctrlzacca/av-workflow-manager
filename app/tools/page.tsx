@@ -367,8 +367,8 @@ function BpmTool() {
                 <button
                   key={note}
                   onClick={() => setSelectedNote(note)}
-                  className={`w-10 h-10 rounded-xl text-sm font-medium transition-all items-center justify-center ${
-                    selectedNote === note ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30 items-center justify-center"
+                  className={`w-10 h-10 rounded-xl text-sm font-medium transition-all${
+                    selectedNote === note ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30"
                   }`}
                 >
                   {note}
