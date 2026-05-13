@@ -393,13 +393,12 @@ export default function SettingsPage() {
 
             {/* OPPURE PERSONALIZZA */}
                 <p className="text-xs text-white/30">Oppure personalizza</p>
-                <div className="flex gap-2">
-                  <input
-                    value={newCatIcon}
-                    onChange={(e) => setNewCatIcon(e.target.value)}
-                    className="w-12 bg-white/5 border border-white/10 text-white text-center text-lg rounded-xl focus:outline-none"
-                    placeholder="📁"
-                  />
+                <div className="flex gap-2 items-center">
+                  
+                  <div className="w-12 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl">
+                    {renderIcon(newCatIcon, newCatIcon.startsWith("/"))}
+                  </div>
+
                   <input
                     value={newCatName}
                     onChange={(e) => setNewCatName(e.target.value)}
