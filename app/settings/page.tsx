@@ -22,14 +22,14 @@ const SORT_OPTIONS = [
 const PRESET_SOFTWARES = [
   { name: "Ableton", icon: "/ableton.svg", isImage: true },
   { name: "TouchDesigner", icon: "/touchdesigner.svg", isImage: true },
-  { name: "Illustrator", icon: "/illustrator.svg", isImage: false },
-  { name: "InDesign", icon: "/indesign.svg", isImage: false },
-  { name: "Photoshop", icon: "/photoshop.svg", isImage: false },
-  { name: "Blender", icon: "/blender.svg", isImage: false },
-  { name: "Premiere", icon: "/premiere.svg", isImage: false },
-  { name: "DaVinci Resolve", icon: "/davinci.svg", isImage: false },
-  { name: "Max/MSP", icon: "/max-msp.svg", isImage: false },
-  { name: "Resolume", icon: "/resolume.svg", isImage: false },
+  { name: "Illustrator", icon: "/illustrator.svg", isImage: true },
+  { name: "InDesign", icon: "/indesign.svg", isImage: true },
+  { name: "Photoshop", icon: "/photoshop.svg", isImage: true },
+  { name: "Blender", icon: "/blender.svg", isImage: true },
+  { name: "Premiere", icon: "/premiere.svg", isImage: true },
+  { name: "DaVinci Resolve", icon: "/davinci.svg", isImage: true },
+  { name: "Max/MSP", icon: "/max-msp.svg", isImage: true },
+  { name: "Resolume", icon: "/resolume.svg", isImage: true },
 ];
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
