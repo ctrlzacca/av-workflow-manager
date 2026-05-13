@@ -368,7 +368,7 @@ export default function ProjectPage() {
           </button>
 
           <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
-            {getCategoryIcon()}
+            {getCategoryIcon(project.category)}
           </div>
 
           <h1 className="font-bold text-base flex-1 truncate">{project.title}</h1>
