@@ -109,6 +109,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -309,23 +310,30 @@ function getCategoryIcon(categoryName: string) {
         </div>
 
         {/* SEARCH */}
-        <div className="relative mt-3">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cerca progetto..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
-            >
-              ✕
-            </button>
+        <div className="flex justify-end mt-3">
+          {search !== null && (
+            <div className={`flex items-center gap-2 transition-all duration-200 ${
+              searchOpen ? "w-full" : "w-9"
+            }`}>
+              {searchOpen && (
+                <input
+                  autoFocus
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Cerca progetto..."
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+                  onBlur={() => { if (!search) setSearchOpen(false); }}
+                />
+              )}
+              <button
+                onClick={() => { setSearchOpen(!searchOpen); if (searchOpen) setSearch(""); }}
+                className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0"
+              >
+                <svg className="w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
           )}
         </div>
 
