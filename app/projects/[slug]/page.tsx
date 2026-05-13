@@ -434,9 +434,9 @@ function getCategoryIcon(categoryName: string) {
             <option value="Ableton" className="bg-black">Ableton</option>
             <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.name} className="bg-black">
-                {cat.icon ?? "📁"} {cat.name}
-              </option>
+            <option key={cat.id} value={cat.name} className="bg-black">
+              {cat.name}
+            </option>
             ))}
           </select>
 
