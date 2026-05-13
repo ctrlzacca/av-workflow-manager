@@ -385,10 +385,7 @@ export default function SettingsPage() {
                       newCatName === sw.name ? "border-white/50 bg-white/10 text-white" : "border-white/10 text-white/40"
                     }`}
                   >
-                      {sw.isImage
-                        ? renderIcon(sw.icon, sw.isImage)
-                        : <span>{sw.icon}</span>
-                      }
+                      {renderIcon(sw.icon, sw.isImage)}
                     {sw.name}
                   </button>
                 ))}
