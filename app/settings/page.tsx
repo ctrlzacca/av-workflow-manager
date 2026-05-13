@@ -52,6 +52,20 @@ export default function SettingsPage() {
   const [showAddCat, setShowAddCat] = useState(false);
   const [editingCat, setEditingCat] = useState<Category | null>(null);
 
+  function renderIcon(icon: string, isImage?: boolean) {
+  if (isImage && icon?.startsWith("/")) {
+    return (
+      <img
+        src={icon}
+        alt=""
+        className="w-3.5 h-3.5 object-contain invert opacity-70"
+      />
+    );
+  }
+
+  return <span>{icon || "📁"}</span>;
+}
+
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -105,6 +119,20 @@ export default function SettingsPage() {
     fields,
     user_id: user.id,
   });
+
+  function renderIcon(icon: string, isImage?: boolean) {
+  if (isImage && icon?.startsWith("/")) {
+    return (
+      <img
+        src={icon}
+        alt=""
+        className="w-3.5 h-3.5 object-contain invert opacity-70"
+      />
+    );
+  }
+
+  return <span>{icon || "📁"}</span>;
+}
 
   if (error) { console.error("Error adding category:", error.message); return; }
 
@@ -307,7 +335,7 @@ export default function SettingsPage() {
                   /* VIEW MODE */
                   <div className="flex items-center justify-between px-4 py-4">
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-xl flex-shrink-0">{cat.icon}</span>
+                      {renderIcon(cat.icon, cat.is_image)}
                       <div className="min-w-0">
                         <p className="text-sm font-medium">{cat.name}</p>
                         {cat.fields.length > 0 && (
@@ -349,15 +377,18 @@ export default function SettingsPage() {
                 {PRESET_SOFTWARES.map((sw) => (
                   <button
                     key={sw.name}
-                    onClick={() => { setNewCatName(sw.name); setNewCatIcon(sw.isImage ? sw.icon : sw.icon); }}
+                    onClick={() => {
+                      setNewCatName(sw.name);
+                      setNewCatIcon(sw.icon);
+                    }}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${
                       newCatName === sw.name ? "border-white/50 bg-white/10 text-white" : "border-white/10 text-white/40"
                     }`}
                   >
-                    {sw.isImage
-                      ? <img src={sw.icon} alt={sw.name} className="w-3.5 h-3.5 invert opacity-70" />
-                      : <span>{sw.icon}</span>
-                    }
+                      {sw.isImage
+                        ? renderIcon(sw.icon, sw.isImage)
+                        : <span>{sw.icon}</span>
+                      }
                     {sw.name}
                   </button>
                 ))}
