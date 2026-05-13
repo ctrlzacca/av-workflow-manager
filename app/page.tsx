@@ -36,6 +36,7 @@ function getProjectBackground(slug: string): string {
   const palette = palettes[Math.abs(hash) % palettes.length];
   const angle = Math.abs(hash >> 4) % 360;
   return `linear-gradient(${angle}deg, ${palette[0]}, ${palette[1]}, ${palette[2]})`;
+  const [search, setSearch] = useState("");
 }
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -76,6 +77,8 @@ const STATUS_LABEL: Record<Project["status"], string> = {
 const BUILTIN_LOGOS: Record<string, string> = {
   Ableton: "/ableton.svg",
   TouchDesigner: "/touchdesigner.svg",
+
+
 };
 
 // ─── SORT ────────────────────────────────────────────────────────────────────
@@ -105,6 +108,7 @@ export default function Home() {
   const [sort, setSort] = useState<SortOption>("created_desc");
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
+  const [search, setSearch] = useState("");
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -217,7 +221,13 @@ export default function Home() {
     ? filteredByCategory.filter((p) => p.folder?.trim() === activeFolder)
     : filteredByCategory;
 
-  const sorted = sortProjects(filteredByFolder, sort);
+  const filtered = search.trim()
+    ? filteredByFolder.filter((p) =>
+        p.title.toLowerCase().includes(search.toLowerCase())
+      )
+    : filteredByFolder;
+
+  const sorted = sortProjects(filtered, sort);
 
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
@@ -296,6 +306,27 @@ function getCategoryIcon(categoryName: string) {
               {f}
             </button>
           ))}
+        </div>
+
+        {/* SEARCH */}
+        <div className="relative mt-3">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cerca progetto..."
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         {/* FOLDER SUBFILTERS */}
