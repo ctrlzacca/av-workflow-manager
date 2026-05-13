@@ -9,6 +9,7 @@ export type Category = {
   id: string;
   name: string;
   icon: string;
+  is_image?: boolean;
   fields: string[];
   created_at?: string;
   user_id?: string;

@@ -19,6 +19,18 @@ const SORT_OPTIONS = [
   { value: "deadline_asc", label: "Deadline (urgenti)" },
   { value: "deadline_desc", label: "Deadline (ultimi)" },
 ];
+const PRESET_SOFTWARES = [
+  { name: "Ableton", icon: "/ableton.svg", isImage: true },
+  { name: "TouchDesigner", icon: "/touchdesigner.svg", isImage: true },
+  { name: "Illustrator", icon: "/illustrator.svg", isImage: false },
+  { name: "InDesign", icon: "/indesign.svg", isImage: false },
+  { name: "Photoshop", icon: "/photoshop.svg", isImage: false },
+  { name: "Blender", icon: "/blender.svg", isImage: false },
+  { name: "Premiere", icon: "/premiere.svg", isImage: false },
+  { name: "DaVinci Resolve", icon: "/davinci.svg", isImage: false },
+  { name: "Max/MSP", icon: "/max-msp.svg", isImage: false },
+  { name: "Resolume", icon: "/resolume.svg", isImage: false },
+];
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 
@@ -84,9 +96,12 @@ export default function SettingsPage() {
     .map((f) => f.trim())
     .filter((f) => f.length > 0);
 
+  const isImageIcon = newCatIcon.startsWith("/");
+
   const { error } = await supabase.from("categories").insert({
     name: newCatName.trim(),
     icon: newCatIcon.trim() || "📁",
+    is_image: isImageIcon, // nuovo campo — vedi passo 5
     fields,
     user_id: user.id,
   });
@@ -257,17 +272,6 @@ export default function SettingsPage() {
 
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
 
-            {/* ABLETON E TD — fissi, non eliminabili */}
-            {["Ableton", "TouchDesigner"].map((name) => (
-              <div key={name} className="flex items-center justify-between px-4 py-4">
-                <div className="flex items-center gap-3">
-                  <img src={`/${name.toLowerCase()}.svg`} alt={name} className="w-5 h-5 object-contain invert opacity-50" />
-                  <p className="text-sm font-medium">{name}</p>
-                </div>
-                <span className="text-xs text-white/20 border border-white/8 px-2 py-1 rounded-lg">Built-in</span>
-              </div>
-            ))}
-
             {/* CATEGORIE CUSTOM */}
             {categories.map((cat) => (
               <div key={cat.id}>
@@ -338,52 +342,71 @@ export default function SettingsPage() {
           {/* ADD CATEGORY */}
           {showAddCat ? (
             <div className="mt-3 bg-white/3 border border-white/8 rounded-2xl p-4 space-y-3">
-              <div className="flex gap-2">
-                <input
-                  value={newCatIcon}
-                  onChange={(e) => setNewCatIcon(e.target.value)}
-                  className="w-12 bg-white/5 border border-white/10 text-white text-center text-lg rounded-xl focus:outline-none"
-                  placeholder="📁"
-                />
-                <input
-                  autoFocus
-                  value={newCatName}
-                  onChange={(e) => setNewCatName(e.target.value)}
-                  className="flex-1 bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
-                  placeholder="Nome categoria"
-                />
+
+              {/* PRESET SOFTWARES */}
+              <p className="text-xs text-white/30 mb-2">Scegli software</p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {PRESET_SOFTWARES.map((sw) => (
+                  <button
+                    key={sw.name}
+                    onClick={() => { setNewCatName(sw.name); setNewCatIcon(sw.isImage ? sw.icon : sw.icon); }}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${
+                      newCatName === sw.name ? "border-white/50 bg-white/10 text-white" : "border-white/10 text-white/40"
+                    }`}
+                  >
+                    {sw.isImage
+                      ? <img src={sw.icon} alt={sw.name} className="w-3.5 h-3.5 invert opacity-70" />
+                      : <span>{sw.icon}</span>
+                    }
+                    {sw.name}
+                  </button>
+                ))}
               </div>
-              <input
-                value={newCatFields}
-                onChange={(e) => setNewCatFields(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 text-white/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
-                placeholder="Campi Info (es. Codec, Durata, Formato)"
-              />
-              <p className="text-xs text-white/25">Separa i campi con una virgola</p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => { setShowAddCat(false); setNewCatName(""); setNewCatIcon("📁"); setNewCatFields(""); }}
-                  className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
-                >
-                  Annulla
-                </button>
-                <button
-                  onClick={addCategory}
-                  className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold"
-                >
-                  Crea
-                </button>
+
+            {/* OPPURE PERSONALIZZA */}
+                <p className="text-xs text-white/30">Oppure personalizza</p>
+                <div className="flex gap-2">
+                  <input
+                    value={newCatIcon}
+                    onChange={(e) => setNewCatIcon(e.target.value)}
+                    className="w-12 bg-white/5 border border-white/10 text-white text-center text-lg rounded-xl focus:outline-none"
+                    placeholder="📁"
+                  />
+                  <input
+                    value={newCatName}
+                    onChange={(e) => setNewCatName(e.target.value)}
+                    className="flex-1 bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                    placeholder="Nome categoria"
+                  />
+                </div>
+                <input
+                  value={newCatFields}
+                  onChange={(e) => setNewCatFields(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 text-white/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                  placeholder="Campi Info (es. Codec, Durata, Formato)"
+                />
+                <p className="text-xs text-white/25">Separa i campi con una virgola</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { setShowAddCat(false); setNewCatName(""); setNewCatIcon("📁"); setNewCatFields(""); }}
+                    className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+                  >
+                    Annulla
+                  </button>
+                  <button onClick={addCategory} className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold">
+                    Crea
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowAddCat(true)}
-              className="w-full mt-3 py-4 border border-white/10 rounded-2xl text-white/40 text-sm hover:border-white/20 hover:text-white/60 transition-colors"
-            >
-              + Nuova categoria
-            </button>
-          )}
-        </section>
+                  ) : (
+                    <button
+                      onClick={() => setShowAddCat(true)}
+                      className="w-full mt-3 py-4 border border-white/10 rounded-2xl text-white/40 text-sm hover:border-white/20 hover:text-white/60 transition-colors"
+                    >
+                      + Nuova categoria
+                    </button>
+                  )}
+                </section>
 
         {/* ── GESTIONE DATI ── */}
         <section>

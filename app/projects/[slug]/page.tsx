@@ -314,13 +314,16 @@ export default function ProjectPage() {
 
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
-  function getCategoryIcon() {
-    if (!project) return null;
-    if (BUILTIN_LOGOS[project.category]) {
-      return <img src={BUILTIN_LOGOS[project.category]} alt={project.category} className="w-5 h-5 object-contain invert opacity-70" />;
+  // In page.tsx
+  function getCategoryIcon(categoryName: string) {
+    if (BUILTIN_LOGOS[categoryName]) {
+      return <img src={BUILTIN_LOGOS[categoryName]} alt={categoryName} className="w-4 h-4 object-contain invert opacity-70" />;
     }
-    const cat = categories.find((c) => c.name === project.category);
-    return <span className="text-lg">{cat?.icon ?? "📁"}</span>;
+    const cat = categories.find((c) => c.name === categoryName);
+    if (cat?.is_image && cat.icon.startsWith("/")) {
+      return <img src={cat.icon} alt={cat.name} className="w-4 h-4 object-contain invert opacity-70" />;
+    }
+    return <span className="text-sm">{cat?.icon ?? "📁"}</span>;
   }
 
   // ─── LOADING / NOT FOUND ──────────────────────────────────────────────────
