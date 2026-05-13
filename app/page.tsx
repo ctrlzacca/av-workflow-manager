@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
+import { renderIcon } from "@/app/lib/renderIcon";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -221,33 +222,17 @@ export default function Home() {
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
   // In page.tsx
-  function getCategoryIcon(categoryName: string) {
-    if (BUILTIN_LOGOS[categoryName]) {
-      return (
-        <img
-          src={BUILTIN_LOGOS[categoryName]}
-          alt={categoryName}
-          className="w-4 h-4 object-contain invert opacity-70"
-        />
-      );
-    }
-
-    const cat = categories.find((c) => c.name === categoryName);
-
-    if (!cat) return <span className="text-sm">📁</span>;
-
-    if (cat.is_image && cat.icon.startsWith("/")) {
-      return (
-        <img
-          src={cat.icon}
-          alt={cat.name}
-          className="w-4 h-4 object-contain invert opacity-70"
-        />
-      );
-    }
-
-    return <span className="text-sm">{cat.icon}</span>;
+function getCategoryIcon(categoryName: string) {
+  if (BUILTIN_LOGOS[categoryName]) {
+    return <img src={BUILTIN_LOGOS[categoryName]} alt={categoryName} className="w-4 h-4 object-contain invert opacity-70" />;
   }
+  const cat = categories.find((c) => c.name === categoryName);
+  if (cat?.is_image && cat.icon.startsWith("/")) {
+    return <img src={cat.icon} alt={cat.name} className="w-4 h-4 object-contain invert opacity-70" />;
+  }
+  
+    return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-4 h-4");
+}
 
   function getCategoryIconSmall(categoryName: string) {
     if (BUILTIN_LOGOS[categoryName]) {
@@ -255,13 +240,14 @@ export default function Home() {
         <img
           src={BUILTIN_LOGOS[categoryName]}
           alt={categoryName}
-          className="w-3.5 h-3.5 object-contain invert"
+          className="w-3.5 h-3.5 object-contain invert opacity-70"
         />
       );
     }
+
     const cat = categories.find((c) => c.name === categoryName);
-    return <span className="text-xs">{cat?.icon ?? "📁"}</span>;
-  }
+
+      return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-3.5 h-3.5");  }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 

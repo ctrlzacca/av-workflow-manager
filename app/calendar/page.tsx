@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project } from "@/app/types/project";
+import { renderIcon } from "@/app/lib/renderIcon";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 

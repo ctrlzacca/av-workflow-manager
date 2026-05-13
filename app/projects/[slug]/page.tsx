@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
+import { renderIcon } from "@/app/lib/renderIcon";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
