@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -434,94 +434,155 @@ function BpmTool() {
   );
 }
 
-// ── MOOD PALETTE ──────────────────────────────────────────────────────────────
-
 function MoodPaletteTool() {
-  const [mood, setMood] = useState("");
   const [count, setCount] = useState(5);
-  const [palette, setPalette] = useState<{ hex: string; name: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+
+  const [palette, setPalette] = useState<
+    { hex: string; locked: boolean }[]
+  >([]);
+
   const [copied, setCopied] = useState<string | null>(null);
 
-  async function generatePalette() {
-    if (!mood.trim()) return;
-    setLoading(true);
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{
-          role: "user",
-          content: `Genera una palette di esattamente ${count} colori per questo mood/atmosfera: "${mood}".
-Rispondi SOLO con un array JSON, senza altro testo, backtick o markdown. Formato esatto:
-[{"hex":"#RRGGBB","name":"nome colore in italiano"}]
-I colori devono essere armoniosi, evocativi del mood richiesto, e visivamente interessanti.`,
-        }],
-      }),
-    });
-
-    const data = await response.json();
-    try {
-      const text = data.content[0].text.trim();
-      setPalette(JSON.parse(text));
-    } catch {
-      setPalette([]);
-    }
-    setLoading(false);
+  function randomHex(): string {
+    return (
+      "#" +
+      Math.floor(Math.random() * 0xffffff)
+        .toString(16)
+        .padStart(6, "0")
+    );
   }
+
+  function generatePalette() {
+    setPalette((prev) =>
+      Array.from({ length: count }, (_, i) =>
+        prev[i]?.locked
+          ? prev[i]
+          : {
+              hex: randomHex(),
+              locked: false,
+            }
+      )
+    );
+  }
+
+  useEffect(() => {
+    generatePalette();
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.code === "Space" && e.target === document.body) {
+        e.preventDefault();
+        generatePalette();
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  }, [palette]);
 
   function copyHex(hex: string) {
     navigator.clipboard.writeText(hex);
     setCopied(hex);
-    setTimeout(() => setCopied(null), 1500);
+
+    setTimeout(() => {
+      setCopied(null);
+    }, 1500);
   }
 
   function copyAll() {
-    navigator.clipboard.writeText(palette.map((c) => c.hex).join(", "));
+    navigator.clipboard.writeText(
+      palette.map((c) => c.hex).join(", ")
+    );
+
     setCopied("all");
-    setTimeout(() => setCopied(null), 1500);
+
+    setTimeout(() => {
+      setCopied(null);
+    }, 1500);
   }
 
   return (
     <div className="space-y-5">
-      <div>
-        <p className="text-xs text-white/40 mb-1.5">Mood / Atmosfera</p>
-        <input
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") generatePalette(); }}
-          placeholder="es. dark ambient, alba invernale, tensione urbana..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
-        />
-      </div>
 
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Numero di colori: <span className="text-white/70">{count}</span></p>
-        <input type="range" min={3} max={10} value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full accent-white" />
-        <div className="flex justify-between text-xs text-white/20 mt-1"><span>3</span><span>10</span></div>
+        <p className="text-xs text-white/40 mb-1.5">
+          Numero di colori:
+          <span className="text-white/70 ml-1">{count}</span>
+        </p>
+
+        <input
+          type="range"
+          min={3}
+          max={10}
+          value={count}
+          onChange={(e) => setCount(Number(e.target.value))}
+          className="w-full accent-white"
+        />
+
+        <div className="flex justify-between text-xs text-white/20 mt-1">
+          <span>3</span>
+          <span>10</span>
+        </div>
       </div>
 
       <button
         onClick={generatePalette}
-        disabled={loading || !mood.trim()}
-        className="w-full py-4 bg-white text-black rounded-xl font-semibold text-sm disabled:opacity-40"
+        className="w-full py-4 bg-white text-black rounded-xl font-semibold text-sm"
       >
-        {loading ? "Generazione..." : "Genera palette"}
+        🎲 Genera nuova palette
       </button>
 
       {palette.length > 0 && (
         <div className="space-y-3">
-          <div className="flex h-16 rounded-xl overflow-hidden">
+
+          <div className="flex h-20 rounded-xl overflow-hidden">
             {palette.map((color, i) => (
               <div
                 key={i}
-                className="flex-1 cursor-pointer hover:flex-[2] transition-all duration-200"
+                className="relative flex-1 hover:flex-[2] transition-all duration-200 cursor-pointer group"
                 style={{ backgroundColor: color.hex }}
                 onClick={() => copyHex(color.hex)}
-              />
+              >
+
+                <input
+                  type="color"
+                  value={color.hex}
+                  onChange={(e) => {
+                    const updated = [...palette];
+
+                    updated[i] = {
+                      ...updated[i],
+                      hex: e.target.value,
+                    };
+
+                    setPalette(updated);
+                  }}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    const updated = [...palette];
+
+                    updated[i] = {
+                      ...updated[i],
+                      locked: !updated[i].locked,
+                    };
+
+                    setPalette(updated);
+                  }}
+                  className="absolute top-2 right-2 text-sm bg-black/40 rounded-md px-2 py-1"
+                >
+                  {color.locked ? "🔒" : "🔓"}
+                </button>
+
+              </div>
             ))}
           </div>
 
@@ -532,19 +593,39 @@ I colori devono essere armoniosi, evocativi del mood richiesto, e visivamente in
                 className="flex items-center gap-3 border border-white/8 rounded-xl px-4 py-3 cursor-pointer hover:border-white/20"
                 onClick={() => copyHex(color.hex)}
               >
-                <div className="w-8 h-8 rounded-lg flex-shrink-0" style={{ backgroundColor: color.hex }} />
+                <div
+                  className="w-8 h-8 rounded-lg flex-shrink-0"
+                  style={{ backgroundColor: color.hex }}
+                />
+
                 <div className="flex-1">
-                  <p className="text-sm font-mono font-semibold">{color.hex}</p>
-                  <p className="text-xs text-white/40">{color.name}</p>
+                  <p className="text-sm font-mono font-semibold">
+                    {color.hex}
+                  </p>
+
+                  <p className="text-xs text-white/40">
+                    {color.locked ? "Bloccato" : "Modificabile"}
+                  </p>
                 </div>
-                <span className="text-xs text-white/30">{copied === color.hex ? "✓ Copiato" : "Copia"}</span>
+
+                <span className="text-xs text-white/30">
+                  {copied === color.hex
+                    ? "✓ Copiato"
+                    : "Copia"}
+                </span>
               </div>
             ))}
           </div>
 
-          <button onClick={copyAll} className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30">
-            {copied === "all" ? "✓ Tutti copiati" : "Copia tutti gli hex"}
+          <button
+            onClick={copyAll}
+            className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30"
+          >
+            {copied === "all"
+              ? "✓ Tutti copiati"
+              : "Copia tutti gli hex"}
           </button>
+
         </div>
       )}
     </div>
