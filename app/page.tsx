@@ -309,6 +309,33 @@ function getCategoryIcon(categoryName: string) {
           ))}
         </div>
 
+        {/* FOLDER SUBFILTERS */}
+        {availableFolders.length > 0 && (
+          <div className="flex gap-2 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
+            <button
+              onClick={() => setActiveFolder(null)}
+              className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
+                activeFolder === null ? "border-white/25 text-white/50 bg-white/5" : "border-white/8 text-white/25"
+              }`}
+            >
+              Tutte
+            </button>
+            {availableFolders.map((folder) => {
+              const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
+              return (
+                <button
+                  key={folder}
+                  onClick={() => setActiveFolder(folder)}
+                  className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
+                    activeFolder === folder ? "border-white/25 text-white/50 bg-white/5" : "border-white/8 text-white/25"
+                  }`}
+                >
+                  {folder} <span className="opacity-50 ml-1">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
         {/* SEARCH */}
         <div className="flex justify-end mt-3">
           {search !== null && (
@@ -337,34 +364,6 @@ function getCategoryIcon(categoryName: string) {
             </div>
           )}
         </div>
-
-        {/* FOLDER SUBFILTERS */}
-        {availableFolders.length > 0 && (
-          <div className="flex gap-2 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
-            <button
-              onClick={() => setActiveFolder(null)}
-              className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                activeFolder === null ? "border-white/25 text-white/50 bg-white/5" : "border-white/8 text-white/25"
-              }`}
-            >
-              Tutte
-            </button>
-            {availableFolders.map((folder) => {
-              const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
-              return (
-                <button
-                  key={folder}
-                  onClick={() => setActiveFolder(folder)}
-                  className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                    activeFolder === folder ? "border-white/25 text-white/50 bg-white/5" : "border-white/8 text-white/25"
-                  }`}
-                >
-                  {folder} <span className="opacity-50 ml-1">({count})</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
       </header>
 
       {/* PROJECT LIST */}
