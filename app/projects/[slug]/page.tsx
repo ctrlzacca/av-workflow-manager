@@ -306,8 +306,11 @@ export default function ProjectPage() {
 
   // ── CURRENT CATEGORY ──────────────────────────────────────────────────────
 
+  const presetNames = PRESET_SOFTWARES.map((p) => p.name);
+
   const currentCategory = categories.find((c) => c.name === project?.category);
-  const isBuiltin = project ? ["Ableton", "TouchDesigner"].includes(project.category) : false;
+
+  const isBuiltin = project ? presetNames.includes(project.category) : false;
 
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
