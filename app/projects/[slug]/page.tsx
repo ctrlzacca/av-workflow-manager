@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
+import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -13,11 +14,6 @@ const PRIORITY_COLOR: Record<Project["priority"], string> = {
   Low: "text-white/60",
   Medium: "text-yellow-400",
   High: "text-red-400",
-};
-
-const BUILTIN_LOGOS: Record<string, string> = {
-  Ableton: "/ableton.svg",
-  TouchDesigner: "/touchdesigner.svg",
 };
 
   // dopo CATEGORY_LOGO
@@ -316,16 +312,18 @@ export default function ProjectPage() {
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
   // In page.tsx
-function getCategoryIcon(categoryName: string) {
-  if (BUILTIN_LOGOS[categoryName]) {
-    return (
-      <img
-        src={BUILTIN_LOGOS[categoryName]}
-        alt={categoryName}
-        className="w-4 h-4 object-contain invert opacity-70"
-      />
-    );
-  }
+    function getCategoryIcon(categoryName: string) {
+    const preset = PRESET_SOFTWARES.find((p) => p.name === categoryName);
+
+    if (preset?.icon) {
+      return (
+        <img
+          src={preset.icon}
+          alt={categoryName}
+          className="w-4 h-4 object-contain invert opacity-70"
+        />
+      );
+    }
 
   const cat = categories.find((c) => c.name === categoryName);
 
