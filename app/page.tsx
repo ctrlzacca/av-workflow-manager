@@ -453,6 +453,11 @@ function getCategoryIcon(categoryName: string) {
                       : "border-white/10 text-white/30"
                   }`}
                 >
+                  {categories.length === 0 && (
+                    <p className="text-white/30 text-xs text-center py-2">
+                      Nessuna categoria — aggiungine una in Settings
+                    </p>
+                  )}
                   {getCategoryIconSmall(cat)}
                   {cat}
                 </button>
