@@ -324,6 +324,7 @@ function getCategoryIcon(categoryName: string) {
                   className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
                   onBlur={() => { if (!search) setSearchOpen(false); }}
                 />
+                
               )}
               <button
                 onClick={() => { setSearchOpen(!searchOpen); if (searchOpen) setSearch(""); }}
