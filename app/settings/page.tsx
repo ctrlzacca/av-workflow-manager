@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
+import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -20,7 +21,7 @@ const SORT_OPTIONS = [
   { value: "deadline_asc", label: "Deadline (urgenti)" },
   { value: "deadline_desc", label: "Deadline (ultimi)" },
 ];
-const PRESET_SOFTWARES = [
+const PRESET_SOFTWARES_ICONS = [
   { name: "Ableton", icon: "/ableton.svg", isImage: true },
   { name: "TouchDesigner", icon: "/touchdesigner.svg", isImage: true },
   { name: "Illustrator", icon: "/illustrator.svg", isImage: true },
