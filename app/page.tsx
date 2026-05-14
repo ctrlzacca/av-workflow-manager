@@ -337,7 +337,7 @@ function getCategoryIcon(categoryName: string) {
           </div>
         )}
         {/* SEARCH */}
-        <div className="flex justify-end mt-3">
+        <div className="flex justify-end mt-4">
           {search !== null && (
             <div className={`flex items-center gap-2 transition-all duration-200 ${
               searchOpen ? "w-full" : "w-9"
