@@ -13,6 +13,7 @@ export type Category = {
   fields: string[];
   created_at?: string;
   user_id?: string;
+  default_tasks?: Array<{ title: string; done: boolean }>;
 };
 
 export type Project = {

@@ -21,18 +21,7 @@ const SORT_OPTIONS = [
   { value: "deadline_asc", label: "Deadline (urgenti)" },
   { value: "deadline_desc", label: "Deadline (ultimi)" },
 ];
-const PRESET_SOFTWARES_ICONS = [
-  { name: "Ableton", icon: "/ableton.svg", isImage: true },
-  { name: "TouchDesigner", icon: "/touchdesigner.svg", isImage: true },
-  { name: "Illustrator", icon: "/illustrator.svg", isImage: true },
-  { name: "InDesign", icon: "/indesign.svg", isImage: true },
-  { name: "Photoshop", icon: "/photoshop.svg", isImage: true },
-  { name: "Blender", icon: "/blender.svg", isImage: true },
-  { name: "Premiere", icon: "/premiere.svg", isImage: true },
-  { name: "DaVinci Resolve", icon: "/davinci.svg", isImage: true },
-  { name: "Max/MSP", icon: "/max-msp.svg", isImage: true },
-  { name: "Resolume", icon: "/resolume.svg", isImage: true },
-];
+
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
 

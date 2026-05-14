@@ -5,6 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
+import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -74,12 +75,7 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   Blocked: "Bloccato",
 };
 
-const BUILTIN_LOGOS: Record<string, string> = {
-  Ableton: "/ableton.svg",
-  TouchDesigner: "/touchdesigner.svg",
 
-
-};
 
 // ─── SORT ────────────────────────────────────────────────────────────────────
 
@@ -102,7 +98,7 @@ export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [newProject, setNewProject] = useState("");
-  const [newProjectCategory, setNewProjectCategory] = useState("Ableton");
+  const [newProjectCategory, setNewProjectCategory] = useState("");
   const [filter, setFilter] = useState("All");
   const [activeFolder, setActiveFolder] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>("created_desc");
@@ -141,8 +137,6 @@ export default function Home() {
 
   const allFilters = [
     "All",
-    "Ableton",
-    "TouchDesigner",
     ...categories.map((c) => c.name),
   ];
 
@@ -156,21 +150,15 @@ export default function Home() {
 
   const slug = `${slugify(newProject)}-${Date.now()}`;
 
-  const abletonDefaultTasks = [
-    { title: "Produzione/Struttura", done: false },
-    { title: "Rec Voci", done: false },
-    { title: "Mix", done: false },
-    { title: "Master", done: false },
-    { title: "Video/Reel Promozionale", done: false },
-    { title: "SIAE", done: false },
-  ];
+  const cat = categories.find((c) => c.name === newProjectCategory);
+  const defaultTasks = cat?.default_tasks ?? [];
 
   const newProj: Project = {
     title: newProject.trim(), slug,
     status: "Active", priority: "Low", deadline: "",
     category: newProjectCategory,
     notes: "", folder: "",
-    tasks: newProjectCategory === "Ableton" ? abletonDefaultTasks : [],
+    tasks: defaultTasks,
     bpm: "", key: "", resolution: "", fps: "",
     plugins: "", links: "", extra_info: "",
     custom_fields: {},
@@ -233,32 +221,29 @@ export default function Home() {
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
   // In page.tsx
-function getCategoryIcon(categoryName: string) {
-  if (BUILTIN_LOGOS[categoryName]) {
-    return <img src={BUILTIN_LOGOS[categoryName]} alt={categoryName} className="w-4 h-4 object-contain invert opacity-70" />;
-  }
-  const cat = categories.find((c) => c.name === categoryName);
-  if (cat?.is_image && cat.icon.startsWith("/")) {
-    return <img src={cat.icon} alt={cat.name} className="w-4 h-4 object-contain invert opacity-70" />;
-  }
-  
-    return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-4 h-4");
-}
+  function getCategoryIcon(categoryName: string) {
+    const preset = PRESET_SOFTWARES.find((p) => p.name === categoryName);
 
-  function getCategoryIconSmall(categoryName: string) {
-    if (BUILTIN_LOGOS[categoryName]) {
-      return (
-        <img
-          src={BUILTIN_LOGOS[categoryName]}
-          alt={categoryName}
-          className="w-3.5 h-3.5 object-contain invert opacity-70"
-        />
-      );
+    if (preset) {
+      return renderIcon(preset.icon, preset.isImage, "w-4 h-4");
     }
 
     const cat = categories.find((c) => c.name === categoryName);
 
-      return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-3.5 h-3.5");  }
+    return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-4 h-4");
+  }
+
+  function getCategoryIconSmall(categoryName: string) {
+    const preset = PRESET_SOFTWARES.find((p) => p.name === categoryName);
+
+    if (preset) {
+      return renderIcon(preset.icon, preset.isImage, "w-3.5 h-3.5");
+    }
+
+    const cat = categories.find((c) => c.name === categoryName);
+
+    return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-3.5 h-3.5");
+  }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
