@@ -428,7 +428,7 @@ export default function Home() {
 
             {/* CATEGORY SELECTOR */}
             <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
-              {["Ableton", "TouchDesigner", ...categories.map((c) => c.name)].map((cat) => (
+              {[...categories.map((c) => c.name)].map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setNewProjectCategory(cat)}
