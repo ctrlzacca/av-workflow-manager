@@ -770,6 +770,7 @@ function deletePalette(id: number) {
     )}
     </div>
   );
+}
   // ── RESOLUTION CALCULATOR ─────────────────────────────────────────────────────
 
 function ResolutionTool() {
@@ -965,7 +966,6 @@ function ResolutionTool() {
       </div>
     </div>
   );
-}
 }
 
 // ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
