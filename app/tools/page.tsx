@@ -1065,7 +1065,7 @@ export default function ToolsPage() {
       case "harmonic": return <HarmonicTool />;
       case "bpm": return <BpmTool />;
       case "palette": return <MoodPaletteTool />;
-      case "resolution": return <div>Res Tool</div>;
+      case "resolution": return <ResolutionTool/>;
       default: return null;
     }
   }
