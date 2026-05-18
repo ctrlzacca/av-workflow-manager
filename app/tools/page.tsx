@@ -770,6 +770,202 @@ function deletePalette(id: number) {
     )}
     </div>
   );
+  // ── RESOLUTION CALCULATOR ─────────────────────────────────────────────────────
+
+function ResolutionTool() {
+  const [width, setWidth] = useState(1920);
+  const [height, setHeight] = useState(1080);
+  const [outputType, setOutputType] = useState<"monitor" | "projector">("monitor");
+
+  function gcd(a: number, b: number): number {
+    return b === 0 ? a : gcd(b, a % b);
+  }
+
+  function getAspectRatio(w: number, h: number): string {
+    const d = gcd(w, h);
+    return `${w / d}:${h / d}`;
+  }
+
+  function getAspectName(w: number, h: number): string {
+    const ratio = w / h;
+    if (Math.abs(ratio - 16 / 9) < 0.01) return "16:9 — Widescreen standard";
+    if (Math.abs(ratio - 16 / 10) < 0.01) return "16:10 — Widescreen monitor";
+    if (Math.abs(ratio - 4 / 3) < 0.01) return "4:3 — Standard legacy";
+    if (Math.abs(ratio - 21 / 9) < 0.01) return "21:9 — Ultrawide";
+    if (Math.abs(ratio - 1) < 0.01) return "1:1 — Quadrato";
+    if (Math.abs(ratio - 32 / 9) < 0.01) return "32:9 — Super ultrawide";
+    if (ratio > 2.3) return "Ultra panoramico";
+    return "Formato custom";
+  }
+
+  function getTDWindowSize(w: number, h: number): string {
+    const common = [
+      [3840, 2160], [2560, 1440], [1920, 1080],
+      [1280, 720], [1024, 768], [800, 600],
+    ];
+    const match = common.find(([cw, ch]) => cw === w && ch === h);
+    return match ? "Risoluzione nativa — usa direttamente" : "Risoluzione custom — imposta manualmente in Window COMP";
+  }
+
+  function getSuggestedFPS(w: number, h: number, type: "monitor" | "projector"): string {
+    const pixels = w * h;
+    if (type === "projector") {
+      if (pixels <= 1920 * 1080) return "60 FPS — ottimale per proiettori standard";
+      if (pixels <= 3840 * 2160) return "30 FPS — consigliato per 4K su proiettore";
+      return "24 FPS — consigliato per risoluzioni molto alte";
+    }
+    if (pixels <= 1920 * 1080) return "60 FPS — standard per monitor Full HD";
+    if (pixels <= 2560 * 1440) return "60 FPS — ottimale per QHD";
+    if (pixels <= 3840 * 2160) return "30-60 FPS — dipende dalla GPU";
+    return "24-30 FPS — risoluzioni molto alte, verifica GPU";
+  }
+
+  function getCanvasSize(w: number, h: number): { w: number; h: number } {
+    return { w: Math.round(w / 2), h: Math.round(h / 2) };
+  }
+
+  function getRelatedResolutions(w: number, h: number) {
+    return [
+      { label: "Full (1x)", w, h },
+      { label: "Half (½x)", w: Math.round(w / 2), h: Math.round(h / 2) },
+      { label: "Quarter (¼x)", w: Math.round(w / 4), h: Math.round(h / 4) },
+      { label: "Double (2x)", w: w * 2, h: h * 2 },
+    ];
+  }
+
+  const aspectRatio = getAspectRatio(width, height);
+  const aspectName = getAspectName(width, height);
+  const tdWindow = getTDWindowSize(width, height);
+  const suggestedFPS = getSuggestedFPS(width, height, outputType);
+  const canvas = getCanvasSize(width, height);
+  const related = getRelatedResolutions(width, height);
+  const totalPixels = (width * height / 1_000_000).toFixed(2);
+
+  return (
+    <div className="space-y-5">
+
+      {/* OUTPUT TYPE */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Tipo di output</p>
+        <div className="flex gap-2">
+          {(["monitor", "projector"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setOutputType(t)}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all border ${
+                outputType === t ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              }`}
+            >
+              {t === "monitor" ? "🖥 Monitor" : "📽 Proiettore"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* RESOLUTION INPUT */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Risoluzione</p>
+        <div className="flex items-center gap-3">
+          <input
+            type="number"
+            value={width}
+            onChange={(e) => setWidth(Math.max(1, Number(e.target.value)))}
+            className="flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+          />
+          <span className="text-white/30 font-bold">×</span>
+          <input
+            type="number"
+            value={height}
+            onChange={(e) => setHeight(Math.max(1, Number(e.target.value)))}
+            className="flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+          />
+        </div>
+      </div>
+
+      {/* PRESET RISOLUZIONI */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Preset comuni</p>
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { label: "FHD", w: 1920, h: 1080 },
+            { label: "QHD", w: 2560, h: 1440 },
+            { label: "4K", w: 3840, h: 2160 },
+            { label: "HD", w: 1280, h: 720 },
+            { label: "XGA", w: 1024, h: 768 },
+            { label: "WXGA", w: 1280, h: 800 },
+            { label: "Square", w: 1080, h: 1080 },
+            { label: "Portrait", w: 1080, h: 1920 },
+          ].map((p) => (
+            <button
+              key={p.label}
+              onClick={() => { setWidth(p.w); setHeight(p.h); }}
+              className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+                width === p.w && height === p.h
+                  ? "bg-white text-black border-white"
+                  : "bg-white/5 border-white/10 text-white/50 hover:border-white/30"
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* RISULTATI */}
+      <div className="space-y-2">
+
+        <div className="border border-white/10 rounded-2xl p-4">
+          <p className="text-xs text-white/40 mb-1">Aspect Ratio</p>
+          <p className="text-2xl font-bold">{aspectRatio}</p>
+          <p className="text-xs text-white/40 mt-0.5">{aspectName}</p>
+        </div>
+
+        <div className="border border-white/10 rounded-2xl p-4">
+          <p className="text-xs text-white/40 mb-1">Pixel totali</p>
+          <p className="text-2xl font-bold">{totalPixels} <span className="text-sm text-white/40">MP</span></p>
+          <p className="text-xs text-white/40 mt-0.5">{(width * height).toLocaleString()} pixel</p>
+        </div>
+
+        <div className="border border-white/10 rounded-2xl p-4">
+          <p className="text-xs text-white/40 mb-2">Impostazioni TouchDesigner</p>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-white/50">Window COMP</span>
+              <span className="text-xs font-mono text-white/80">{width} × {height}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-white/50">Canvas consigliato</span>
+              <span className="text-xs font-mono text-white/80">{canvas.w} × {canvas.h}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-white/50">FPS target</span>
+              <span className="text-xs font-mono text-white/80">{suggestedFPS.split(" — ")[0]}</span>
+            </div>
+            <p className="text-xs text-white/30 pt-1 border-t border-white/5">{tdWindow}</p>
+            <p className="text-xs text-white/30">{suggestedFPS.split(" — ")[1]}</p>
+          </div>
+        </div>
+
+        <div className="border border-white/10 rounded-2xl p-4">
+          <p className="text-xs text-white/40 mb-2">Risoluzioni correlate</p>
+          <div className="space-y-1.5">
+            {related.map((r) => (
+              <div
+                key={r.label}
+                className="flex justify-between items-center cursor-pointer hover:bg-white/5 px-2 py-1 rounded-lg transition-colors"
+                onClick={() => { setWidth(r.w); setHeight(r.h); }}
+              >
+                <span className="text-xs text-white/50">{r.label}</span>
+                <span className="text-xs font-mono text-white/70">{r.w} × {r.h}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
 }
 
 // ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
@@ -821,7 +1017,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 
-type ToolId = "harmonic" | "bpm" | "palette" | null;
+type ToolId = "harmonic" | "bpm" | "palette" | "resolution" |null;
 
 const TOOL_CATEGORIES = [
   {
@@ -840,7 +1036,9 @@ const TOOL_CATEGORIES = [
         label: "TouchDesigner",
         icon: "/touchdesigner.svg",
         emoji: null,
-        tools: [],
+        tools: [
+            { id: "resolution" as ToolId, name: "Calcolatore Risoluzione", description: "Aspect ratio e impostazioni TD per qualsiasi output" },
+        ],
       },
     ],
   },
@@ -867,6 +1065,7 @@ export default function ToolsPage() {
       case "harmonic": return <HarmonicTool />;
       case "bpm": return <BpmTool />;
       case "palette": return <MoodPaletteTool />;
+      case "resolution": return <div>Res Tool</div>;
       default: return null;
     }
   }
