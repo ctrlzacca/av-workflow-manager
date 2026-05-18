@@ -13,6 +13,18 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetMode, setResetMode] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  async function handleReset() {
+    if (!email.trim()) return;
+    setLoading(true);
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://av-workflow-manager.vercel.app/reset-password",
+    });
+    setResetSent(true);
+    setLoading(false);
+  }
 
   // ── LOGIN ─────────────────────────────────────────────────────────────────
 
@@ -80,6 +92,28 @@ export default function LoginPage() {
         >
           {loading ? "Accesso..." : "Accedi"}
         </button>
+        
+              {!resetMode ? (
+        <button onClick={() => setResetMode(true)} className="text-white/30 text-xs hover:text-white/60 transition-colors">
+          Password dimenticata?
+        </button>
+      ) : (
+        <div className="mt-4 space-y-3">
+          {resetSent ? (
+            <p className="text-green-400 text-xs text-center">Email inviata! Controlla la casella.</p>
+          ) : (
+            <>
+              <p className="text-white/40 text-xs">Inserisci la tua email per ricevere il link di reset.</p>
+              <button onClick={handleReset} disabled={loading} className="w-full py-3 border border-white/10 rounded-xl text-white/60 text-sm">
+                Invia link di reset
+              </button>
+            </>
+          )}
+          <button onClick={() => { setResetMode(false); setResetSent(false); }} className="text-white/20 text-xs hover:text-white/40 w-full text-center">
+            Torna al login
+          </button>
+        </div>
+      )}
 
         {/* REGISTER LINK */}
         <p className="text-center text-white/30 text-xs mt-6">
