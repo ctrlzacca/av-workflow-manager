@@ -871,14 +871,14 @@ function ResolutionTool() {
             type="number"
             value={width}
             onChange={(e) => setWidth(Math.max(1, Number(e.target.value)))}
-            className="flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+            className=" w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
           />
           <span className="text-white/30 font-bold">×</span>
           <input
             type="number"
             value={height}
             onChange={(e) => setHeight(Math.max(1, Number(e.target.value)))}
-            className="flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+            className="w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
           />
         </div>
       </div>
