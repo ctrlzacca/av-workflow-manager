@@ -967,6 +967,232 @@ function ResolutionTool() {
     </div>
   );
 }
+// ── FPS BUDGET ────────────────────────────────────────────────────────────────
+
+type GpuTier = "integrated" | "mobile_low" | "mobile_mid" | "dedicated";
+
+const GPU_TIERS: { id: GpuTier; label: string; multiplier: number }[] = [
+  { id: "integrated", label: "Integrata (Intel/Apple M)", multiplier: 0.3 },
+  { id: "mobile_low", label: "Mobile entry (GTX 1650)", multiplier: 0.5 },
+  { id: "mobile_mid", label: "Mobile mid (RTX 3060)", multiplier: 0.8 },
+  { id: "dedicated", label: "Desktop dedicata (RTX 3080+)", multiplier: 1.0 },
+];
+
+// costo base in ms su GPU desktop dedicata a 1080p/60fps
+const TD_OPERATIONS: { label: string; category: string; baseCost: number; description: string }[] = [
+  { label: "Feedback TOP", category: "TOP", baseCost: 0.5, description: "Buffer circolare" },
+  { label: "Blur TOP", category: "TOP", baseCost: 1.2, description: "Gaussian blur standard" },
+  { label: "Composite TOP", category: "TOP", baseCost: 0.3, description: "Compositing layer" },
+  { label: "GLSL TOP (semplice)", category: "GLSL", baseCost: 0.8, description: "Shader semplice" },
+  { label: "GLSL TOP (complesso)", category: "GLSL", baseCost: 3.0, description: "Raymarching / noise pesante" },
+  { label: "Level TOP", category: "TOP", baseCost: 0.2, description: "Correzione colore" },
+  { label: "Ramp TOP", category: "TOP", baseCost: 0.1, description: "Generatore gradiente" },
+  { label: "Noise TOP", category: "TOP", baseCost: 1.5, description: "Noise procedurale" },
+  { label: "Video stream in", category: "I/O", baseCost: 2.0, description: "Input video live" },
+  { label: "Syphon/Spout in", category: "I/O", baseCost: 1.0, description: "Texture sharing" },
+  { label: "Render TOP (3D)", category: "3D", baseCost: 4.0, description: "Render scena 3D" },
+  { label: "PBR Material", category: "3D", baseCost: 2.5, description: "Materiale PBR" },
+  { label: "Particle GPU", category: "3D", baseCost: 3.5, description: "Sistema particelle GPU" },
+  { label: "Audio Analysis", category: "CHOP", baseCost: 0.3, description: "FFT / analisi audio" },
+];
+
+function FpsBudgetTool() {
+  const [width, setWidth] = useState(1920);
+  const [height, setHeight] = useState(1080);
+  const [targetFps, setTargetFps] = useState(60);
+  const [gpuTier, setGpuTier] = useState<GpuTier>("mobile_low");
+  const [selectedOps, setSelectedOps] = useState<Record<string, number>>({});
+
+  const gpu = GPU_TIERS.find((g) => g.id === gpuTier)!;
+
+  // risoluzione scale factor rispetto a 1080p
+  const resolutionFactor = (width * height) / (1920 * 1080);
+
+  // budget totale in ms per frame
+  const frameBudgetMs = parseFloat((1000 / targetFps).toFixed(2));
+
+  // overhead fisso TD (~30% del budget)
+  const overheadMs = parseFloat((frameBudgetMs * 0.3).toFixed(2));
+  const availableMs = parseFloat((frameBudgetMs - overheadMs).toFixed(2));
+
+  // costo effettivo di un'operazione
+  function getEffectiveCost(baseCost: number): number {
+    return parseFloat((baseCost * resolutionFactor / gpu.multiplier).toFixed(2));
+  }
+
+  // costo totale selezionato
+  const totalCost = Object.entries(selectedOps).reduce((acc, [label, count]) => {
+    const op = TD_OPERATIONS.find((o) => o.label === label);
+    if (!op || count === 0) return acc;
+    return acc + getEffectiveCost(op.baseCost) * count;
+  }, 0);
+
+  const usagePercent = Math.min(100, Math.round((totalCost / availableMs) * 100));
+
+  function getStatusColor(): string {
+    if (usagePercent < 60) return "text-green-400";
+    if (usagePercent < 85) return "text-yellow-400";
+    return "text-red-400";
+  }
+
+  function getStatusLabel(): string {
+    if (usagePercent < 60) return "✓ Budget ok";
+    if (usagePercent < 85) return "⚠ Vicino al limite";
+    return "✕ Budget superato";
+  }
+
+  function updateOp(label: string, count: number) {
+    setSelectedOps((prev) => ({ ...prev, [label]: Math.max(0, count) }));
+  }
+
+  const categories = [...new Set(TD_OPERATIONS.map((o) => o.category))];
+
+  return (
+    <div className="space-y-5">
+
+      {/* GPU */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">GPU</p>
+        <div className="space-y-1.5">
+          {GPU_TIERS.map((g) => (
+            <button
+              key={g.id}
+              onClick={() => setGpuTier(g.id)}
+              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all ${
+                gpuTier === g.id ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              }`}
+            >
+              <span>{g.label}</span>
+              <span className="text-xs opacity-60">×{g.multiplier}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* RISOLUZIONE + FPS */}
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <p className="text-xs text-white/40 mb-1.5">Risoluzione</p>
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              value={width}
+              onChange={(e) => setWidth(Number(e.target.value))}
+              className="w-full text-center text-sm font-bold bg-white/5 border border-white/10 rounded-xl py-2.5 focus:outline-none text-white"
+            />
+            <span className="text-white/30 text-xs">×</span>
+            <input
+              type="number"
+              value={height}
+              onChange={(e) => setHeight(Number(e.target.value))}
+              className="w-full text-center text-sm font-bold bg-white/5 border border-white/10 rounded-xl py-2.5 focus:outline-none text-white"
+            />
+          </div>
+        </div>
+        <div className="w-24">
+          <p className="text-xs text-white/40 mb-1.5">FPS target</p>
+          <select
+            value={targetFps}
+            onChange={(e) => setTargetFps(Number(e.target.value))}
+            className="w-full bg-white/5 border border-white/10 text-white text-sm px-2 py-2.5 rounded-xl focus:outline-none"
+          >
+            {[24, 30, 60].map((f) => (
+              <option key={f} value={f} className="bg-black">{f} fps</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* BUDGET SUMMARY */}
+      <div className="border border-white/10 rounded-2xl p-4 space-y-2">
+        <p className="text-xs text-white/40">Budget per frame</p>
+        <div className="flex justify-between text-sm">
+          <span className="text-white/50">Totale</span>
+          <span className="font-mono">{frameBudgetMs} ms</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-white/50">Overhead TD</span>
+          <span className="font-mono text-white/40">− {overheadMs} ms</span>
+        </div>
+        <div className="flex justify-between text-sm border-t border-white/10 pt-2">
+          <span className="text-white/80 font-medium">Disponibile</span>
+          <span className="font-mono font-bold">{availableMs} ms</span>
+        </div>
+      </div>
+
+      {/* OPERAZIONI */}
+      <div>
+        <p className="text-xs text-white/40 mb-2">Operazioni nel tuo setup</p>
+        {categories.map((cat) => (
+          <div key={cat} className="mb-3">
+            <p className="text-xs text-white/25 uppercase tracking-widest mb-1.5 pl-1">{cat}</p>
+            <div className="space-y-1">
+              {TD_OPERATIONS.filter((o) => o.category === cat).map((op) => {
+                const count = selectedOps[op.label] ?? 0;
+                const cost = getEffectiveCost(op.baseCost);
+                return (
+                  <div
+                    key={op.label}
+                    className="flex items-center gap-3 border border-white/8 rounded-xl px-3 py-2.5"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-white/70 truncate">{op.label}</p>
+                      <p className="text-xs text-white/25">{cost} ms/istanza</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => updateOp(op.label, count - 1)}
+                        className="w-6 h-6 rounded-lg bg-white/5 text-white/40 text-sm flex items-center justify-center"
+                      >−</button>
+                      <span className="text-sm font-mono w-4 text-center text-white/70">{count}</span>
+                      <button
+                        onClick={() => updateOp(op.label, count + 1)}
+                        className="w-6 h-6 rounded-lg bg-white/5 text-white/40 text-sm flex items-center justify-center"
+                      >+</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* RISULTATO */}
+      <div className={`border rounded-2xl p-4 space-y-3 ${
+        usagePercent < 60 ? "border-green-500/20 bg-green-500/5" :
+        usagePercent < 85 ? "border-yellow-400/20 bg-yellow-400/5" :
+        "border-red-400/20 bg-red-400/5"
+      }`}>
+        <div className="flex items-center justify-between">
+          <p className={`text-sm font-semibold ${getStatusColor()}`}>{getStatusLabel()}</p>
+          <p className={`text-2xl font-bold ${getStatusColor()}`}>{usagePercent}%</p>
+        </div>
+        <div className="w-full h-2 bg-white/8 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-300 ${
+              usagePercent < 60 ? "bg-green-400" : usagePercent < 85 ? "bg-yellow-400" : "bg-red-400"
+            }`}
+            style={{ width: `${usagePercent}%` }}
+          />
+        </div>
+        <div className="flex justify-between text-xs text-white/40">
+          <span>Usato: {totalCost.toFixed(2)} ms</span>
+          <span>Rimasto: {Math.max(0, availableMs - totalCost).toFixed(2)} ms</span>
+        </div>
+        {usagePercent >= 85 && (
+          <div className="pt-2 border-t border-white/10 space-y-1">
+            <p className="text-xs text-white/50 font-medium">Suggerimenti:</p>
+            <p className="text-xs text-white/30">· Riduci la risoluzione del canvas interno</p>
+            <p className="text-xs text-white/30">· Usa Cook Type "Always" solo sui TOP critici</p>
+            <p className="text-xs text-white/30">· Sostituisci Blur con un GLSL blur ottimizzato</p>
+            <p className="text-xs text-white/30">· Abbassa il target FPS a 30</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
 
@@ -1017,7 +1243,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 
-type ToolId = "harmonic" | "bpm" | "palette" | "resolution" |null;
+type ToolId = "harmonic" | "bpm" | "palette" | "resolution" | "fps" | null;
 
 const TOOL_CATEGORIES = [
   {
@@ -1038,6 +1264,7 @@ const TOOL_CATEGORIES = [
         emoji: null,
         tools: [
             { id: "resolution" as ToolId, name: "Calcolatore Risoluzione", description: "Aspect ratio e impostazioni TD per qualsiasi output" },
+            { id: "fps" as ToolId, name: "FPS Budget", description: "Stima il budget GPU per il tuo setup TD" },
         ],
       },
     ],
@@ -1066,6 +1293,7 @@ export default function ToolsPage() {
       case "bpm": return <BpmTool />;
       case "palette": return <MoodPaletteTool />;
       case "resolution": return <ResolutionTool/>;
+      case "fps": return <FpsBudgetTool />;
       default: return null;
     }
   }
