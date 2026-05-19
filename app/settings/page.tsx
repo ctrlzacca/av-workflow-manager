@@ -21,7 +21,6 @@ const SORT_OPTIONS = [
   { value: "deadline_asc", label: "Deadline (urgenti)" },
   { value: "deadline_desc", label: "Deadline (ultimi)" },
 ];
-const [theme, setTheme] = useState("dark");
 
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
@@ -34,6 +33,7 @@ export default function SettingsPage() {
   const [defaultFilter, setDefaultFilter] = useState("All");
   const [projectCount, setProjectCount] = useState(0);
   const [saved, setSaved] = useState(false);
+  const [theme, setTheme] = useState("dark");
 
   // ── CATEGORIE CUSTOM ──────────────────────────────────────────────────────
 
@@ -92,6 +92,8 @@ export default function SettingsPage() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
+
+
   function toggleTheme() {
   const html = document.documentElement;
 
