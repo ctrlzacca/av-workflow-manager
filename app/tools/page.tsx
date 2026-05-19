@@ -1412,6 +1412,259 @@ function GlslTool() {
     </div>
   );
 }
+// ── TYPOGRAPHY CALCULATOR ─────────────────────────────────────────────────────
+
+const SCALE_RATIOS = [
+  { label: "Minor Second (1.067)", value: 1.067 },
+  { label: "Major Second (1.125)", value: 1.125 },
+  { label: "Minor Third (1.200)", value: 1.200 },
+  { label: "Major Third (1.250)", value: 1.250 },
+  { label: "Perfect Fourth (1.333)", value: 1.333 },
+  { label: "Augmented Fourth (1.414)", value: 1.414 },
+  { label: "Perfect Fifth (1.500)", value: 1.500 },
+  { label: "Golden Ratio (1.618)", value: 1.618 },
+];
+
+function TypographyTool() {
+  const [unit, setUnit] = useState<"pt" | "px">("pt");
+  const [baseSize, setBaseSize] = useState(10);
+  const [ratio, setRatio] = useState(1.333);
+  const [lineHeightRatio, setLineHeightRatio] = useState(1.5);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const DPI = 72; // standard tipografico
+
+  function ptToPx(pt: number): number {
+    return parseFloat((pt * (96 / 72)).toFixed(2));
+  }
+
+  function pxToPt(px: number): number {
+    return parseFloat((px * (72 / 96)).toFixed(2));
+  }
+
+  function convert(value: number): { primary: number; secondary: number } {
+    if (unit === "pt") return { primary: value, secondary: ptToPx(value) };
+    return { primary: value, secondary: pxToPt(value) };
+  }
+
+  function formatVal(v: number): string {
+    return v % 1 === 0 ? v.toString() : v.toFixed(1);
+  }
+
+  // scala tipografica dal basso verso l'alto
+  const base = unit === "pt" ? baseSize : baseSize;
+  const caption = parseFloat((base / ratio).toFixed(2));
+  const small = parseFloat((base * Math.pow(ratio, 0.5)).toFixed(2));
+  const sub = parseFloat((base * ratio).toFixed(2));
+  const h3 = parseFloat((base * Math.pow(ratio, 2)).toFixed(2));
+  const h2 = parseFloat((base * Math.pow(ratio, 3)).toFixed(2));
+  const h1 = parseFloat((base * Math.pow(ratio, 4)).toFixed(2));
+
+  // interlinea
+  function lineHeight(size: number): number {
+    return parseFloat((size * lineHeightRatio).toFixed(2));
+  }
+
+  // spaziature basate sul baseline grid
+  const baseline = lineHeight(base);
+  const spacingXS = parseFloat((baseline * 0.25).toFixed(2));
+  const spacingSM = parseFloat((baseline * 0.5).toFixed(2));
+  const spacingMD = parseFloat((baseline * 1).toFixed(2));
+  const spacingLG = parseFloat((baseline * 2).toFixed(2));
+  const spacingXL = parseFloat((baseline * 4).toFixed(2));
+
+  const hierarchy = [
+    { label: "H1 — Titolo principale", size: h1, weight: "700" },
+    { label: "H2 — Titolo sezione", size: h2, weight: "700" },
+    { label: "H3 — Sottotitolo", size: h3, weight: "600" },
+    { label: "Sub — Sottotitolo piccolo", size: sub, weight: "500" },
+    { label: "Body — Corpo testo", size: base, weight: "400" },
+    { label: "Small — Testo secondario", size: small, weight: "400" },
+    { label: "Caption — Didascalia", size: caption, weight: "400" },
+  ];
+
+  const spacings = [
+    { label: "XS", value: spacingXS, use: "Spaziatura interna minima" },
+    { label: "SM", value: spacingSM, use: "Padding elementi, gap tight" },
+    { label: "MD", value: spacingMD, use: "Baseline grid, margine standard" },
+    { label: "LG", value: spacingLG, use: "Spaziatura tra sezioni" },
+    { label: "XL", value: spacingXL, use: "Margini pagina, sezioni grandi" },
+  ];
+
+  function copyValue(val: string) {
+    navigator.clipboard.writeText(val);
+    setCopied(val);
+    setTimeout(() => setCopied(null), 1500);
+  }
+
+  function copyAll() {
+    const lines = [
+      `// Scala tipografica — base ${baseSize}${unit}, ratio ${ratio}`,
+      ...hierarchy.map((h) => `${h.label}: ${formatVal(h.size)}${unit} / leading ${formatVal(lineHeight(h.size))}${unit}`),
+      "",
+      "// Spaziature",
+      ...spacings.map((s) => `${s.label}: ${formatVal(s.value)}${unit}`),
+    ].join("\n");
+    navigator.clipboard.writeText(lines);
+    setCopied("all");
+    setTimeout(() => setCopied(null), 1500);
+  }
+
+  return (
+    <div className="space-y-5">
+
+      {/* UNIT SELECTOR */}
+      <div className="flex gap-2">
+        {(["pt", "px"] as const).map((u) => (
+          <button
+            key={u}
+            onClick={() => {
+              if (u === "px" && unit === "pt") setBaseSize(parseFloat(ptToPx(baseSize).toFixed(0)));
+              if (u === "pt" && unit === "px") setBaseSize(parseFloat(pxToPt(baseSize).toFixed(0)));
+              setUnit(u);
+            }}
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
+              unit === u ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+            }`}
+          >
+            {u === "pt" ? "pt — Stampa" : "px — Schermo"}
+          </button>
+        ))}
+      </div>
+
+      {/* BASE SIZE */}
+      <div>
+        <div className="flex justify-between mb-1.5">
+          <p className="text-xs text-white/40">Corpo testo base</p>
+          <span className="text-xs font-mono text-white/70">{baseSize} {unit}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setBaseSize(b => Math.max(6, b - 1))} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/50 flex items-center justify-center">−</button>
+          <input
+            type="range"
+            min={unit === "pt" ? 6 : 8}
+            max={unit === "pt" ? 14 : 20}
+            step={0.5}
+            value={baseSize}
+            onChange={(e) => setBaseSize(Number(e.target.value))}
+            className="flex-1 accent-white"
+          />
+          <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/50 flex items-center justify-center">+</button>
+        </div>
+        <p className="text-xs text-white/25 mt-1 text-right">
+          = {unit === "pt" ? ptToPx(baseSize) : pxToPt(baseSize)} {unit === "pt" ? "px" : "pt"}
+        </p>
+      </div>
+
+      {/* SCALE RATIO */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Scala modulare</p>
+        <div className="flex flex-wrap gap-1.5">
+          {SCALE_RATIOS.map((r) => (
+            <button
+              key={r.value}
+              onClick={() => setRatio(r.value)}
+              className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+                ratio === r.value ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              }`}
+            >
+              {r.label.split(" (")[0]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* LINE HEIGHT */}
+      <div>
+        <div className="flex justify-between mb-1.5">
+          <p className="text-xs text-white/40">Rapporto interlinea</p>
+          <span className="text-xs font-mono text-white/70">{lineHeightRatio}</span>
+        </div>
+        <input
+          type="range"
+          min={1.2}
+          max={2.0}
+          step={0.05}
+          value={lineHeightRatio}
+          onChange={(e) => setLineHeightRatio(Number(e.target.value))}
+          className="w-full accent-white"
+        />
+        <div className="flex justify-between text-xs text-white/20 mt-1">
+          <span>1.2 — compatto</span>
+          <span>2.0 — ariosa</span>
+        </div>
+      </div>
+
+      {/* GERARCHIA */}
+      <div>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-2">Gerarchia tipografica</p>
+        <div className="space-y-1.5">
+          {hierarchy.map((h) => {
+            const lh = lineHeight(h.size);
+            const secSize = unit === "pt" ? ptToPx(h.size) : pxToPt(h.size);
+            const secLh = unit === "pt" ? ptToPx(lh) : pxToPt(lh);
+            const valStr = `${formatVal(h.size)}${unit}`;
+            return (
+              <div
+                key={h.label}
+                onClick={() => copyValue(valStr)}
+                className="flex items-center justify-between border border-white/8 rounded-xl px-4 py-3 cursor-pointer hover:border-white/20 transition-colors"
+              >
+                <div className="min-w-0">
+                  <p className="text-xs text-white/40 truncate">{h.label}</p>
+                  <p className="text-xs text-white/25 mt-0.5">
+                    leading {formatVal(lh)}{unit}
+                    <span className="ml-2 opacity-60">({formatVal(secLh)}{unit === "pt" ? "px" : "pt"})</span>
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0 ml-3">
+                  <p className="text-sm font-mono font-bold">{formatVal(h.size)}<span className="text-xs text-white/40 ml-0.5">{unit}</span></p>
+                  <p className="text-xs text-white/30">{formatVal(secSize)}{unit === "pt" ? "px" : "pt"}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* SPAZIATURE */}
+      <div>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-2">Spaziature</p>
+        <div className="space-y-1.5">
+          {spacings.map((s) => {
+            const sec = unit === "pt" ? ptToPx(s.value) : pxToPt(s.value);
+            const valStr = `${formatVal(s.value)}${unit}`;
+            return (
+              <div
+                key={s.label}
+                onClick={() => copyValue(valStr)}
+                className="flex items-center justify-between border border-white/8 rounded-xl px-4 py-3 cursor-pointer hover:border-white/20 transition-colors"
+              >
+                <div>
+                  <p className="text-sm font-mono font-semibold">{s.label}</p>
+                  <p className="text-xs text-white/30 mt-0.5">{s.use}</p>
+                </div>
+                <div className="text-right flex-shrink-0 ml-3">
+                  <p className="text-sm font-mono font-bold">{formatVal(s.value)}<span className="text-xs text-white/40 ml-0.5">{unit}</span></p>
+                  <p className="text-xs text-white/30">{formatVal(sec)}{unit === "pt" ? "px" : "pt"}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* COPY ALL */}
+      <button
+        onClick={copyAll}
+        className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30 transition-colors"
+      >
+        {copied === "all" ? "✓ Tutto copiato" : "Copia tutti i valori"}
+      </button>
+
+    </div>
+  );
+}
 
 // ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
 
@@ -1462,7 +1715,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 
-type ToolId = "harmonic" | "bpm" | "palette" | "resolution" | "fps" | "glsl" | null;
+type ToolId = "harmonic" | "bpm" | "palette" | "resolution" | "fps" | "glsl" | "typography" | null;
 
 const TOOL_CATEGORIES = [
   {
@@ -1498,6 +1751,7 @@ const TOOL_CATEGORIES = [
         emoji: "🎨",
         tools: [
           { id: "palette" as ToolId, name: "Generatore Palette", description: "Genera palette colori" },
+          { id: "typography" as ToolId, name: "Calcolatore Tipografico", description: "Gerarchia, interlinea e spaziature ottimali" },
         ],
       },
     ],
@@ -1515,6 +1769,7 @@ export default function ToolsPage() {
       case "resolution": return <ResolutionTool/>;
       case "fps": return <FpsBudgetTool />;
       case "glsl": return <GlslTool />;
+      case "typography": return <TypographyTool />;
       default: return null;
     }
   }
