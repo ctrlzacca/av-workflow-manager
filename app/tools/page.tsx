@@ -1215,156 +1215,200 @@ type GlslSnippet = {
   generate: (params: Record<string, number>) => string;
 };
 
-const SNIPPETS: GlslSnippet[] = [
-  //{ "WORK IN PROGRESS" },//
-];
+// ── GLSL ARCHIVE ──────────────────────────────────────────────────────────────
+
+type GlslEntry = {
+  id: number;
+  title: string;
+  code: string;
+  notes: string;
+  createdAt: string;
+};
 
 function GlslTool() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [params, setParams] = useState<Record<string, Record<string, number>>>({});
+  const [entries, setEntries] = useState<GlslEntry[]>(() => {
+    const saved = localStorage.getItem("glsl-archive");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isNew, setIsNew] = useState(false);
+  const [draft, setDraft] = useState<Partial<GlslEntry>>({});
   const [copied, setCopied] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState<"Tutti" | "Base" | "Avanzati">("Tutti");
 
-  function getParams(snippet: GlslSnippet): Record<string, number> {
-    if (params[snippet.id]) return params[snippet.id];
-    return Object.fromEntries(snippet.params.map((p) => [p.id, p.value]));
+  function save(updated: GlslEntry[]) {
+    setEntries(updated);
+    localStorage.setItem("glsl-archive", JSON.stringify(updated));
   }
 
-  function updateParam(snippetId: string, paramId: string, value: number) {
-    setParams((prev) => ({
-      ...prev,
-      [snippetId]: { ...getParams(SNIPPETS.find((s) => s.id === snippetId)!), [paramId]: value },
-    }));
+  function openNew() {
+    setDraft({ title: "", code: "", notes: "" });
+    setIsNew(true);
+    setSelectedId(null);
   }
 
-  function copyCode(snippet: GlslSnippet) {
-    const code = snippet.generate(getParams(snippet));
-    navigator.clipboard.writeText(code);
+  function openEntry(entry: GlslEntry) {
+    setDraft({ ...entry });
+    setSelectedId(entry.id);
+    setIsNew(false);
+  }
+
+  function saveEntry() {
+    if (!draft.title?.trim()) return;
+    if (isNew) {
+      const newEntry: GlslEntry = {
+        id: Date.now(),
+        title: draft.title!.trim(),
+        code: draft.code ?? "",
+        notes: draft.notes ?? "",
+        createdAt: new Date().toLocaleDateString("it-IT"),
+      };
+      save([newEntry, ...entries]);
+    } else {
+      save(entries.map((e) => e.id === selectedId ? { ...e, ...draft, title: draft.title!.trim() } : e));
+    }
+    closeDetail();
+  }
+
+  function deleteEntry(id: number) {
+    const confirmed = window.confirm("Eliminare questo snippet?");
+    if (!confirmed) return;
+    save(entries.filter((e) => e.id !== id));
+    closeDetail();
+  }
+
+  function closeDetail() {
+    setSelectedId(null);
+    setIsNew(false);
+    setDraft({});
+  }
+
+  function copyCode() {
+    navigator.clipboard.writeText(draft.code ?? "");
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
 
-  const selected = SNIPPETS.find((s) => s.id === selectedId);
-  const filtered = SNIPPETS.filter((s) => categoryFilter === "Tutti" || s.category === categoryFilter);
+  // ── DETAIL VIEW ────────────────────────────────────────────────────────────
 
-  if (selected) {
-    const p = getParams(selected);
-    const code = selected.generate(p);
-
+  if (isNew || selectedId !== null) {
     return (
-      <div className="space-y-5">
-        <button
-          onClick={() => setSelectedId(null)}
-          className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Tutti gli snippet
-        </button>
+      <div className="space-y-4">
 
+        {/* HEADER */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={closeDetail}
+            className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Archivio
+          </button>
+          {selectedId !== null && (
+            <button
+              onClick={() => deleteEntry(selectedId)}
+              className="text-xs text-white/20 hover:text-red-400 transition-colors"
+            >
+              Elimina
+            </button>
+          )}
+        </div>
+
+        {/* TITOLO */}
+        <input
+          value={draft.title ?? ""}
+          onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+          placeholder="Nome snippet..."
+          className="w-full bg-transparent border-b border-white/10 text-white font-bold text-lg focus:outline-none focus:border-white/30 pb-1 transition-colors"
+        />
+
+        {/* CODICE */}
         <div>
-          <h2 className="text-base font-bold">{selected.label}</h2>
-          <p className="text-xs text-white/40 mt-0.5">{selected.description}</p>
-        </div>
-
-        {/* TD NOTE */}
-        <div className="bg-white/3 border border-white/8 rounded-xl p-3">
-          <p className="text-xs text-white/30 font-medium mb-1">Come usarlo in TD</p>
-          <p className="text-xs text-white/50 leading-relaxed">{selected.tdNote}</p>
-        </div>
-
-        {/* PARAMS */}
-        {selected.params.length > 0 && (
-          <div className="space-y-4">
-            <p className="text-xs text-white/40 uppercase tracking-widest">Parametri</p>
-            {selected.params.map((param) => (
-              <div key={param.id}>
-                <div className="flex justify-between mb-1">
-                  <span className="text-xs text-white/60">{param.label}</span>
-                  <span className="text-xs font-mono text-white/70">
-                    {param.type === "int" ? Math.round(p[param.id]) : p[param.id].toFixed(
-                      param.step && param.step < 0.01 ? 4 : param.step && param.step < 0.1 ? 3 : 2
-                    )}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={param.min}
-                  max={param.max}
-                  step={param.step}
-                  value={p[param.id]}
-                  onChange={(e) => updateParam(selected.id, param.id, parseFloat(e.target.value))}
-                  className="w-full accent-white"
-                />
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-xs text-white/40 uppercase tracking-widest">Codice GLSL</p>
+            <button
+              onClick={copyCode}
+              className="text-xs text-white/30 hover:text-white transition-colors"
+            >
+              {copied ? "✓ Copiato" : "Copia"}
+            </button>
           </div>
-        )}
-
-        {/* CODE PREVIEW */}
-        <div className="bg-white/3 border border-white/8 rounded-xl p-4">
-          <p className="text-xs text-white/30 mb-2 uppercase tracking-widest">Codice generato</p>
-          <pre className="text-xs text-white/60 font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto">
-            {code}
-          </pre>
+          <textarea
+            value={draft.code ?? ""}
+            onChange={(e) => setDraft({ ...draft, code: e.target.value })}
+            placeholder={"// Incolla o scrivi il tuo codice GLSL...\nvoid main() {\n  \n}"}
+            className="w-full bg-white/3 border border-white/8 rounded-xl px-4 py-3 text-xs font-mono text-white/80 focus:outline-none focus:border-white/20 resize-none leading-relaxed transition-colors"
+            rows={14}
+            spellCheck={false}
+          />
         </div>
 
+        {/* NOTE */}
+        <div>
+          <p className="text-xs text-white/40 uppercase tracking-widest mb-1.5">Note</p>
+          <textarea
+            value={draft.notes ?? ""}
+            onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
+            placeholder="Descrizione, operatori usati, come funziona..."
+            className="w-full bg-white/3 border border-white/8 rounded-xl px-4 py-3 text-sm text-white/70 focus:outline-none focus:border-white/20 resize-none leading-relaxed transition-colors"
+            rows={4}
+          />
+        </div>
+
+        {/* SAVE */}
         <button
-          onClick={() => copyCode(selected)}
-          className="w-full py-4 bg-white text-black rounded-xl font-semibold text-sm"
+          onClick={saveEntry}
+          disabled={!draft.title?.trim()}
+          className="w-full py-4 bg-white text-black rounded-xl font-semibold text-sm disabled:opacity-40 transition-opacity"
         >
-          {copied ? "✓ Copiato!" : "Copia codice"}
+          {isNew ? "Crea snippet" : "Salva modifiche"}
         </button>
       </div>
     );
   }
 
+  // ── LIST VIEW ──────────────────────────────────────────────────────────────
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
 
-      {/* FILTER */}
-      <div className="flex gap-2">
-        {(["Tutti", "Base", "Avanzati"] as const).map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategoryFilter(cat)}
-            className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-all ${
-              categoryFilter === cat ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      <button
+        onClick={openNew}
+        className="w-full py-4 bg-white text-black rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+        </svg>
+        Nuovo snippet
+      </button>
 
-      {/* LIST */}
-      <div className="space-y-2">
-        {filtered.map((snippet) => (
-          <button
-            key={snippet.id}
-            onClick={() => setSelectedId(snippet.id)}
-            className="w-full flex items-center justify-between border border-white/10 rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
-          >
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-semibold">{snippet.label}</p>
-                <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                  snippet.category === "Base"
-                    ? "border-green-400/20 text-green-400/60"
-                    : "border-yellow-400/20 text-yellow-400/60"
-                }`}>
-                  {snippet.category}
-                </span>
+      {entries.length === 0 ? (
+        <p className="text-white/20 text-sm text-center py-10">
+          Nessuno snippet ancora.{"\n"}Creane uno con il tasto +
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {entries.map((entry) => (
+            <button
+              key={entry.id}
+              onClick={() => openEntry(entry)}
+              className="w-full flex items-center justify-between border border-white/10 rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-semibold truncate">{entry.title}</p>
+                <p className="text-xs text-white/30 mt-0.5">{entry.createdAt}</p>
+                {entry.notes && (
+                  <p className="text-xs text-white/20 mt-1 truncate">{entry.notes}</p>
+                )}
               </div>
-              <p className="text-xs text-white/40 mt-0.5">{snippet.description}</p>
-            </div>
-            <svg className="w-4 h-4 text-white/20 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        ))}
-      </div>
+              <svg className="w-4 h-4 text-white/20 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
