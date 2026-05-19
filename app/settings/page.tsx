@@ -491,6 +491,30 @@ export default function SettingsPage() {
           </div>
         </section>
       </div>
+      
+            {/* ── APP FOOTER INFO ── */}
+      <section className="px-5 pb-32 pt-2">
+        <div className="border-t border-white/8 pt-5 flex items-center gap-4">
+          
+          <img
+            src="/icon-512.png"
+            alt="AV Workflow"
+            className="w-10 h-10 rounded-xl opacity-80"
+          />
+
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-white/70">
+              AV Workflow Manager
+            </p>
+
+            <p className="text-xs text-white/30 leading-relaxed">
+              © 2026 Matteo Zaccarella<br />
+              Logo design by Federica Gandolfo
+            </p>
+          </div>
+
+        </div>
+      </section>
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
