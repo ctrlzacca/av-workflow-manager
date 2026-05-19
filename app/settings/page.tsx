@@ -21,6 +21,7 @@ const SORT_OPTIONS = [
   { value: "deadline_asc", label: "Deadline (urgenti)" },
   { value: "deadline_desc", label: "Deadline (ultimi)" },
 ];
+const [theme, setTheme] = useState("dark");
 
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
@@ -63,9 +64,13 @@ export default function SettingsPage() {
     const category = localStorage.getItem("defaultCategory");
     const sort = localStorage.getItem("defaultSort");
     const filter = localStorage.getItem("defaultFilter");
+    const savedTheme = localStorage.getItem("theme") || "dark";
+
     if (category) setDefaultCategory(category);
     if (sort) setDefaultSort(sort);
     if (filter) setDefaultFilter(filter);
+
+    setTheme(savedTheme);
 
     loadData();
   }, []);
