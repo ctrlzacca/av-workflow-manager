@@ -491,9 +491,9 @@ export default function SettingsPage() {
           </div>
         </section>
       </div>
-      
-            {/* ── APP FOOTER INFO ── */}
-      <section className="px-5 pb-32 pt-2">
+
+      {/* ── APP FOOTER INFO ── */}
+      <section className="mt-10 px-1">
         <div className="border-t border-white/8 pt-5 flex items-center gap-4">
           
           <img
@@ -510,6 +510,10 @@ export default function SettingsPage() {
             <p className="text-xs text-white/30 leading-relaxed">
               © 2026 Matteo Zaccarella<br />
               Logo design by Federica Gandolfo
+            </p>
+
+            <p className="text-[11px] text-white/20 mt-1">
+              Audio · Visual · Creative Workflow
             </p>
           </div>
 
