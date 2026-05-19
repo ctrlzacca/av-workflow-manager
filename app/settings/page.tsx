@@ -298,14 +298,14 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between px-4 py-4">
             <div>
               <p className="text-sm font-medium">Tema</p>
-              <p className="text-xs text-white/30 mt-0.5">
+              <p className="text-xs text-[var(--text)]/30 mt-0.5">
                 Cambia aspetto dell'app
               </p>
             </div>
 
             <button
               onClick={toggleTheme}
-              className="bg-white/5 border border-white/10 text-white/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors"
+              className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors"
             >
               {theme === "dark" ? "Scuro" : "Chiaro"}
             </button>
