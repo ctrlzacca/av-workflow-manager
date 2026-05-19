@@ -1193,6 +1193,442 @@ function FpsBudgetTool() {
     </div>
   );
 }
+// ── GLSL SNIPPETS ─────────────────────────────────────────────────────────────
+
+type GlslParam = {
+  id: string;
+  label: string;
+  type: "float" | "int" | "color";
+  min?: number;
+  max?: number;
+  step?: number;
+  value: number;
+};
+
+type GlslSnippet = {
+  id: string;
+  label: string;
+  category: "Base" | "Avanzati";
+  description: string;
+  tdNote: string;
+  params: GlslParam[];
+  generate: (params: Record<string, number>) => string;
+};
+
+const SNIPPETS: GlslSnippet[] = [
+  {
+    id: "noise",
+    label: "Simplex Noise",
+    category: "Base",
+    description: "Noise organico procedurale animato nel tempo",
+    tdNote: "GLSL TOP — nessun input richiesto. Usa uTD_TORSP per UV e uTD_Time per animazione.",
+    params: [
+      { id: "scale", label: "Scala", type: "float", min: 0.5, max: 20, step: 0.5, value: 4 },
+      { id: "speed", label: "Velocità", type: "float", min: 0, max: 5, step: 0.1, value: 0.5 },
+      { id: "contrast", label: "Contrasto", type: "float", min: 0.1, max: 3, step: 0.1, value: 1.0 },
+    ],
+    generate: (p) => `// Simplex Noise — AV Workflow Manager
+out vec4 fragColor;
+
+vec3 hash3(vec3 p) {
+  p = fract(p * vec3(443.8975, 397.2973, 491.1871));
+  p += dot(p.zxy, p.yxz + 19.19);
+  return fract((p.xxy + p.yxx) * p.zyx);
+}
+
+float noise(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(mix(dot(hash3(i), f),
+            dot(hash3(i + vec3(1,0,0)), f - vec3(1,0,0)), f.x),
+        mix(dot(hash3(i + vec3(0,1,0)), f - vec3(0,1,0)),
+            dot(hash3(i + vec3(1,1,0)), f - vec3(1,1,0)), f.x), f.y),
+    mix(mix(dot(hash3(i + vec3(0,0,1)), f - vec3(0,0,1)),
+            dot(hash3(i + vec3(1,0,1)), f - vec3(1,0,1)), f.x),
+        mix(dot(hash3(i + vec3(0,1,1)), f - vec3(0,1,1)),
+            dot(hash3(i + vec3(1,1,1)), f - vec3(1,1,1)), f.x), f.y), f.z);
+}
+
+void main() {
+  vec2 uv = vUV.st;
+  float scale = ${p.scale.toFixed(1)};
+  float speed = ${p.speed.toFixed(2)};
+  float contrast = ${p.contrast.toFixed(2)};
+  float n = noise(vec3(uv * scale, uTD_Time * speed));
+  n = clamp(n * contrast, 0.0, 1.0);
+  fragColor = TDOutputSwizzle(vec4(n, n, n, 1.0));
+}`,
+  },
+  {
+    id: "gradient",
+    label: "Gradiente Radiale",
+    category: "Base",
+    description: "Gradiente circolare con centro e falloff controllabili",
+    tdNote: "GLSL TOP — nessun input richiesto.",
+    params: [
+      { id: "cx", label: "Centro X", type: "float", min: 0, max: 1, step: 0.01, value: 0.5 },
+      { id: "cy", label: "Centro Y", type: "float", min: 0, max: 1, step: 0.01, value: 0.5 },
+      { id: "radius", label: "Raggio", type: "float", min: 0.1, max: 2, step: 0.05, value: 0.5 },
+      { id: "softness", label: "Morbidezza", type: "float", min: 0.01, max: 1, step: 0.01, value: 0.3 },
+    ],
+    generate: (p) => `// Gradiente Radiale — AV Workflow Manager
+out vec4 fragColor;
+
+void main() {
+  vec2 uv = vUV.st;
+  vec2 center = vec2(${p.cx.toFixed(2)}, ${p.cy.toFixed(2)});
+  float radius = ${p.radius.toFixed(2)};
+  float softness = ${p.softness.toFixed(2)};
+  float d = length(uv - center);
+  float grad = 1.0 - smoothstep(radius - softness, radius, d);
+  fragColor = TDOutputSwizzle(vec4(grad, grad, grad, 1.0));
+}`,
+  },
+  {
+    id: "grid",
+    label: "Griglia",
+    category: "Base",
+    description: "Pattern a griglia con linee sottili",
+    tdNote: "GLSL TOP — nessun input richiesto.",
+    params: [
+      { id: "cols", label: "Colonne", type: "int", min: 2, max: 50, step: 1, value: 10 },
+      { id: "rows", label: "Righe", type: "int", min: 2, max: 50, step: 1, value: 10 },
+      { id: "thickness", label: "Spessore", type: "float", min: 0.01, max: 0.2, step: 0.01, value: 0.05 },
+    ],
+    generate: (p) => `// Griglia — AV Workflow Manager
+out vec4 fragColor;
+
+void main() {
+  vec2 uv = vUV.st;
+  vec2 grid = vec2(${Math.round(p.cols)}.0, ${Math.round(p.rows)}.0);
+  float thickness = ${p.thickness.toFixed(2)};
+  vec2 cell = fract(uv * grid);
+  float lineX = step(1.0 - thickness, cell.x);
+  float lineY = step(1.0 - thickness, cell.y);
+  float lines = max(lineX, lineY);
+  fragColor = TDOutputSwizzle(vec4(lines, lines, lines, 1.0));
+}`,
+  },
+  {
+    id: "ripple",
+    label: "Ripple / Onde",
+    category: "Base",
+    description: "Onde concentriche animate dal centro",
+    tdNote: "GLSL TOP — nessun input richiesto. Animato automaticamente con uTD_Time.",
+    params: [
+      { id: "freq", label: "Frequenza", type: "float", min: 1, max: 30, step: 0.5, value: 10 },
+      { id: "speed", label: "Velocità", type: "float", min: 0.1, max: 5, step: 0.1, value: 1.5 },
+      { id: "cx", label: "Centro X", type: "float", min: 0, max: 1, step: 0.01, value: 0.5 },
+      { id: "cy", label: "Centro Y", type: "float", min: 0, max: 1, step: 0.01, value: 0.5 },
+    ],
+    generate: (p) => `// Ripple / Onde — AV Workflow Manager
+out vec4 fragColor;
+
+void main() {
+  vec2 uv = vUV.st;
+  vec2 center = vec2(${p.cx.toFixed(2)}, ${p.cy.toFixed(2)});
+  float freq = ${p.freq.toFixed(1)};
+  float speed = ${p.speed.toFixed(2)};
+  float d = length(uv - center);
+  float wave = sin(d * freq * 3.14159 * 2.0 - uTD_Time * speed);
+  wave = wave * 0.5 + 0.5;
+  fragColor = TDOutputSwizzle(vec4(wave, wave, wave, 1.0));
+}`,
+  },
+  {
+    id: "feedback_blur",
+    label: "Feedback + Blur",
+    category: "Avanzati",
+    description: "Effetto feedback con blur e zoom, crea trails persistenti",
+    tdNote: "GLSL TOP con 2 input: input[0] = sorgente, input[1] = feedback (output del TOP stesso via Feedback TOP).",
+    params: [
+      { id: "decay", label: "Decay", type: "float", min: 0.8, max: 0.999, step: 0.001, value: 0.95 },
+      { id: "zoom", label: "Zoom feedback", type: "float", min: 0.99, max: 1.01, step: 0.001, value: 1.002 },
+      { id: "blur", label: "Blur amount", type: "float", min: 0, max: 0.01, step: 0.0005, value: 0.002 },
+    ],
+    generate: (p) => `// Feedback + Blur — AV Workflow Manager
+out vec4 fragColor;
+
+vec4 sampleBlur(sampler2D tex, vec2 uv, float amount) {
+  vec4 col = vec4(0.0);
+  col += texture(tex, uv + vec2(-amount, 0.0));
+  col += texture(tex, uv + vec2(amount, 0.0));
+  col += texture(tex, uv + vec2(0.0, -amount));
+  col += texture(tex, uv + vec2(0.0, amount));
+  col += texture(tex, uv) * 2.0;
+  return col / 6.0;
+}
+
+void main() {
+  vec2 uv = vUV.st;
+  float decay = ${p.decay.toFixed(3)};
+  float zoom = ${p.zoom.toFixed(3)};
+  float blurAmt = ${p.blur.toFixed(4)};
+  vec2 centeredUV = (uv - 0.5) / zoom + 0.5;
+  vec4 source = texture(sTD2DInputs[0], uv);
+  vec4 fb = sampleBlur(sTD2DInputs[1], centeredUV, blurAmt) * decay;
+  fragColor = TDOutputSwizzle(max(source, fb));
+}`,
+  },
+  {
+    id: "displacement",
+    label: "Displacement",
+    category: "Avanzati",
+    description: "Distorce un'immagine usando un'altra come mappa di spostamento",
+    tdNote: "GLSL TOP con 2 input: input[0] = immagine da distorcere, input[1] = mappa displacement (es. noise).",
+    params: [
+      { id: "strength", label: "Intensità", type: "float", min: 0, max: 0.2, step: 0.005, value: 0.05 },
+      { id: "offsetX", label: "Offset X", type: "float", min: -0.1, max: 0.1, step: 0.005, value: 0 },
+      { id: "offsetY", label: "Offset Y", type: "float", min: -0.1, max: 0.1, step: 0.005, value: 0 },
+    ],
+    generate: (p) => `// Displacement — AV Workflow Manager
+out vec4 fragColor;
+
+void main() {
+  vec2 uv = vUV.st;
+  float strength = ${p.strength.toFixed(3)};
+  vec2 offset = vec2(${p.offsetX.toFixed(3)}, ${p.offsetY.toFixed(3)});
+  vec4 dispMap = texture(sTD2DInputs[1], uv);
+  vec2 displacement = (dispMap.rg - 0.5) * strength + offset;
+  vec4 color = texture(sTD2DInputs[0], uv + displacement);
+  fragColor = TDOutputSwizzle(color);
+}`,
+  },
+  {
+    id: "chromatic",
+    label: "Aberrazione Cromatica",
+    category: "Avanzati",
+    description: "Separa i canali RGB simulando aberrazione cromatica ottica",
+    tdNote: "GLSL TOP con 1 input: input[0] = immagine sorgente.",
+    params: [
+      { id: "strength", label: "Intensità", type: "float", min: 0, max: 0.05, step: 0.001, value: 0.01 },
+      { id: "angle", label: "Angolo (gradi)", type: "float", min: 0, max: 360, step: 5, value: 45 },
+    ],
+    generate: (p) => `// Aberrazione Cromatica — AV Workflow Manager
+out vec4 fragColor;
+
+void main() {
+  vec2 uv = vUV.st;
+  float strength = ${p.strength.toFixed(3)};
+  float angle = radians(${p.angle.toFixed(1)});
+  vec2 dir = vec2(cos(angle), sin(angle)) * strength;
+  float r = texture(sTD2DInputs[0], uv - dir).r;
+  float g = texture(sTD2DInputs[0], uv).g;
+  float b = texture(sTD2DInputs[0], uv + dir).b;
+  float a = texture(sTD2DInputs[0], uv).a;
+  fragColor = TDOutputSwizzle(vec4(r, g, b, a));
+}`,
+  },
+  {
+    id: "raymarching",
+    label: "Raymarching base",
+    category: "Avanzati",
+    description: "Sfera 3D renderizzata via raymarching con luce direzionale",
+    tdNote: "GLSL TOP — nessun input richiesto. Punto di partenza per scene 3D procedurali.",
+    params: [
+      { id: "radius", label: "Raggio sfera", type: "float", min: 0.1, max: 1.0, step: 0.05, value: 0.4 },
+      { id: "speed", label: "Velocità rotazione", type: "float", min: 0, max: 2, step: 0.1, value: 0.5 },
+      { id: "steps", label: "Passi raymarching", type: "int", min: 16, max: 128, step: 8, value: 64 },
+    ],
+    generate: (p) => `// Raymarching base — AV Workflow Manager
+out vec4 fragColor;
+
+float sdSphere(vec3 p, float r) {
+  return length(p) - r;
+}
+
+float map(vec3 p) {
+  float angle = uTD_Time * ${p.speed.toFixed(1)};
+  vec3 rp = vec3(
+    p.x * cos(angle) - p.z * sin(angle),
+    p.y,
+    p.x * sin(angle) + p.z * cos(angle)
+  );
+  return sdSphere(rp, ${p.radius.toFixed(2)});
+}
+
+void main() {
+  vec2 uv = (vUV.st - 0.5) * 2.0;
+  uv.x *= TDOutputInfo().res.x / TDOutputInfo().res.y;
+  vec3 ro = vec3(0.0, 0.0, 2.0);
+  vec3 rd = normalize(vec3(uv, -1.0));
+  float t = 0.0;
+  int steps = ${Math.round(p.steps)};
+  for (int i = 0; i < steps; i++) {
+    float d = map(ro + rd * t);
+    if (d < 0.001) break;
+    t += d;
+    if (t > 10.0) break;
+  }
+  vec3 col = vec3(0.0);
+  if (t < 10.0) {
+    vec3 pos = ro + rd * t;
+    vec3 eps = vec3(0.001, 0.0, 0.0);
+    vec3 nor = normalize(vec3(
+      map(pos + eps.xyy) - map(pos - eps.xyy),
+      map(pos + eps.yxy) - map(pos - eps.yxy),
+      map(pos + eps.yyx) - map(pos - eps.yyx)
+    ));
+    vec3 light = normalize(vec3(1.0, 1.0, 1.0));
+    float diff = max(dot(nor, light), 0.0);
+    col = vec3(diff) + 0.1;
+  }
+  fragColor = TDOutputSwizzle(vec4(col, 1.0));
+}`,
+  },
+];
+
+function GlslTool() {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [params, setParams] = useState<Record<string, Record<string, number>>>({});
+  const [copied, setCopied] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<"Tutti" | "Base" | "Avanzati">("Tutti");
+
+  function getParams(snippet: GlslSnippet): Record<string, number> {
+    if (params[snippet.id]) return params[snippet.id];
+    return Object.fromEntries(snippet.params.map((p) => [p.id, p.value]));
+  }
+
+  function updateParam(snippetId: string, paramId: string, value: number) {
+    setParams((prev) => ({
+      ...prev,
+      [snippetId]: { ...getParams(SNIPPETS.find((s) => s.id === snippetId)!), [paramId]: value },
+    }));
+  }
+
+  function copyCode(snippet: GlslSnippet) {
+    const code = snippet.generate(getParams(snippet));
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
+  const selected = SNIPPETS.find((s) => s.id === selectedId);
+  const filtered = SNIPPETS.filter((s) => categoryFilter === "Tutti" || s.category === categoryFilter);
+
+  if (selected) {
+    const p = getParams(selected);
+    const code = selected.generate(p);
+
+    return (
+      <div className="space-y-5">
+        <button
+          onClick={() => setSelectedId(null)}
+          className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Tutti gli snippet
+        </button>
+
+        <div>
+          <h2 className="text-base font-bold">{selected.label}</h2>
+          <p className="text-xs text-white/40 mt-0.5">{selected.description}</p>
+        </div>
+
+        {/* TD NOTE */}
+        <div className="bg-white/3 border border-white/8 rounded-xl p-3">
+          <p className="text-xs text-white/30 font-medium mb-1">Come usarlo in TD</p>
+          <p className="text-xs text-white/50 leading-relaxed">{selected.tdNote}</p>
+        </div>
+
+        {/* PARAMS */}
+        {selected.params.length > 0 && (
+          <div className="space-y-4">
+            <p className="text-xs text-white/40 uppercase tracking-widest">Parametri</p>
+            {selected.params.map((param) => (
+              <div key={param.id}>
+                <div className="flex justify-between mb-1">
+                  <span className="text-xs text-white/60">{param.label}</span>
+                  <span className="text-xs font-mono text-white/70">
+                    {param.type === "int" ? Math.round(p[param.id]) : p[param.id].toFixed(
+                      param.step && param.step < 0.01 ? 4 : param.step && param.step < 0.1 ? 3 : 2
+                    )}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={param.min}
+                  max={param.max}
+                  step={param.step}
+                  value={p[param.id]}
+                  onChange={(e) => updateParam(selected.id, param.id, parseFloat(e.target.value))}
+                  className="w-full accent-white"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* CODE PREVIEW */}
+        <div className="bg-white/3 border border-white/8 rounded-xl p-4">
+          <p className="text-xs text-white/30 mb-2 uppercase tracking-widest">Codice generato</p>
+          <pre className="text-xs text-white/60 font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto">
+            {code}
+          </pre>
+        </div>
+
+        <button
+          onClick={() => copyCode(selected)}
+          className="w-full py-4 bg-white text-black rounded-xl font-semibold text-sm"
+        >
+          {copied ? "✓ Copiato!" : "Copia codice"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+
+      {/* FILTER */}
+      <div className="flex gap-2">
+        {(["Tutti", "Base", "Avanzati"] as const).map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategoryFilter(cat)}
+            className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-all ${
+              categoryFilter === cat ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* LIST */}
+      <div className="space-y-2">
+        {filtered.map((snippet) => (
+          <button
+            key={snippet.id}
+            onClick={() => setSelectedId(snippet.id)}
+            className="w-full flex items-center justify-between border border-white/10 rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
+          >
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-semibold">{snippet.label}</p>
+                <span className={`text-xs px-2 py-0.5 rounded-full border ${
+                  snippet.category === "Base"
+                    ? "border-green-400/20 text-green-400/60"
+                    : "border-yellow-400/20 text-yellow-400/60"
+                }`}>
+                  {snippet.category}
+                </span>
+              </div>
+              <p className="text-xs text-white/40 mt-0.5">{snippet.description}</p>
+            </div>
+            <svg className="w-4 h-4 text-white/20 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
 
@@ -1243,7 +1679,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 
-type ToolId = "harmonic" | "bpm" | "palette" | "resolution" | "fps" | null;
+type ToolId = "harmonic" | "bpm" | "palette" | "resolution" | "fps" | "glsl" | null;
 
 const TOOL_CATEGORIES = [
   {
@@ -1265,6 +1701,7 @@ const TOOL_CATEGORIES = [
         tools: [
             { id: "resolution" as ToolId, name: "Calcolatore Risoluzione", description: "Aspect ratio e impostazioni TD per qualsiasi output" },
             { id: "fps" as ToolId, name: "FPS Budget", description: "Stima il budget GPU per il tuo setup TD" },
+            { id: "glsl" as ToolId, name: "Snippet GLSL", description: "Pattern e effetti pronti per GLSL TOP" },
         ],
       },
     ],
@@ -1294,6 +1731,7 @@ export default function ToolsPage() {
       case "palette": return <MoodPaletteTool />;
       case "resolution": return <ResolutionTool/>;
       case "fps": return <FpsBudgetTool />;
+      case "glsl": return <GlslTool />;
       default: return null;
     }
   }
