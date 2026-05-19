@@ -509,10 +509,6 @@ export default function SettingsPage() {
               © 2026 Matteo Zaccarella<br />
               Logo design by Federica Gandolfo
             </p>
-
-            <p className="text-[11px] text-white/20 mt-1">
-              Audio · Visual · Creative Workflow
-            </p>
           </div>
 
         </div>
