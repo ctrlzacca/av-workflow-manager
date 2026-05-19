@@ -33,15 +33,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-full flex flex-col">
         <SplashWrapper />
         {children}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js');
-              });
-            }
-          `
-        }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const savedTheme = localStorage.getItem("theme") || "dark";
+                document.documentElement.classList.add(savedTheme);
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   );

@@ -92,6 +92,23 @@ export default function SettingsPage() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
+  function toggleTheme() {
+  const html = document.documentElement;
+
+  if (theme === "dark") {
+    html.classList.remove("dark");
+    html.classList.add("light");
+
+    localStorage.setItem("theme", "light");
+    setTheme("light");
+  } else {
+    html.classList.remove("light");
+    html.classList.add("dark");
+
+    localStorage.setItem("theme", "dark");
+    setTheme("dark");
+  }
+}
 
   // ── ADD CATEGORY ──────────────────────────────────────────────────────────
 
@@ -195,22 +212,6 @@ export default function SettingsPage() {
     router.push("/");
   }
 
-  // ── TOGGLE THEME ────────────────────────────────────────────────────────────
-
-  function toggleTheme() {
-  const html = document.documentElement;
-
-  if (html.classList.contains("dark")) {
-    html.classList.remove("dark");
-    html.classList.add("light");
-    localStorage.setItem("theme", "light");
-  } else {
-    html.classList.remove("light");
-    html.classList.add("dark");
-    localStorage.setItem("theme", "dark");
-  }
-}
-
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
@@ -292,6 +293,21 @@ export default function SettingsPage() {
                 ))}
               </select>
             </div>
+            <div className="flex items-center justify-between px-4 py-4">
+            <div>
+              <p className="text-sm font-medium">Tema</p>
+              <p className="text-xs text-white/30 mt-0.5">
+                Cambia aspetto dell'app
+              </p>
+            </div>
+
+            <button
+              onClick={toggleTheme}
+              className="bg-white/5 border border-white/10 text-white/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors"
+            >
+              {theme === "dark" ? "Scuro" : "Chiaro"}
+            </button>
+          </div>
           </div>
 
           <button
