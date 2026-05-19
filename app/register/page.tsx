@@ -53,13 +53,13 @@ export default function RegisterPage() {
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col items-center justify-center px-6">
 
       <div className="w-full max-w-sm">
 
         {/* HEADER */}
         <h1 className="text-2xl font-bold tracking-tight mb-1">AV Workflow Manager</h1>
-        <p className="text-white/30 text-sm mb-10">Crea il tuo account</p>
+        <p className="text-[var(--text)]/30 text-sm mb-10">Crea il tuo account</p>
 
         {/* FORM */}
         <div className="space-y-3">
@@ -69,7 +69,7 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Email"
-            className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm"
+            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm"
           />
           <input
             type="password"
@@ -77,7 +77,7 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Password (min. 6 caratteri)"
-            className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm"
+            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm"
           />
           <input
             type="password"
@@ -85,7 +85,7 @@ export default function RegisterPage() {
             onChange={(e) => setConfirm(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Conferma password"
-            className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm"
+            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm"
           />
         </div>
 
@@ -105,12 +105,12 @@ export default function RegisterPage() {
         {registered && (
         <div className="mt-5 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
         <p className="text-green-400 text-sm font-medium">Account creato!</p>
-        <p className="text-white/40 text-xs mt-1">
+        <p className="text-[var(--text)]/40 text-xs mt-1">
         Controlla la tua casella email e clicca sul link di verifica per attivare l'account.
         </p>
         <button
         onClick={() => router.push("/login")}
-        className="mt-3 text-xs text-white/60 hover:text-white transition-colors"
+        className="mt-3 text-xs text-[var(--text)]/60 hover:text-[var(--text)] transition-colors"
         >
         Vai al login →
         </button>
@@ -118,9 +118,9 @@ export default function RegisterPage() {
         )}
 
         {/* LOGIN LINK */}
-        <p className="text-center text-white/30 text-xs mt-6">
+        <p className="text-center text-[var(--text)]/30 text-xs mt-6">
           Hai già un account?{" "}
-          <Link href="/login" className="text-white/60 hover:text-white transition-colors">
+          <Link href="/login" className="text-[var(--text)]/60 hover:text-[var(--text)] transition-colors">
             Accedi
           </Link>
         </p>

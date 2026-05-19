@@ -51,13 +51,13 @@ export default function LoginPage() {
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col items-center justify-center px-6">
 
       <div className="w-full max-w-sm">
 
         {/* HEADER */}
         <h1 className="text-2xl font-bold tracking-tight mb-1">AV Workflow Manager</h1>
-        <p className="text-white/30 text-sm mb-10">Accedi al tuo account</p>
+        <p className="text-[var(--text)]/30 text-sm mb-10">Accedi al tuo account</p>
 
         {/* FORM */}
         <div className="space-y-3">
@@ -67,7 +67,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Email"
-            className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm"
+            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm"
           />
           <input
             type="password"
@@ -75,7 +75,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Password"
-            className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm"
+            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm"
           />
         </div>
 
@@ -94,7 +94,7 @@ export default function LoginPage() {
         </button>
         
               {!resetMode ? (
-        <button onClick={() => setResetMode(true)} className="text-white/30 text-xs hover:text-white/60 transition-colors">
+        <button onClick={() => setResetMode(true)} className="text-[var(--text)]/30 text-xs hover:text-[var(--text)]/60 transition-colors">
           Password dimenticata?
         </button>
       ) : (
@@ -103,22 +103,22 @@ export default function LoginPage() {
             <p className="text-green-400 text-xs text-center">Email inviata! Controlla la casella.</p>
           ) : (
             <>
-              <p className="text-white/40 text-xs">Inserisci la tua email per ricevere il link di reset.</p>
-              <button onClick={handleReset} disabled={loading} className="w-full py-3 border border-white/10 rounded-xl text-white/60 text-sm">
+              <p className="text-[var(--text)]/40 text-xs">Inserisci la tua email per ricevere il link di reset.</p>
+              <button onClick={handleReset} disabled={loading} className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/60 text-sm">
                 Invia link di reset
               </button>
             </>
           )}
-          <button onClick={() => { setResetMode(false); setResetSent(false); }} className="text-white/20 text-xs hover:text-white/40 w-full text-center">
+          <button onClick={() => { setResetMode(false); setResetSent(false); }} className="text-[var(--text)]/20 text-xs hover:text-[var(--text)]/40 w-full text-center">
             Torna al login
           </button>
         </div>
       )}
 
         {/* REGISTER LINK */}
-        <p className="text-center text-white/30 text-xs mt-6">
+        <p className="text-center text-[var(--text)]/30 text-xs mt-6">
           Non hai un account?{" "}
-          <Link href="/register" className="text-white/60 hover:text-white transition-colors">
+          <Link href="/register" className="text-[var(--text)]/60 hover:text-[var(--text)] transition-colors">
             Registrati
           </Link>
         </p>

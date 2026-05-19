@@ -155,14 +155,14 @@ function HarmonicTool() {
 
       {/* TONALITÀ */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Tonalità</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Tonalità</p>
         <div className="flex flex-wrap gap-1.5">
           {NOTES.map((note, i) => (
             <button
               key={note}
               onClick={() => { setRootIndex(i); setSelectedChord(null); }}
               className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                rootIndex === i ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30"
+                rootIndex === i ? "bg-white text-black" : "bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-white/30"
               }`}
             >
               {note}
@@ -173,14 +173,14 @@ function HarmonicTool() {
 
       {/* SCALA */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Scala</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Scala</p>
         <div className="flex flex-wrap gap-1.5">
           {Object.entries(SCALES).map(([key, { name }]) => (
             <button
               key={key}
               onClick={() => { setScaleKey(key); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                scaleKey === key ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30"
+                scaleKey === key ? "bg-white text-black" : "bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-white/30"
               }`}
             >
               {name}
@@ -191,14 +191,14 @@ function HarmonicTool() {
 
       {/* ESTENSIONE */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Tipo accordo</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Tipo accordo</p>
         <div className="flex flex-wrap gap-1.5">
           {EXTENSIONS.map((ext) => (
             <button
               key={ext.id}
               onClick={() => { setExtension(ext.id); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                extension === ext.id ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30"
+                extension === ext.id ? "bg-white text-black" : "bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-white/30"
               }`}
             >
               {ext.label}
@@ -209,14 +209,14 @@ function HarmonicTool() {
 
       {/* NOTE SCALA */}
       <div>
-        <p className="text-xs text-white/40 mb-2">Note della scala</p>
+        <p className="text-xs text-[var(--text)]/40 mb-2">Note della scala</p>
         <div className="flex gap-2 flex-wrap">
           {scaleNotes.map((note, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
               <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-sm font-semibold">
                 {note}
               </div>
-              <span className="text-xs text-white/30">
+              <span className="text-xs text-[var(--text)]/30">
                 {["I", "II", "III", "IV", "V", "VI", "VII"][i]}
               </span>
             </div>
@@ -226,32 +226,32 @@ function HarmonicTool() {
 
       {/* ACCORDI */}
       <div>
-        <p className="text-xs text-white/40 mb-2">Accordi compatibili</p>
+        <p className="text-xs text-[var(--text)]/40 mb-2">Accordi compatibili</p>
         <div className="grid grid-cols-2 gap-2">
           {chords.map((chord, i) => (
             <button
               key={i}
               onClick={() => setSelectedChord(selectedChord === i ? null : i)}
               className={`border rounded-xl px-4 py-3 text-left transition-all ${
-                selectedChord === i ? "border-white/40 bg-white/10" : "border-white/10 hover:border-white/20"
+                selectedChord === i ? "border-white/40 bg-white/10" : "border-[color:var(--border)] hover:border-white/20"
               }`}
             >
               <p className="text-base font-bold">{chord.label}</p>
-              <p className="text-xs text-white/30">{chord.degree} grado</p>
+              <p className="text-xs text-[var(--text)]/30">{chord.degree} grado</p>
               {selectedChord === i && (
-                <p className="text-xs text-white/50 mt-1">{chord.notes.join(" · ")}</p>
+                <p className="text-xs text-[var(--text)]/50 mt-1">{chord.notes.join(" · ")}</p>
               )}
             </button>
           ))}
         </div>
         {selectedChord !== null && (
-          <p className="text-xs text-white/30 mt-2 text-center">Tocca di nuovo per chiudere</p>
+          <p className="text-xs text-[var(--text)]/30 mt-2 text-center">Tocca di nuovo per chiudere</p>
         )}
       </div>
 
       {/* RELATIVA */}
       <div className="border border-white/8 rounded-xl p-4">
-        <p className="text-xs text-white/40 mb-1">
+        <p className="text-xs text-[var(--text)]/40 mb-1">
           {scaleKey === "major" ? "Relativa minore" : "Relativa maggiore"}
         </p>
         <p className="text-sm font-semibold">
@@ -287,11 +287,11 @@ function BpmTool() {
     <div className="space-y-5">
 
       {/* SECTION TABS */}
-      <div className="flex border border-white/10 rounded-xl overflow-hidden">
+      <div className="flex border border-[color:var(--border)] rounded-xl overflow-hidden">
         <button
           onClick={() => setActiveSection("bpm")}
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            activeSection === "bpm" ? "bg-white text-black" : "text-white/40"
+            activeSection === "bpm" ? "bg-white text-black" : "text-[var(--text)]/40"
           }`}
         >
           BPM → ms
@@ -299,7 +299,7 @@ function BpmTool() {
         <button
           onClick={() => setActiveSection("notefreq")}
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            activeSection === "notefreq" ? "bg-white text-black" : "text-white/40"
+            activeSection === "notefreq" ? "bg-white text-black" : "text-[var(--text)]/40"
           }`}
         >
           Nota ↔ Hz
@@ -310,21 +310,21 @@ function BpmTool() {
       {activeSection === "bpm" && (
         <>
           <div>
-            <p className="text-xs text-white/40 mb-1.5">BPM</p>
+            <p className="text-xs text-[var(--text)]/40 mb-1.5">BPM</p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setBpm(b => Math.max(1, b - 1))}
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-white/60 text-lg hover:border-white/30 transition-colors"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-white/30 transition-colors"
               >−</button>
               <input
                 type="number"
                 value={bpm}
                 onChange={(e) => setBpm(Math.max(1, Math.min(300, Number(e.target.value))))}
-                className="flex-1 text-center text-3xl font-bold bg-transparent focus:outline-none text-white"
+                className="flex-1 text-center text-3xl font-bold bg-transparent focus:outline-none text-[var(--text)]"
               />
               <button
                 onClick={() => setBpm(b => Math.min(300, b + 1))}
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-white/60 text-lg hover:border-white/30 transition-colors"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-white/30 transition-colors"
               >+</button>
             </div>
             <input
@@ -335,22 +335,22 @@ function BpmTool() {
           </div>
 
           <div>
-            <p className="text-xs text-white/40 mb-2">Durate in millisecondi</p>
+            <p className="text-xs text-[var(--text)]/40 mb-2">Durate in millisecondi</p>
             <div className="space-y-2">
               {subdivisions.map((sub) => (
                 <div key={sub} className="flex items-center justify-between border border-white/8 rounded-xl px-4 py-3">
-                  <span className="text-sm text-white/60 w-16">{sub}</span>
+                  <span className="text-sm text-[var(--text)]/60 w-16">{sub}</span>
                   <span className="text-sm font-mono font-semibold">{bpmToMs(bpm, sub)} ms</span>
-                  <span className="text-xs text-white/30 w-16 text-right">{(bpmToMs(bpm, sub) / 1000).toFixed(3)}s</span>
+                  <span className="text-xs text-[var(--text)]/30 w-16 text-right">{(bpmToMs(bpm, sub) / 1000).toFixed(3)}s</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="border border-white/8 rounded-xl p-4">
-            <p className="text-xs text-white/40 mb-1">Frequenza LFO (Hz)</p>
+            <p className="text-xs text-[var(--text)]/40 mb-1">Frequenza LFO (Hz)</p>
             <p className="text-xl font-bold">{(bpm / 60).toFixed(3)} Hz</p>
-            <p className="text-xs text-white/30 mt-0.5">Utile per LFO e modulazioni a tempo</p>
+            <p className="text-xs text-[var(--text)]/30 mt-0.5">Utile per LFO e modulazioni a tempo</p>
           </div>
         </>
       )}
@@ -361,7 +361,7 @@ function BpmTool() {
 
           {/* NOTA → FREQUENZA */}
           <div>
-            <p className="text-xs text-white/40 mb-3">Nota → Frequenza</p>
+            <p className="text-xs text-[var(--text)]/40 mb-3">Nota → Frequenza</p>
 
             <div className="flex flex-wrap gap-1.5 mb-3">
               {NOTE_NAMES.map((note) => (
@@ -369,7 +369,7 @@ function BpmTool() {
                   key={note}
                   onClick={() => setSelectedNote(note)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all${
-                    selectedNote === note ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30"
+                    selectedNote === note ? "bg-white text-black" : "bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-white/30"
                   }`}
                 >
                   {note}
@@ -383,7 +383,7 @@ function BpmTool() {
                   key={oct}
                   onClick={() => setSelectedOctave(oct)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                    selectedOctave === oct ? "bg-white text-black" : "bg-white/5 border border-white/10 text-white/60 hover:border-white/30"
+                    selectedOctave === oct ? "bg-white text-black" : "bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-white/30"
                   }`}
                 >
                   {oct}
@@ -391,15 +391,15 @@ function BpmTool() {
               ))}
             </div>
 
-            <div className="border border-white/10 rounded-xl p-4">
-              <p className="text-xs text-white/40 mb-1">{selectedNote}{selectedOctave}</p>
-              <p className="text-3xl font-bold">{computedFreq} <span className="text-lg text-white/40">Hz</span></p>
+            <div className="border border-[color:var(--border)] rounded-xl p-4">
+              <p className="text-xs text-[var(--text)]/40 mb-1">{selectedNote}{selectedOctave}</p>
+              <p className="text-3xl font-bold">{computedFreq} <span className="text-lg text-[var(--text)]/40">Hz</span></p>
             </div>
           </div>
 
           {/* FREQUENZA → NOTA */}
           <div>
-            <p className="text-xs text-white/40 mb-3">Frequenza → Nota</p>
+            <p className="text-xs text-[var(--text)]/40 mb-3">Frequenza → Nota</p>
 
             <div className="flex items-center gap-3 mb-4">
               <input
@@ -407,18 +407,18 @@ function BpmTool() {
                 value={inputFreq}
                 onChange={(e) => setInputFreq(e.target.value)}
                 placeholder="es. 440"
-                className="flex-1 text-center text-2xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+                className="flex-1 text-center text-2xl font-bold bg-white/5 border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-white/30 text-[var(--text)]"
               />
-              <span className="text-white/40 text-sm">Hz</span>
+              <span className="text-[var(--text)]/40 text-sm">Hz</span>
             </div>
 
             {parseFloat(inputFreq) > 0 && (
-              <div className="border border-white/10 rounded-xl p-4">
-                <p className="text-xs text-white/40 mb-1">Nota più vicina</p>
+              <div className="border border-[color:var(--border)] rounded-xl p-4">
+                <p className="text-xs text-[var(--text)]/40 mb-1">Nota più vicina</p>
                 <p className="text-3xl font-bold">
                   {computedNote.note}{computedNote.octave}
                   {computedNote.cents !== 0 && (
-                    <span className={`text-sm ml-2 ${Math.abs(computedNote.cents) > 10 ? "text-yellow-400" : "text-white/40"}`}>
+                    <span className={`text-sm ml-2 ${Math.abs(computedNote.cents) > 10 ? "text-yellow-400" : "text-[var(--text)]/40"}`}>
                       {computedNote.cents > 0 ? `+${computedNote.cents}` : computedNote.cents} cents
                     </span>
                   )}
@@ -591,9 +591,9 @@ function deletePalette(id: number) {
     <div className="space-y-5">
 
       <div>
-        <p className="text-xs text-white/40 mb-1.5">
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">
           Numero di colori:
-          <span className="text-white/70 ml-1">{count}</span>
+          <span className="text-[var(--text)]/70 ml-1">{count}</span>
         </p>
 
         <input
@@ -605,7 +605,7 @@ function deletePalette(id: number) {
           className="w-full accent-white"
         />
 
-        <div className="flex justify-between text-xs text-white/20 mt-1">
+        <div className="flex justify-between text-xs text-[var(--text)]/20 mt-1">
           <span>3</span>
           <span>10</span>
         </div>
@@ -620,7 +620,7 @@ function deletePalette(id: number) {
 
       <button
       onClick={saveCurrentPalette}
-      className="w-full py-3 border border-white/10 rounded-xl text-sm text-white/60 hover:border-white/30"
+      className="w-full py-3 border border-[color:var(--border)] rounded-xl text-sm text-[var(--text)]/60 hover:border-white/30"
     >
       💾 Salva palette
     </button>
@@ -661,7 +661,7 @@ function deletePalette(id: number) {
               };
               setPalette(updated);
             }}
-            className="absolute top-2 right-2 text-sm bg-black/40 rounded-md px-2 py-1"
+            className="absolute top-2 right-2 text-sm bg-[var(--bg)]/40 rounded-md px-2 py-1"
           >
             {color.locked ? "🔒" : "🔓"}
           </button>
@@ -685,12 +685,12 @@ function deletePalette(id: number) {
             <p className="text-sm font-mono font-semibold">
               {color.hex}
             </p>
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-[var(--text)]/40">
               {color.locked ? "Bloccato" : "Modificabile"}
             </p>
           </div>
 
-          <span className="text-xs text-white/30">
+          <span className="text-xs text-[var(--text)]/30">
             {copied === color.hex ? "✓ Copiato" : "Copia"}
           </span>
         </div>
@@ -699,7 +699,7 @@ function deletePalette(id: number) {
 
     <button
       onClick={copyAll}
-      className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30"
+      className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 text-sm hover:border-white/30"
     >
       {copied === "all" ? "✓ Tutti copiati" : "Copia tutti gli hex"}
     </button>
@@ -712,11 +712,11 @@ function deletePalette(id: number) {
   <div className="space-y-3 pt-4">
 
     <div className="flex items-center justify-between">
-      <h3 className="text-sm font-semibold text-white/80">
+      <h3 className="text-sm font-semibold text-[var(--text)]/80">
         Palette salvate
       </h3>
 
-      <span className="text-xs text-white/30">
+      <span className="text-xs text-[var(--text)]/30">
         {savedPalettes.length}
       </span>
     </div>
@@ -725,13 +725,13 @@ function deletePalette(id: number) {
       {savedPalettes.map((saved) => (
         <div
           key={saved.id}
-          className="border border-white/10 rounded-xl p-3 space-y-3"
+          className="border border-[color:var(--border)] rounded-xl p-3 space-y-3"
         >
           <div className="flex items-center justify-between gap-2">
 
             <button
               onClick={() => loadPalette(saved.colors)}
-              className="text-sm font-medium text-left flex-1 hover:text-white"
+              className="text-sm font-medium text-left flex-1 hover:text-[var(--text)]"
             >
               {saved.name}
             </button>
@@ -739,14 +739,14 @@ function deletePalette(id: number) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => renamePalette(saved.id)}
-                className="text-xs text-white/40 hover:text-white"
+                className="text-xs text-[var(--text)]/40 hover:text-[var(--text)]"
               >
                 ✏️
               </button>
 
               <button
                 onClick={() => deletePalette(saved.id)}
-                className="text-xs text-white/40 hover:text-red-400"
+                className="text-xs text-[var(--text)]/40 hover:text-red-400"
               >
                 🗑
               </button>
@@ -847,14 +847,14 @@ function ResolutionTool() {
 
       {/* OUTPUT TYPE */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Tipo di output</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Tipo di output</p>
         <div className="flex gap-2">
           {(["monitor", "projector"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setOutputType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all border ${
-                outputType === t ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+                outputType === t ? "bg-white text-black border-white" : "bg-white/5 border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {t === "monitor" ? "🖥 Monitor" : "📽 Proiettore"}
@@ -865,27 +865,27 @@ function ResolutionTool() {
 
       {/* RESOLUTION INPUT */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Risoluzione</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Risoluzione</p>
         <div className="flex items-center gap-3">
           <input
             type="number"
             value={width}
             onChange={(e) => setWidth(Math.max(1, Number(e.target.value)))}
-            className=" w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+            className=" w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-white/5 border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-white/30 text-[var(--text)]"
           />
-          <span className="text-white/30 font-bold">×</span>
+          <span className="text-[var(--text)]/30 font-bold">×</span>
           <input
             type="number"
             value={height}
             onChange={(e) => setHeight(Math.max(1, Number(e.target.value)))}
-            className="w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl py-3 focus:outline-none focus:border-white/30 text-white"
+            className="w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-white/5 border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-white/30 text-[var(--text)]"
           />
         </div>
       </div>
 
       {/* PRESET RISOLUZIONI */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Preset comuni</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Preset comuni</p>
         <div className="flex flex-wrap gap-1.5">
           {[
             { label: "FHD", w: 1920, h: 1080 },
@@ -903,7 +903,7 @@ function ResolutionTool() {
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
                 width === p.w && height === p.h
                   ? "bg-white text-black border-white"
-                  : "bg-white/5 border-white/10 text-white/50 hover:border-white/30"
+                  : "bg-white/5 border-[color:var(--border)] text-[var(--text)]/50 hover:border-white/30"
               }`}
             >
               {p.label}
@@ -915,40 +915,40 @@ function ResolutionTool() {
       {/* RISULTATI */}
       <div className="space-y-2">
 
-        <div className="border border-white/10 rounded-2xl p-4">
-          <p className="text-xs text-white/40 mb-1">Aspect Ratio</p>
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-1">Aspect Ratio</p>
           <p className="text-2xl font-bold">{aspectRatio}</p>
-          <p className="text-xs text-white/40 mt-0.5">{aspectName}</p>
+          <p className="text-xs text-[var(--text)]/40 mt-0.5">{aspectName}</p>
         </div>
 
-        <div className="border border-white/10 rounded-2xl p-4">
-          <p className="text-xs text-white/40 mb-1">Pixel totali</p>
-          <p className="text-2xl font-bold">{totalPixels} <span className="text-sm text-white/40">MP</span></p>
-          <p className="text-xs text-white/40 mt-0.5">{(width * height).toLocaleString()} pixel</p>
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-1">Pixel totali</p>
+          <p className="text-2xl font-bold">{totalPixels} <span className="text-sm text-[var(--text)]/40">MP</span></p>
+          <p className="text-xs text-[var(--text)]/40 mt-0.5">{(width * height).toLocaleString()} pixel</p>
         </div>
 
-        <div className="border border-white/10 rounded-2xl p-4">
-          <p className="text-xs text-white/40 mb-2">Impostazioni TouchDesigner</p>
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-2">Impostazioni TouchDesigner</p>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-white/50">Window COMP</span>
-              <span className="text-xs font-mono text-white/80">{width} × {height}</span>
+              <span className="text-xs text-[var(--text)]/50">Window COMP</span>
+              <span className="text-xs font-mono text-[var(--text)]/80">{width} × {height}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-white/50">Canvas consigliato</span>
-              <span className="text-xs font-mono text-white/80">{canvas.w} × {canvas.h}</span>
+              <span className="text-xs text-[var(--text)]/50">Canvas consigliato</span>
+              <span className="text-xs font-mono text-[var(--text)]/80">{canvas.w} × {canvas.h}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-white/50">FPS target</span>
-              <span className="text-xs font-mono text-white/80">{suggestedFPS.split(" — ")[0]}</span>
+              <span className="text-xs text-[var(--text)]/50">FPS target</span>
+              <span className="text-xs font-mono text-[var(--text)]/80">{suggestedFPS.split(" — ")[0]}</span>
             </div>
-            <p className="text-xs text-white/30 pt-1 border-t border-white/5">{tdWindow}</p>
-            <p className="text-xs text-white/30">{suggestedFPS.split(" — ")[1]}</p>
+            <p className="text-xs text-[var(--text)]/30 pt-1 border-t border-white/5">{tdWindow}</p>
+            <p className="text-xs text-[var(--text)]/30">{suggestedFPS.split(" — ")[1]}</p>
           </div>
         </div>
 
-        <div className="border border-white/10 rounded-2xl p-4">
-          <p className="text-xs text-white/40 mb-2">Risoluzioni correlate</p>
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-2">Risoluzioni correlate</p>
           <div className="space-y-1.5">
             {related.map((r) => (
               <div
@@ -956,8 +956,8 @@ function ResolutionTool() {
                 className="flex justify-between items-center cursor-pointer hover:bg-white/5 px-2 py-1 rounded-lg transition-colors"
                 onClick={() => { setWidth(r.w); setHeight(r.h); }}
               >
-                <span className="text-xs text-white/50">{r.label}</span>
-                <span className="text-xs font-mono text-white/70">{r.w} × {r.h}</span>
+                <span className="text-xs text-[var(--text)]/50">{r.label}</span>
+                <span className="text-xs font-mono text-[var(--text)]/70">{r.w} × {r.h}</span>
               </div>
             ))}
           </div>
@@ -1052,14 +1052,14 @@ function FpsBudgetTool() {
 
       {/* GPU */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">GPU</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">GPU</p>
         <div className="space-y-1.5">
           {GPU_TIERS.map((g) => (
             <button
               key={g.id}
               onClick={() => setGpuTier(g.id)}
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all ${
-                gpuTier === g.id ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+                gpuTier === g.id ? "bg-white text-black border-white" : "bg-white/5 border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               <span>{g.label}</span>
@@ -1072,60 +1072,60 @@ function FpsBudgetTool() {
       {/* RISOLUZIONE + FPS */}
       <div className="flex gap-2">
         <div className="flex-1">
-          <p className="text-xs text-white/40 mb-1.5">Risoluzione</p>
+          <p className="text-xs text-[var(--text)]/40 mb-1.5">Risoluzione</p>
           <div className="flex items-center gap-1">
             <input
               type="number"
               value={width}
               onChange={(e) => setWidth(Number(e.target.value))}
-              className="w-full text-center text-sm font-bold bg-white/5 border border-white/10 rounded-xl py-2.5 focus:outline-none text-white"
+              className="w-full text-center text-sm font-bold bg-white/5 border border-[color:var(--border)] rounded-xl py-2.5 focus:outline-none text-[var(--text)]"
             />
-            <span className="text-white/30 text-xs">×</span>
+            <span className="text-[var(--text)]/30 text-xs">×</span>
             <input
               type="number"
               value={height}
               onChange={(e) => setHeight(Number(e.target.value))}
-              className="w-full text-center text-sm font-bold bg-white/5 border border-white/10 rounded-xl py-2.5 focus:outline-none text-white"
+              className="w-full text-center text-sm font-bold bg-white/5 border border-[color:var(--border)] rounded-xl py-2.5 focus:outline-none text-[var(--text)]"
             />
           </div>
         </div>
         <div className="w-24">
-          <p className="text-xs text-white/40 mb-1.5">FPS target</p>
+          <p className="text-xs text-[var(--text)]/40 mb-1.5">FPS target</p>
           <select
             value={targetFps}
             onChange={(e) => setTargetFps(Number(e.target.value))}
-            className="w-full bg-white/5 border border-white/10 text-white text-sm px-2 py-2.5 rounded-xl focus:outline-none"
+            className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-2 py-2.5 rounded-xl focus:outline-none"
           >
             {[24, 30, 60].map((f) => (
-              <option key={f} value={f} className="bg-black">{f} fps</option>
+              <option key={f} value={f} className="bg-[var(--bg)]">{f} fps</option>
             ))}
           </select>
         </div>
       </div>
 
       {/* BUDGET SUMMARY */}
-      <div className="border border-white/10 rounded-2xl p-4 space-y-2">
-        <p className="text-xs text-white/40">Budget per frame</p>
+      <div className="border border-[color:var(--border)] rounded-2xl p-4 space-y-2">
+        <p className="text-xs text-[var(--text)]/40">Budget per frame</p>
         <div className="flex justify-between text-sm">
-          <span className="text-white/50">Totale</span>
+          <span className="text-[var(--text)]/50">Totale</span>
           <span className="font-mono">{frameBudgetMs} ms</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-white/50">Overhead TD</span>
-          <span className="font-mono text-white/40">− {overheadMs} ms</span>
+          <span className="text-[var(--text)]/50">Overhead TD</span>
+          <span className="font-mono text-[var(--text)]/40">− {overheadMs} ms</span>
         </div>
-        <div className="flex justify-between text-sm border-t border-white/10 pt-2">
-          <span className="text-white/80 font-medium">Disponibile</span>
+        <div className="flex justify-between text-sm border-t border-[color:var(--border)] pt-2">
+          <span className="text-[var(--text)]/80 font-medium">Disponibile</span>
           <span className="font-mono font-bold">{availableMs} ms</span>
         </div>
       </div>
 
       {/* OPERAZIONI */}
       <div>
-        <p className="text-xs text-white/40 mb-2">Operazioni nel tuo setup</p>
+        <p className="text-xs text-[var(--text)]/40 mb-2">Operazioni nel tuo setup</p>
         {categories.map((cat) => (
           <div key={cat} className="mb-3">
-            <p className="text-xs text-white/25 uppercase tracking-widest mb-1.5 pl-1">{cat}</p>
+            <p className="text-xs text-[var(--text)]/25 uppercase tracking-widest mb-1.5 pl-1">{cat}</p>
             <div className="space-y-1">
               {TD_OPERATIONS.filter((o) => o.category === cat).map((op) => {
                 const count = selectedOps[op.label] ?? 0;
@@ -1136,18 +1136,18 @@ function FpsBudgetTool() {
                     className="flex items-center gap-3 border border-white/8 rounded-xl px-3 py-2.5"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-white/70 truncate">{op.label}</p>
-                      <p className="text-xs text-white/25">{cost} ms/istanza</p>
+                      <p className="text-xs font-medium text-[var(--text)]/70 truncate">{op.label}</p>
+                      <p className="text-xs text-[var(--text)]/25">{cost} ms/istanza</p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <button
                         onClick={() => updateOp(op.label, count - 1)}
-                        className="w-6 h-6 rounded-lg bg-white/5 text-white/40 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded-lg bg-white/5 text-[var(--text)]/40 text-sm flex items-center justify-center"
                       >−</button>
-                      <span className="text-sm font-mono w-4 text-center text-white/70">{count}</span>
+                      <span className="text-sm font-mono w-4 text-center text-[var(--text)]/70">{count}</span>
                       <button
                         onClick={() => updateOp(op.label, count + 1)}
-                        className="w-6 h-6 rounded-lg bg-white/5 text-white/40 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded-lg bg-white/5 text-[var(--text)]/40 text-sm flex items-center justify-center"
                       >+</button>
                     </div>
                   </div>
@@ -1176,17 +1176,17 @@ function FpsBudgetTool() {
             style={{ width: `${usagePercent}%` }}
           />
         </div>
-        <div className="flex justify-between text-xs text-white/40">
+        <div className="flex justify-between text-xs text-[var(--text)]/40">
           <span>Usato: {totalCost.toFixed(2)} ms</span>
           <span>Rimasto: {Math.max(0, availableMs - totalCost).toFixed(2)} ms</span>
         </div>
         {usagePercent >= 85 && (
-          <div className="pt-2 border-t border-white/10 space-y-1">
-            <p className="text-xs text-white/50 font-medium">Suggerimenti:</p>
-            <p className="text-xs text-white/30">· Riduci la risoluzione del canvas interno</p>
-            <p className="text-xs text-white/30">· Usa Cook Type "Always" solo sui TOP critici</p>
-            <p className="text-xs text-white/30">· Sostituisci Blur con un GLSL blur ottimizzato</p>
-            <p className="text-xs text-white/30">· Abbassa il target FPS a 30</p>
+          <div className="pt-2 border-t border-[color:var(--border)] space-y-1">
+            <p className="text-xs text-[var(--text)]/50 font-medium">Suggerimenti:</p>
+            <p className="text-xs text-[var(--text)]/30">· Riduci la risoluzione del canvas interno</p>
+            <p className="text-xs text-[var(--text)]/30">· Usa Cook Type "Always" solo sui TOP critici</p>
+            <p className="text-xs text-[var(--text)]/30">· Sostituisci Blur con un GLSL blur ottimizzato</p>
+            <p className="text-xs text-[var(--text)]/30">· Abbassa il target FPS a 30</p>
           </div>
         )}
       </div>
@@ -1298,7 +1298,7 @@ function GlslTool() {
         <div className="flex items-center justify-between">
           <button
             onClick={closeDetail}
-            className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
+            className="flex items-center gap-2 text-[var(--text)]/40 hover:text-[var(--text)] text-sm transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1308,7 +1308,7 @@ function GlslTool() {
           {selectedId !== null && (
             <button
               onClick={() => deleteEntry(selectedId)}
-              className="text-xs text-white/20 hover:text-red-400 transition-colors"
+              className="text-xs text-[var(--text)]/20 hover:text-red-400 transition-colors"
             >
               Elimina
             </button>
@@ -1320,16 +1320,16 @@ function GlslTool() {
           value={draft.title ?? ""}
           onChange={(e) => setDraft({ ...draft, title: e.target.value })}
           placeholder="Nome snippet..."
-          className="w-full bg-transparent border-b border-white/10 text-white font-bold text-lg focus:outline-none focus:border-white/30 pb-1 transition-colors"
+          className="w-full bg-transparent border-b border-[color:var(--border)] text-[var(--text)] font-bold text-lg focus:outline-none focus:border-white/30 pb-1 transition-colors"
         />
 
         {/* CODICE */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs text-white/40 uppercase tracking-widest">Codice GLSL</p>
+            <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest">Codice GLSL</p>
             <button
               onClick={copyCode}
-              className="text-xs text-white/30 hover:text-white transition-colors"
+              className="text-xs text-[var(--text)]/30 hover:text-[var(--text)] transition-colors"
             >
               {copied ? "✓ Copiato" : "Copia"}
             </button>
@@ -1338,7 +1338,7 @@ function GlslTool() {
             value={draft.code ?? ""}
             onChange={(e) => setDraft({ ...draft, code: e.target.value })}
             placeholder={"// Incolla o scrivi il tuo codice GLSL...\nvoid main() {\n  \n}"}
-            className="w-full bg-white/3 border border-white/8 rounded-xl px-4 py-3 text-xs font-mono text-white/80 focus:outline-none focus:border-white/20 resize-none leading-relaxed transition-colors"
+            className="w-full bg-white/3 border border-white/8 rounded-xl px-4 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none focus:border-white/20 resize-none leading-relaxed transition-colors"
             rows={14}
             spellCheck={false}
           />
@@ -1346,12 +1346,12 @@ function GlslTool() {
 
         {/* NOTE */}
         <div>
-          <p className="text-xs text-white/40 uppercase tracking-widest mb-1.5">Note</p>
+          <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest mb-1.5">Note</p>
           <textarea
             value={draft.notes ?? ""}
             onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
             placeholder="Descrizione, operatori usati, come funziona..."
-            className="w-full bg-white/3 border border-white/8 rounded-xl px-4 py-3 text-sm text-white/70 focus:outline-none focus:border-white/20 resize-none leading-relaxed transition-colors"
+            className="w-full bg-white/3 border border-white/8 rounded-xl px-4 py-3 text-sm text-[var(--text)]/70 focus:outline-none focus:border-white/20 resize-none leading-relaxed transition-colors"
             rows={4}
           />
         </div>
@@ -1384,7 +1384,7 @@ function GlslTool() {
       </button>
 
       {entries.length === 0 ? (
-        <p className="text-white/20 text-sm text-center py-10">
+        <p className="text-[var(--text)]/20 text-sm text-center py-10">
           Nessuno snippet ancora.{"\n"}Creane uno con il tasto +
         </p>
       ) : (
@@ -1393,16 +1393,16 @@ function GlslTool() {
             <button
               key={entry.id}
               onClick={() => openEntry(entry)}
-              className="w-full flex items-center justify-between border border-white/10 rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
+              className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
             >
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">{entry.title}</p>
-                <p className="text-xs text-white/30 mt-0.5">{entry.createdAt}</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">{entry.createdAt}</p>
                 {entry.notes && (
-                  <p className="text-xs text-white/20 mt-1 truncate">{entry.notes}</p>
+                  <p className="text-xs text-[var(--text)]/20 mt-1 truncate">{entry.notes}</p>
                 )}
               </div>
-              <svg className="w-4 h-4 text-white/20 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-[var(--text)]/20 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -1524,7 +1524,7 @@ function TypographyTool() {
               setUnit(u);
             }}
             className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-              unit === u ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              unit === u ? "bg-white text-black border-white" : "bg-white/5 border-[color:var(--border)] text-[var(--text)]/50"
             }`}
           >
             {u === "pt" ? "pt — Stampa" : "px — Schermo"}
@@ -1535,11 +1535,11 @@ function TypographyTool() {
       {/* BASE SIZE */}
       <div>
         <div className="flex justify-between mb-1.5">
-          <p className="text-xs text-white/40">Corpo testo base</p>
-          <span className="text-xs font-mono text-white/70">{baseSize} {unit}</span>
+          <p className="text-xs text-[var(--text)]/40">Corpo testo base</p>
+          <span className="text-xs font-mono text-[var(--text)]/70">{baseSize} {unit}</span>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => setBaseSize(b => Math.max(6, b - 1))} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/50 flex items-center justify-center">−</button>
+          <button onClick={() => setBaseSize(b => Math.max(6, b - 1))} className="w-9 h-9 rounded-xl bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">−</button>
           <input
             type="range"
             min={unit === "pt" ? 6 : 8}
@@ -1549,23 +1549,23 @@ function TypographyTool() {
             onChange={(e) => setBaseSize(Number(e.target.value))}
             className="flex-1 accent-white"
           />
-          <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/50 flex items-center justify-center">+</button>
+          <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">+</button>
         </div>
-        <p className="text-xs text-white/25 mt-1 text-right">
+        <p className="text-xs text-[var(--text)]/25 mt-1 text-right">
           = {unit === "pt" ? ptToPx(baseSize) : pxToPt(baseSize)} {unit === "pt" ? "px" : "pt"}
         </p>
       </div>
 
       {/* SCALE RATIO */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Scala modulare</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Scala modulare</p>
         <div className="flex flex-wrap gap-1.5">
           {SCALE_RATIOS.map((r) => (
             <button
               key={r.value}
               onClick={() => setRatio(r.value)}
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                ratio === r.value ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+                ratio === r.value ? "bg-white text-black border-white" : "bg-white/5 border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {r.label.split(" (")[0]}
@@ -1577,8 +1577,8 @@ function TypographyTool() {
       {/* LINE HEIGHT */}
       <div>
         <div className="flex justify-between mb-1.5">
-          <p className="text-xs text-white/40">Rapporto interlinea</p>
-          <span className="text-xs font-mono text-white/70">{lineHeightRatio}</span>
+          <p className="text-xs text-[var(--text)]/40">Rapporto interlinea</p>
+          <span className="text-xs font-mono text-[var(--text)]/70">{lineHeightRatio}</span>
         </div>
         <input
           type="range"
@@ -1589,7 +1589,7 @@ function TypographyTool() {
           onChange={(e) => setLineHeightRatio(Number(e.target.value))}
           className="w-full accent-white"
         />
-        <div className="flex justify-between text-xs text-white/20 mt-1">
+        <div className="flex justify-between text-xs text-[var(--text)]/20 mt-1">
           <span>1.2 — compatto</span>
           <span>2.0 — ariosa</span>
         </div>
@@ -1597,7 +1597,7 @@ function TypographyTool() {
 
       {/* GERARCHIA */}
       <div>
-        <p className="text-xs text-white/40 uppercase tracking-widest mb-2">Gerarchia tipografica</p>
+        <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest mb-2">Gerarchia tipografica</p>
         <div className="space-y-1.5">
           {hierarchy.map((h) => {
             const lh = lineHeight(h.size);
@@ -1611,15 +1611,15 @@ function TypographyTool() {
                 className="flex items-center justify-between border border-white/8 rounded-xl px-4 py-3 cursor-pointer hover:border-white/20 transition-colors"
               >
                 <div className="min-w-0">
-                  <p className="text-xs text-white/40 truncate">{h.label}</p>
-                  <p className="text-xs text-white/25 mt-0.5">
+                  <p className="text-xs text-[var(--text)]/40 truncate">{h.label}</p>
+                  <p className="text-xs text-[var(--text)]/25 mt-0.5">
                     leading {formatVal(lh)}{unit}
                     <span className="ml-2 opacity-60">({formatVal(secLh)}{unit === "pt" ? "px" : "pt"})</span>
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0 ml-3">
-                  <p className="text-sm font-mono font-bold">{formatVal(h.size)}<span className="text-xs text-white/40 ml-0.5">{unit}</span></p>
-                  <p className="text-xs text-white/30">{formatVal(secSize)}{unit === "pt" ? "px" : "pt"}</p>
+                  <p className="text-sm font-mono font-bold">{formatVal(h.size)}<span className="text-xs text-[var(--text)]/40 ml-0.5">{unit}</span></p>
+                  <p className="text-xs text-[var(--text)]/30">{formatVal(secSize)}{unit === "pt" ? "px" : "pt"}</p>
                 </div>
               </div>
             );
@@ -1629,7 +1629,7 @@ function TypographyTool() {
 
       {/* SPAZIATURE */}
       <div>
-        <p className="text-xs text-white/40 uppercase tracking-widest mb-2">Spaziature</p>
+        <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest mb-2">Spaziature</p>
         <div className="space-y-1.5">
           {spacings.map((s) => {
             const sec = unit === "pt" ? ptToPx(s.value) : pxToPt(s.value);
@@ -1642,11 +1642,11 @@ function TypographyTool() {
               >
                 <div>
                   <p className="text-sm font-mono font-semibold">{s.label}</p>
-                  <p className="text-xs text-white/30 mt-0.5">{s.use}</p>
+                  <p className="text-xs text-[var(--text)]/30 mt-0.5">{s.use}</p>
                 </div>
                 <div className="text-right flex-shrink-0 ml-3">
-                  <p className="text-sm font-mono font-bold">{formatVal(s.value)}<span className="text-xs text-white/40 ml-0.5">{unit}</span></p>
-                  <p className="text-xs text-white/30">{formatVal(sec)}{unit === "pt" ? "px" : "pt"}</p>
+                  <p className="text-sm font-mono font-bold">{formatVal(s.value)}<span className="text-xs text-[var(--text)]/40 ml-0.5">{unit}</span></p>
+                  <p className="text-xs text-[var(--text)]/30">{formatVal(sec)}{unit === "pt" ? "px" : "pt"}</p>
                 </div>
               </div>
             );
@@ -1657,7 +1657,7 @@ function TypographyTool() {
       {/* COPY ALL */}
       <button
         onClick={copyAll}
-        className="w-full py-3 border border-white/10 rounded-xl text-white/50 text-sm hover:border-white/30 transition-colors"
+        className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 text-sm hover:border-white/30 transition-colors"
       >
         {copied === "all" ? "✓ Tutto copiato" : "Copia tutti i valori"}
       </button>
@@ -1670,44 +1670,44 @@ function TypographyTool() {
 
 function BottomNav({ activePage }: { activePage?: string }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+    <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
       <Link href="/" className="flex flex-col items-center gap-1.5">
         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-          <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         </div>
-        <span className="text-xs text-white/30 font-medium">Home</span>
+        <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
       </Link>
 
       <Link href="/calendar" className="flex flex-col items-center gap-1.5">
         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-          <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
-        <span className="text-xs text-white/30 font-medium">Calendario</span>
+        <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
       </Link>
 
       <div className="w-10 h-10" />
 
       <div className="flex flex-col items-center gap-1.5">
         <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
           </svg>
         </div>
-        <span className="text-xs text-white/30 font-medium">Tools</span>
+        <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
       </div>
 
       <Link href="/settings" className="flex flex-col items-center gap-1.5">
         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-          <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
-        <span className="text-xs text-white/30 font-medium">Settings</span>
+        <span className="text-xs text-[var(--text)]/30 font-medium">Settings</span>
       </Link>
     </nav>
   );
@@ -1785,14 +1785,14 @@ export default function ToolsPage() {
 
   if (activeTool) {
     return (
-      <main className="min-h-screen bg-black text-white flex flex-col">
-        <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-4">
+      <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
+        <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTool(null)}
               className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0"
             >
-              <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -1808,16 +1808,16 @@ export default function ToolsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col">
-      <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-4">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-4">
         <h1 className="text-xl font-bold tracking-tight">Tools</h1>
-        <p className="text-white/30 text-xs mt-0.5">Strumenti per la produzione</p>
+        <p className="text-[var(--text)]/30 text-xs mt-0.5">Strumenti per la produzione</p>
       </header>
 
       <div className="flex-1 overflow-y-auto px-5 py-5 pb-36 space-y-8">
         {TOOL_CATEGORIES.map((cat) => (
           <section key={cat.label}>
-            <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-4">{cat.label}</h2>
+            <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-4">{cat.label}</h2>
             <div className="space-y-4">
               {cat.subcategories.map((sub) => (
                 <div key={sub.label}>
@@ -1827,23 +1827,23 @@ export default function ToolsPage() {
                     ) : (
                       <span className="text-sm">{sub.emoji}</span>
                     )}
-                    <span className="text-sm text-white/50 font-medium">{sub.label}</span>
+                    <span className="text-sm text-[var(--text)]/50 font-medium">{sub.label}</span>
                   </div>
                   {sub.tools.length === 0 ? (
-                    <p className="text-white/20 text-xs pl-6 py-2">Nessun tool disponibile</p>
+                    <p className="text-[var(--text)]/20 text-xs pl-6 py-2">Nessun tool disponibile</p>
                   ) : (
                     <div className="space-y-2">
                       {sub.tools.map((tool) => (
                         <button
                           key={String(tool.id)}
                           onClick={() => setActiveTool(tool.id)}
-                          className="w-full flex items-center justify-between border border-white/10 rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
+                          className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-white/20 active:bg-white/5 transition-all text-left"
                         >
                           <div>
                             <p className="text-sm font-semibold">{tool.name}</p>
-                            <p className="text-xs text-white/40 mt-0.5">{tool.description}</p>
+                            <p className="text-xs text-[var(--text)]/40 mt-0.5">{tool.description}</p>
                           </div>
-                          <svg className="w-4 h-4 text-white/20 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-[var(--text)]/20 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>

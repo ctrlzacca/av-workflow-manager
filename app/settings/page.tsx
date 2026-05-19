@@ -190,19 +190,35 @@ export default function SettingsPage() {
     router.push("/");
   }
 
+  // ── TOGGLE THEME ────────────────────────────────────────────────────────────
+
+  function toggleTheme() {
+  const html = document.documentElement;
+
+  if (html.classList.contains("dark")) {
+    html.classList.remove("dark");
+    html.classList.add("light");
+    localStorage.setItem("theme", "light");
+  } else {
+    html.classList.remove("light");
+    html.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  }
+}
+
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-10 bg-black/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
+      <header className="sticky top-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
             className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0"
           >
-            <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -215,24 +231,24 @@ export default function SettingsPage() {
 
         {/* ── PREFERENZE DI DEFAULT ── */}
         <section>
-          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+          <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Preferenze di default
           </h2>
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Categoria</p>
-                <p className="text-xs text-white/30 mt-0.5">Categoria preselezionata per i nuovi progetti</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">Categoria preselezionata per i nuovi progetti</p>
               </div>
               <select
                 value={defaultCategory}
                 onChange={(e) => setDefaultCategory(e.target.value)}
-                className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
-                <option value="Ableton" className="bg-black">Ableton</option>
-                <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+                <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
+                <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.name} className="bg-black">{cat.icon} {cat.name}</option>
+                  <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">{cat.icon} {cat.name}</option>
                 ))}
               </select>
             </div>
@@ -240,15 +256,15 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Ordinamento</p>
-                <p className="text-xs text-white/30 mt-0.5">Ordine di visualizzazione all'apertura</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">Ordine di visualizzazione all'apertura</p>
               </div>
               <select
                 value={defaultSort}
                 onChange={(e) => setDefaultSort(e.target.value)}
-                className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none max-w-32"
+                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none max-w-32"
               >
                 {SORT_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
+                  <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
                 ))}
               </select>
             </div>
@@ -256,18 +272,18 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Filtro</p>
-                <p className="text-xs text-white/30 mt-0.5">Filtro attivo all'apertura dell'app</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">Filtro attivo all'apertura dell'app</p>
               </div>
               <select
                 value={defaultFilter}
                 onChange={(e) => setDefaultFilter(e.target.value)}
-                className="bg-white/5 border border-white/10 text-white/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
-                <option value="All" className="bg-black">Tutti</option>
-                <option value="Ableton" className="bg-black">Ableton</option>
-                <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+                <option value="All" className="bg-[var(--bg)]">Tutti</option>
+                <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
+                <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.name} className="bg-black">{cat.icon} {cat.name}</option>
+                  <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">{cat.icon} {cat.name}</option>
                 ))}
               </select>
             </div>
@@ -276,7 +292,7 @@ export default function SettingsPage() {
           <button
             onClick={saveSettings}
             className={`w-full mt-3 py-4 rounded-2xl font-semibold text-sm transition-all ${
-              saved ? "bg-green-500 text-white" : "bg-white text-black"
+              saved ? "bg-green-500 text-[var(--text)]" : "bg-white text-black"
             }`}
           >
             {saved ? "✓ Salvato" : "Salva preferenze"}
@@ -285,7 +301,7 @@ export default function SettingsPage() {
 
         {/* ── CATEGORIE CUSTOM ── */}
         <section>
-          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+          <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Categorie personalizzate
           </h2>
 
@@ -301,24 +317,24 @@ export default function SettingsPage() {
                       <input
                         value={editingCat.icon}
                         onChange={(e) => setEditingCat({ ...editingCat, icon: e.target.value })}
-                        className="w-12 bg-white/5 border border-white/10 text-white text-center text-lg rounded-xl focus:outline-none"
+                        className="w-12 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-center text-lg rounded-xl focus:outline-none"
                       />
                       <input
                         value={editingCat.name}
                         onChange={(e) => setEditingCat({ ...editingCat, name: e.target.value })}
-                        className="flex-1 bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none"
+                        className="flex-1 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none"
                         placeholder="Nome categoria"
                       />
                     </div>
                     <input
                       value={Array.isArray(editingCat.fields) ? editingCat.fields.join(", ") : editingCat.fields}
                       onChange={(e) => setEditingCat({ ...editingCat, fields: e.target.value.split(",").map(f => f.trim()).filter(f => f) })}
-                      className="w-full bg-white/5 border border-white/10 text-white/70 text-sm px-3 py-2 rounded-xl focus:outline-none"
+                      className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none"
                       placeholder="Campi Info (es. Codec, Durata, Formato)"
                     />
-                    <p className="text-xs text-white/25">Separa i campi con una virgola</p>
+                    <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
                     <div className="flex gap-2">
-                      <button onClick={() => setEditingCat(null)} className="flex-1 py-2 border border-white/10 rounded-xl text-white/40 text-xs">Annulla</button>
+                      <button onClick={() => setEditingCat(null)} className="flex-1 py-2 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-xs">Annulla</button>
                       <button onClick={updateCategory} className="flex-1 py-2 bg-white text-black rounded-xl text-xs font-semibold">Salva</button>
                     </div>
                   </div>
@@ -330,20 +346,20 @@ export default function SettingsPage() {
                       <div className="min-w-0">
                         <p className="text-sm font-medium">{cat.name}</p>
                         {cat.fields.length > 0 && (
-                          <p className="text-xs text-white/25 truncate mt-0.5">{cat.fields.join(", ")}</p>
+                          <p className="text-xs text-[var(--text)]/25 truncate mt-0.5">{cat.fields.join(", ")}</p>
                         )}
                       </div>
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
                       <button
                         onClick={() => setEditingCat(cat)}
-                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:text-white transition-colors text-xs"
+                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text)]/30 hover:text-[var(--text)] transition-colors text-xs"
                       >
                         ✎
                       </button>
                       <button
                         onClick={() => deleteCategory(cat)}
-                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:text-red-400 transition-colors text-xs"
+                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text)]/30 hover:text-red-400 transition-colors text-xs"
                       >
                         ✕
                       </button>
@@ -354,7 +370,7 @@ export default function SettingsPage() {
             ))}
 
             {categories.length === 0 && (
-              <p className="text-white/20 text-xs text-center py-4">Nessuna categoria personalizzata</p>
+              <p className="text-[var(--text)]/20 text-xs text-center py-4">Nessuna categoria personalizzata</p>
             )}
           </div>
 
@@ -363,7 +379,7 @@ export default function SettingsPage() {
             <div className="mt-3 bg-white/3 border border-white/8 rounded-2xl p-4 space-y-3">
 
               {/* PRESET SOFTWARES */}
-              <p className="text-xs text-white/30 mb-2">Scegli software</p>
+              <p className="text-xs text-[var(--text)]/30 mb-2">Scegli software</p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {PRESET_SOFTWARES.map((sw) => (
                   <button
@@ -373,7 +389,7 @@ export default function SettingsPage() {
                       setNewCatIcon(sw.icon);
                     }}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${
-                      newCatName === sw.name ? "border-white/50 bg-white/10 text-white" : "border-white/10 text-white/40"
+                      newCatName === sw.name ? "border-white/50 bg-white/10 text-[var(--text)]" : "border-[color:var(--border)] text-[var(--text)]/40"
                     }`}
                   >
                       {renderIcon(sw.icon, sw.isImage)}
@@ -383,31 +399,31 @@ export default function SettingsPage() {
               </div>
 
             {/* OPPURE PERSONALIZZA */}
-                <p className="text-xs text-white/30">Oppure personalizza</p>
+                <p className="text-xs text-[var(--text)]/30">Oppure personalizza</p>
                 <div className="flex gap-2 items-center">
                   
-                  <div className="w-12 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl">
+                  <div className="w-12 h-10 flex items-center justify-center bg-white/5 border border-[color:var(--border)] rounded-xl">
                     {renderIcon(newCatIcon, newCatIcon.startsWith("/"))}
                   </div>
 
                   <input
                     value={newCatName}
                     onChange={(e) => setNewCatName(e.target.value)}
-                    className="flex-1 bg-white/5 border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                    className="flex-1 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
                     placeholder="Nome categoria"
                   />
                 </div>
                 <input
                   value={newCatFields}
                   onChange={(e) => setNewCatFields(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 text-white/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                  className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
                   placeholder="Campi Info (es. Codec, Durata, Formato)"
                 />
-                <p className="text-xs text-white/25">Separa i campi con una virgola</p>
+                <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => { setShowAddCat(false); setNewCatName(""); setNewCatIcon("📁"); setNewCatFields(""); }}
-                    className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+                    className="flex-1 py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm"
                   >
                     Annulla
                   </button>
@@ -419,7 +435,7 @@ export default function SettingsPage() {
                   ) : (
                     <button
                       onClick={() => setShowAddCat(true)}
-                      className="w-full mt-3 py-4 border border-white/10 rounded-2xl text-white/40 text-sm hover:border-white/20 hover:text-white/60 transition-colors"
+                      className="w-full mt-3 py-4 border border-[color:var(--border)] rounded-2xl text-[var(--text)]/40 text-sm hover:border-white/20 hover:text-[var(--text)]/60 transition-colors"
                     >
                       + Nuova categoria
                     </button>
@@ -428,23 +444,23 @@ export default function SettingsPage() {
 
         {/* ── GESTIONE DATI ── */}
         <section>
-          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+          <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Gestione dati
           </h2>
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Esporta progetti</p>
-                <p className="text-xs text-white/30 mt-0.5">{projectCount} progetti · backup JSON</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">{projectCount} progetti · backup JSON</p>
               </div>
-              <button onClick={exportProjects} className="bg-white/5 border border-white/10 text-white/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
+              <button onClick={exportProjects} className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
                 Esporta
               </button>
             </div>
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium text-red-400/80">Elimina tutto</p>
-                <p className="text-xs text-white/30 mt-0.5">Rimuove tutti i progetti dal database</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">Rimuove tutti i progetti dal database</p>
               </div>
               <button onClick={deleteAllProjects} className="bg-red-400/10 border border-red-400/20 text-red-400/70 text-xs px-4 py-2 rounded-xl hover:bg-red-400/20 transition-colors">
                 Elimina
@@ -455,13 +471,13 @@ export default function SettingsPage() {
 
         {/* ── INFO APP ── */}
         <section>
-          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+          <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Info app
           </h2>
           <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Versione</p>
-              <span className="text-xs text-white/30">{APP_VERSION}</span>
+              <span className="text-xs text-[var(--text)]/30">{APP_VERSION}</span>
             </div>
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Repository</p>
@@ -471,12 +487,12 @@ export default function SettingsPage() {
             </div>
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Progetti salvati</p>
-              <span className="text-xs text-white/30">{projectCount}</span>
+              <span className="text-xs text-[var(--text)]/30">{projectCount}</span>
             </div>
             <div className="flex items-center justify-between px-4 py-4">
             <div>
               <p className="text-sm font-medium text-red-400/80">Logout</p>
-              <p className="text-xs text-white/30 mt-0.5">Esci dal tuo account</p>
+              <p className="text-xs text-[var(--text)]/30 mt-0.5">Esci dal tuo account</p>
             </div>
               <button
               onClick={async () => {
@@ -501,11 +517,11 @@ export default function SettingsPage() {
           />
 
           <div className="min-w-0">
-            <p className="text-sm font-medium text-white/70">
+            <p className="text-sm font-medium text-[var(--text)]/70">
               AV Workflow Manager
             </p>
 
-            <p className="text-xs text-white/30 leading-relaxed">
+            <p className="text-xs text-[var(--text)]/30 leading-relaxed">
               © 2026 Matteo Zaccarella<br />
               Logo design by Federica Gandolfo
             </p>
@@ -516,40 +532,40 @@ export default function SettingsPage() {
       </div>
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Home</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
         </Link>
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Calendario</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
         <div className="w-10 h-10" />
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Tools</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Settings</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Settings</span>
         </Link>
       </nav>
     </main>

@@ -11,7 +11,7 @@ import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 const PRIORITY_COLOR: Record<Project["priority"], string> = {
-  Low: "text-white/60",
+  Low: "text-[var(--text)]/60",
   Medium: "text-yellow-400",
   High: "text-red-400",
 };
@@ -58,7 +58,7 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full py-4 border border-white/10 rounded-xl text-white/40 text-sm hover:border-white/20 hover:text-white/60 transition-colors"
+        className="w-full py-4 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm hover:border-white/20 hover:text-[var(--text)]/60 transition-colors"
       >
         + Aggiungi riferimento
       </button>
@@ -66,30 +66,30 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
   }
 
   return (
-    <div className="border border-white/10 rounded-xl p-4 space-y-3">
+    <div className="border border-[color:var(--border)] rounded-xl p-4 space-y-3">
       <input
         autoFocus
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Titolo (es. Four Tet - Parallel Jalebi)"
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
       />
       <input
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="Link (YouTube, Spotify, SoundCloud...)"
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
       />
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="Nota (es. il bassline al minuto 2:30 mi ispira molto)"
-        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 resize-none h-20"
+        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 resize-none h-20"
       />
       <div className="flex gap-2">
         <button
           onClick={() => { setOpen(false); setTitle(""); setUrl(""); setNote(""); }}
-          className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+          className="flex-1 py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm"
         >
           Annulla
         </button>
@@ -127,25 +127,25 @@ function MoodItem({
           autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
           placeholder="Titolo"
         />
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
           placeholder="Link"
         />
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 resize-none h-20"
+          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 resize-none h-20"
           placeholder="Nota"
         />
         <div className="flex gap-2">
           <button
             onClick={() => { setTitle(item.title); setUrl(item.url); setNote(item.note); setEditing(false); }}
-            className="flex-1 py-3 border border-white/10 rounded-xl text-white/40 text-sm"
+            className="flex-1 py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm"
           >
             Annulla
           </button>
@@ -164,7 +164,7 @@ function MoodItem({
     <div className="border border-white/8 rounded-xl p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white/80 truncate">{item.title}</p>
+          <p className="text-sm font-medium text-[var(--text)]/80 truncate">{item.title}</p>
           
           <a  href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
             target="_blank"
@@ -174,19 +174,19 @@ function MoodItem({
             {item.url.replace(/^https?:\/\//, "")}
           </a>
           {item.note && (
-            <p className="text-xs text-white/40 mt-2 leading-relaxed">{item.note}</p>
+            <p className="text-xs text-[var(--text)]/40 mt-2 leading-relaxed">{item.note}</p>
           )}
         </div>
         <div className="flex gap-1 flex-shrink-0">
           <button
             onClick={() => setEditing(true)}
-            className="text-white/30 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-xs"
+            className="text-[var(--text)]/30 hover:text-[var(--text)] transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-xs"
           >
             ✎
           </button>
           <button
             onClick={onDelete}
-            className="text-white/30 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-xs"
+            className="text-[var(--text)]/30 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-xs"
           >
             ✕
           </button>
@@ -347,17 +347,17 @@ export default function ProjectPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-white/50 text-sm">Caricamento...</p>
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex items-center justify-center">
+        <p className="text-[var(--text)]/50 text-sm">Caricamento...</p>
       </div>
     );
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
-        <p className="text-white/50 text-sm">Progetto non trovato.</p>
-        <button onClick={() => router.push("/")} className="text-sm text-white/40 hover:text-white">← Home</button>
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col items-center justify-center gap-4">
+        <p className="text-[var(--text)]/50 text-sm">Progetto non trovato.</p>
+        <button onClick={() => router.push("/")} className="text-sm text-[var(--text)]/40 hover:text-[var(--text)]">← Home</button>
       </div>
     );
   }
@@ -368,10 +368,10 @@ export default function ProjectPage() {
 
   return (
     <main
-      className="min-h-screen bg-black text-white flex flex-col relative" 
+      className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col relative" 
       >
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-0">
 
         {/* BACK + LOGO + TITOLO */}
         <div className="flex items-center gap-3 mb-4">
@@ -379,7 +379,7 @@ export default function ProjectPage() {
             onClick={() => router.push("/")}
             className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0"
           >
-            <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -392,7 +392,7 @@ export default function ProjectPage() {
 
           {/* SAVE FEEDBACK */}
           <div className={`flex-shrink-0 flex items-center gap-1.5 text-xs transition-all duration-300 ${
-            showSaved ? "text-green-400 opacity-100" : "text-white/0 opacity-0"
+            showSaved ? "text-green-400 opacity-100" : "text-[var(--text)]/0 opacity-0"
           }`}>
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -410,32 +410,32 @@ export default function ProjectPage() {
           <select
             value={project.status}
             onChange={(e) => updateField("status", e.target.value as Project["status"])}
-            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
-            <option value="Active" className="bg-black">Active</option>
-            <option value="Paused" className="bg-black">Paused</option>
-            <option value="Blocked" className="bg-black">Blocked</option>
+            <option value="Active" className="bg-[var(--bg)]">Active</option>
+            <option value="Paused" className="bg-[var(--bg)]">Paused</option>
+            <option value="Blocked" className="bg-[var(--bg)]">Blocked</option>
           </select>
 
           <select
             value={project.priority}
             onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
-            className={`bg-white/5 border border-white/10 text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
+            className={`bg-white/5 border border-[color:var(--border)] text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
           >
-            <option value="Low" className="bg-black">Low</option>
-            <option value="Medium" className="bg-black">Medium</option>
-            <option value="High" className="bg-black">High</option>
+            <option value="Low" className="bg-[var(--bg)]">Low</option>
+            <option value="Medium" className="bg-[var(--bg)]">Medium</option>
+            <option value="High" className="bg-[var(--bg)]">High</option>
           </select>
 
           <select
             value={project.category}
             onChange={(e) => updateField("category", e.target.value)}
-            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
-            <option value="Ableton" className="bg-black">Ableton</option>
-            <option value="TouchDesigner" className="bg-black">TouchDesigner</option>
+            <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
+            <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
             {categories.map((cat) => (
-            <option key={cat.id} value={cat.name} className="bg-black">
+            <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">
               {cat.name}
             </option>
             ))}
@@ -445,7 +445,7 @@ export default function ProjectPage() {
             type="date"
             value={project.deadline}
             onChange={(e) => updateField("deadline", e.target.value)}
-            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           />
         </div>
 
@@ -459,13 +459,13 @@ export default function ProjectPage() {
                   if (e.target.value === "__new__") { setShowNewFolder(true); updateField("folder", ""); }
                   else { updateField("folder", e.target.value); }
                 }}
-                className="bg-white/5 border border-white/10 text-white/40 text-xs px-3 py-2 rounded-xl focus:outline-none"
+                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/40 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
-                <option value="" className="bg-black">Nessuna cartella</option>
+                <option value="" className="bg-[var(--bg)]">Nessuna cartella</option>
                 {availableFolders.map((f) => (
-                  <option key={f} value={f} className="bg-black">{f}</option>
+                  <option key={f} value={f} className="bg-[var(--bg)]">{f}</option>
                 ))}
-                <option value="__new__" className="bg-black">+ Nuova cartella...</option>
+                <option value="__new__" className="bg-[var(--bg)]">+ Nuova cartella...</option>
               </select>
 
               {project.folder?.trim() && (
@@ -476,7 +476,7 @@ export default function ProjectPage() {
                     await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
                     updateField("folder", "");
                   }}
-                  className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-red-400 transition-colors text-xs"
+                  className="w-8 h-8 rounded-xl bg-white/5 border border-[color:var(--border)] flex items-center justify-center text-[var(--text)]/60 hover:text-red-400 transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -488,7 +488,7 @@ export default function ProjectPage() {
               autoFocus
               type="text"
               placeholder="Nome cartella..."
-              className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 flex-1"
+              className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 flex-1"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const val = (e.target as HTMLInputElement).value.trim();
@@ -517,7 +517,7 @@ export default function ProjectPage() {
 
         {/* PROGRESS */}
         <div className="mb-4">
-          <div className="flex justify-between text-xs text-white/60 mb-1.5">
+          <div className="flex justify-between text-xs text-[var(--text)]/60 mb-1.5">
             <span>{doneTasks}/{project.tasks.length} tasks completate</span>
             <span>{progress}%</span>
           </div>
@@ -533,7 +533,7 @@ export default function ProjectPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-                activeTab === tab ? "border-white text-white" : "border-transparent text-white/60"
+                activeTab === tab ? "border-white text-[var(--text)]" : "border-transparent text-[var(--text)]/60"
               }`}
             >
               
@@ -563,7 +563,7 @@ export default function ProjectPage() {
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-        className="flex-1 p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/50 focus:outline-none focus:border-white/20 text-sm"
+        className="flex-1 p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-white/20 text-sm"
         placeholder="Aggiungi task..."
       />
       <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">+</button>
@@ -603,7 +603,7 @@ export default function ProjectPage() {
           </button>
 
           {/* TITOLO */}
-          <span className={`flex-1 text-sm ${task.done ? "line-through text-white/70" : "text-white/80"}`}>
+          <span className={`flex-1 text-sm ${task.done ? "line-through text-[var(--text)]/70" : "text-[var(--text)]/80"}`}>
             {task.title}
           </span>
 
@@ -616,7 +616,7 @@ export default function ProjectPage() {
                 [updated[i - 1], updated[i]] = [updated[i], updated[i - 1]];
                 updateField("tasks", updated);
               }}
-              className="text-white/70 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
+              className="text-[var(--text)]/70 hover:text-[var(--text)]/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
               disabled={i === 0}
             >
               ▲
@@ -628,7 +628,7 @@ export default function ProjectPage() {
                 [updated[i], updated[i + 1]] = [updated[i + 1], updated[i]];
                 updateField("tasks", updated);
               }}
-              className="text-white/70 hover:text-white/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
+              className="text-[var(--text)]/70 hover:text-[var(--text)]/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-sm disabled:opacity-20"
               disabled={i === project.tasks.length - 1}
             >
               ▼
@@ -638,14 +638,14 @@ export default function ProjectPage() {
           {/* DELETE */}
           <button
             onClick={() => deleteTask(i, task.title)}
-            className="text-white/50 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm flex-shrink-0"
+            className="text-[var(--text)]/50 hover:text-red-400 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-400/10 text-sm flex-shrink-0"
           >
             ✕
           </button>
         </div>
       ))}
       {project.tasks.length === 0 && (
-        <p className="text-white/50 text-sm text-center py-12">Nessuna task ancora.</p>
+        <p className="text-[var(--text)]/50 text-sm text-center py-12">Nessuna task ancora.</p>
       )}
     </div>
   </div>
@@ -656,12 +656,12 @@ export default function ProjectPage() {
           <div className="divide-y divide-white/5">
 
             <div className="flex items-center gap-4 py-4">
-            <span className="text-white/70 text-sm w-24 flex-shrink-0">Titolo</span>
+            <span className="text-[var(--text)]/70 text-sm w-24 flex-shrink-0">Titolo</span>
             <input
               type="text"
               value={project.title}
               onChange={(e) => updateField("title", e.target.value)}
-              className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none border-b border-white/10 focus:border-white/30 transition-colors pb-0.5"
+              className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none border-b border-[color:var(--border)] focus:border-white/30 transition-colors pb-0.5"
             />
           </div>
 
@@ -669,12 +669,12 @@ export default function ProjectPage() {
             {project.category === "Ableton" && (
               <>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/60 text-sm w-24 flex-shrink-0">BPM</span>
-                  <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+                  <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">BPM</span>
+                  <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/60 text-sm w-24 flex-shrink-0">Tonalità</span>
-                  <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+                  <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Tonalità</span>
+                  <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
               </>
             )}
@@ -683,12 +683,12 @@ export default function ProjectPage() {
             {project.category === "TouchDesigner" && (
               <>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/60 text-sm w-24 flex-shrink-0">Risoluzione</span>
-                  <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+                  <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Risoluzione</span>
+                  <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
-                  <span className="text-white/60 text-sm w-24 flex-shrink-0">FPS</span>
-                  <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+                  <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">FPS</span>
+                  <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
               </>
             )}
@@ -696,25 +696,25 @@ export default function ProjectPage() {
             {/* CAMPI CUSTOM CATEGORY */}
             {!isBuiltin && currentCategory?.fields.map((fieldName) => (
               <div key={fieldName} className="flex items-center gap-4 py-4">
-                <span className="text-white/60 text-sm w-24 flex-shrink-0 truncate">{fieldName}</span>
+                <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0 truncate">{fieldName}</span>
                 <input
                   type="text"
                   value={project.custom_fields?.[fieldName] ?? ""}
                   onChange={(e) => updateCustomField(fieldName, e.target.value)}
                   placeholder={`es. ${fieldName}...`}
-                  className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40"
+                  className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40"
                 />
               </div>
             ))}
 
             {/* CAMPI COMUNI */}
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/60 text-sm w-24 flex-shrink-0">Plugin</span>
-              <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+              <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Plugin</span>
+              <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
             </div>
 
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/60 text-sm w-24 flex-shrink-0">Link</span>
+              <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Link</span>
               {project.links?.trim() ? (
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <a
@@ -725,21 +725,21 @@ export default function ProjectPage() {
                   >
                     {project.links.replace(/^https?:\/\//, "")}
                   </a>
-                  <button onClick={() => updateField("links", "")} className="text-white/50 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-white/10 rounded-lg text-xs">✕</button>
+                  <button onClick={() => updateField("links", "")} className="text-[var(--text)]/50 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-[color:var(--border)] rounded-lg text-xs">✕</button>
                 </div>
               ) : (
-                <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+                <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
               )}
             </div>
 
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/60 text-sm w-24 flex-shrink-0">Extra</span>
-              <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40" />
+              <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Extra</span>
+              <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
             </div>
 
             {/* DELETE */}
             <div className="flex items-center gap-4 py-4">
-              <span className="text-white/60 text-sm w-24 flex-shrink-0">Progetto</span>
+              <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Progetto</span>
               <button
                 onClick={async () => {
                   const confirmed = window.confirm(`Eliminare "${project.title}"? Questa azione è irreversibile.`);
@@ -761,7 +761,7 @@ export default function ProjectPage() {
             value={project.notes ?? ""}
             onChange={(e) => updateField("notes", e.target.value)}
             placeholder="Scrivi qui le tue note..."
-            className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/40 resize-none leading-relaxed"
+            className="w-full h-80 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40 resize-none leading-relaxed"
           />
         )}
 
@@ -777,7 +777,7 @@ export default function ProjectPage() {
       {/* LIST */}
       <div className="mt-4 space-y-3">
         {(project.moodboard ?? []).length === 0 && (
-          <p className="text-white/40 text-sm text-center py-8">Nessun riferimento ancora.</p>
+          <p className="text-[var(--text)]/40 text-sm text-center py-8">Nessun riferimento ancora.</p>
         )}
         {(project.moodboard ?? []).map((item, i) => (
           <MoodItem
@@ -803,40 +803,40 @@ export default function ProjectPage() {
 
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Home</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
         </Link>
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Calendario</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
         <div className="w-10 h-10" />
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Tools</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Settings</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Settings</span>
         </Link>
       </nav>
     </main>

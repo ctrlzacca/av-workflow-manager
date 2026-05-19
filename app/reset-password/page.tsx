@@ -20,13 +20,13 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-1">Nuova password</h1>
-        <p className="text-white/30 text-sm mb-8">Scegli una nuova password per il tuo account.</p>
+        <p className="text-[var(--text)]/30 text-sm mb-8">Scegli una nuova password per il tuo account.</p>
         <div className="space-y-3">
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Nuova password" className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm" />
-          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Conferma password" className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-sm" />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Nuova password" className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm" />
+          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Conferma password" className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm" />
         </div>
         {error && <p className="text-red-400 text-xs mt-3">{error}</p>}
         <button onClick={handleReset} disabled={loading} className="w-full mt-5 py-4 bg-white text-black rounded-xl font-semibold text-sm disabled:opacity-50">

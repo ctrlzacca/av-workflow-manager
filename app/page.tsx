@@ -248,10 +248,10 @@ export default function Home() {
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-0">
 
         {/* TITOLO + SORT */}
         <div className="flex items-center justify-between mb-4">
@@ -262,16 +262,16 @@ export default function Home() {
               className="w-14 h-14 rounded-2xl"
             />
             <div>
-              <p className="text-white/50 text-xs font-medium tracking-widest uppercase">Workflow Manager</p>
+              <p className="text-[var(--text)]/50 text-xs font-medium tracking-widest uppercase">Workflow Manager</p>
             </div>
           </div>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-white/5 border border-white/10 text-white/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
+            className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
           >
             {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value} className="bg-black">{o.label}</option>
+              <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
             ))}
           </select>
         </div>
@@ -284,8 +284,8 @@ export default function Home() {
               onClick={() => handleFilterChange(f)}
               className={`flex items-center gap-2 px-4 py-2 text-sm rounded-xl border flex-shrink-0 transition-all ${
                 filter === f
-                  ? "border-white/50 text-white bg-white/10 font-medium"
-                  : "border-white/10 text-white/40 hover:border-white/20 hover:text-white/60"
+                  ? "border-white/50 text-[var(--text)] bg-white/10 font-medium"
+                  : "border-[color:var(--border)] text-[var(--text)]/40 hover:border-white/20 hover:text-[var(--text)]/60"
               }`}
             >
               {f !== "All" && getCategoryIconSmall(f)}
@@ -300,7 +300,7 @@ export default function Home() {
             <button
               onClick={() => setActiveFolder(null)}
               className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                activeFolder === null ? "border-white/25 text-white/50 bg-white/5" : "border-white/8 text-white/25"
+                activeFolder === null ? "border-white/25 text-[var(--text)]/50 bg-white/5" : "border-white/8 text-[var(--text)]/25"
               }`}
             >
               Tutte
@@ -312,7 +312,7 @@ export default function Home() {
                   key={folder}
                   onClick={() => setActiveFolder(folder)}
                   className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                    activeFolder === folder ? "border-white/25 text-white/50 bg-white/5" : "border-white/8 text-white/25"
+                    activeFolder === folder ? "border-white/25 text-[var(--text)]/50 bg-white/5" : "border-white/8 text-[var(--text)]/25"
                   }`}
                 >
                   {folder} <span className="opacity-50 ml-1">({count})</span>
@@ -333,16 +333,16 @@ export default function Home() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Cerca progetto..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+                  className="flex-1 bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
                   onBlur={() => { if (!search) setSearchOpen(false); }}
                 />
                 
               )}
               <button
                 onClick={() => { setSearchOpen(!searchOpen); if (searchOpen) setSearch(""); }}
-                className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0"
+                className="w-9 h-9 rounded-xl bg-white/5 border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
               >
-                <svg className="w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
@@ -353,9 +353,9 @@ export default function Home() {
 
       {/* PROJECT LIST */}
       <div className="flex-1 overflow-y-auto px-5 py-4 pb-36">
-        {loading && <p className="text-white/20 text-sm text-center mt-16">Caricamento...</p>}
+        {loading && <p className="text-[var(--text)]/20 text-sm text-center mt-16">Caricamento...</p>}
         {!loading && sorted.length === 0 && (
-          <p className="text-white/20 text-sm text-center mt-16">Nessun progetto ancora.</p>
+          <p className="text-[var(--text)]/20 text-sm text-center mt-16">Nessun progetto ancora.</p>
         )}
 
         <div className="space-y-3">
@@ -366,7 +366,7 @@ export default function Home() {
                 key={project.slug}
                 href={`/projects/${project.slug}`}
                 style={{ background: getProjectBackground(project.slug) }}
-                className="block border border-white/10 rounded-2xl p-5 hover:border-white/20 active:brightness-110 transition-all"
+                className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-white/20 active:brightness-110 transition-all"
               >
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
@@ -385,14 +385,14 @@ export default function Home() {
                 {/* META ROW */}
                 <div className="flex items-center gap-2 mt-3 ml-11">
                   {project.folder?.trim() && (
-                    <span className="text-xs text-white/30 border border-white/10 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-[var(--text)]/30 border border-[color:var(--border)] px-2 py-0.5 rounded-full">
                       {project.folder}
                     </span>
                   )}
                   {project.deadline && (
-                    <span className="text-xs text-white/25">{project.deadline}</span>
+                    <span className="text-xs text-[var(--text)]/25">{project.deadline}</span>
                   )}
-                  <span className="text-xs text-white/20 ml-auto">{STATUS_LABEL[project.status]}</span>
+                  <span className="text-xs text-[var(--text)]/20 ml-auto">{STATUS_LABEL[project.status]}</span>
                 </div>
 
                 {/* PROGRESS */}
@@ -401,7 +401,7 @@ export default function Home() {
                     <div className="flex-1 h-1 bg-white/8 rounded-full overflow-hidden">
                       <div className="h-full bg-white/50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
                     </div>
-                    <span className="text-xs text-white/25 flex-shrink-0">{progress}%</span>
+                    <span className="text-xs text-[var(--text)]/25 flex-shrink-0">{progress}%</span>
                   </div>
                 </div>
               </Link>
@@ -412,8 +412,8 @@ export default function Home() {
 
       {/* ADD PROJECT MODAL */}
       {showAdd && (
-        <div className="fixed inset-0 z-20 bg-black/80 backdrop-blur flex items-end">
-          <div className="w-full bg-zinc-950 border-t border-white/10 p-6 rounded-t-3xl">
+        <div className="fixed inset-0 z-20 bg-[var(--bg)]/80 backdrop-blur flex items-end">
+          <div className="w-full bg-zinc-950 border-t border-[color:var(--border)] p-6 rounded-t-3xl">
             <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5" />
             <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 
@@ -423,7 +423,7 @@ export default function Home() {
               onChange={(e) => setNewProject(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Nome progetto..."
-              className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 text-base mb-4"
+              className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-base mb-4"
             />
 
             {/* CATEGORY SELECTOR */}
@@ -434,12 +434,12 @@ export default function Home() {
                   onClick={() => setNewProjectCategory(cat)}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
                     newProjectCategory === cat
-                      ? "border-white/50 bg-white/10 text-white"
-                      : "border-white/10 text-white/30"
+                      ? "border-white/50 bg-white/10 text-[var(--text)]"
+                      : "border-[color:var(--border)] text-[var(--text)]/30"
                   }`}
                 >
                   {categories.length === 0 && (
-                    <p className="text-white/30 text-xs text-center py-2">
+                    <p className="text-[var(--text)]/30 text-xs text-center py-2">
                       Nessuna categoria — aggiungine una in Settings
                     </p>
                   )}
@@ -452,7 +452,7 @@ export default function Home() {
             <div className="flex gap-3">
               <button
                 onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
-                className="flex-1 py-4 border border-white/10 rounded-xl text-white/40 text-sm font-medium"
+                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm font-medium"
               >
                 Annulla
               </button>
@@ -468,22 +468,22 @@ export default function Home() {
       )}
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-white/60 font-medium">Home</span>
+          <span className="text-xs text-[var(--text)]/60 font-medium">Home</span>
         </Link>
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Calendario</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
         <button onClick={() => setShowAdd(true)} className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
@@ -491,24 +491,24 @@ export default function Home() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
             </svg>
           </div>
-          <span className="text-xs text-white/60 font-medium">Nuovo</span>
+          <span className="text-xs text-[var(--text)]/60 font-medium">Nuovo</span>
         </button>
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Tools</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Settings</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Settings</span>
         </Link>
       </nav>
     </main>
