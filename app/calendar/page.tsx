@@ -119,15 +119,15 @@ export default function CalendarPage() {
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-black border-b border-white/8 px-5 pt-14 pb-4">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold tracking-tight">Calendario</h1>
           <button
             onClick={goToToday}
-            className="text-xs text-white/40 border border-white/10 px-3 py-1.5 rounded-lg hover:border-white/30 transition-colors"
+            className="text-xs text-[var(--text)]/40 border border-[color:var(--border)] px-3 py-1.5 rounded-lg hover:border-white/30 transition-colors"
           >
             Oggi
           </button>
@@ -139,7 +139,7 @@ export default function CalendarPage() {
             onClick={prevMonth}
             className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center"
           >
-            <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -152,7 +152,7 @@ export default function CalendarPage() {
             onClick={nextMonth}
             className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center"
           >
-            <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -165,7 +165,7 @@ export default function CalendarPage() {
         {/* DAYS OF WEEK */}
         <div className="grid grid-cols-7 px-3 pt-4 pb-2">
           {DAYS.map((d) => (
-            <div key={d} className="text-center text-xs text-white/25 font-medium py-1">
+            <div key={d} className="text-center text-xs text-[var(--text)]/25 font-medium py-1">
               {d}
             </div>
           ))}
@@ -196,9 +196,9 @@ export default function CalendarPage() {
                 {/* DAY NUMBER */}
                 <span className={`text-sm font-medium ${
                   !isValid ? "invisible" :
-                  isToday ? "text-white" :
-                  isSelected ? "text-white" :
-                  "text-white/60"
+                  isToday ? "text-[var(--text)]" :
+                  isSelected ? "text-[var(--text)]" :
+                  "text-[var(--text)]/60"
                 }`}>
                   {isValid ? day : ""}
                 </span>
@@ -222,7 +222,7 @@ export default function CalendarPage() {
 
                 {/* COUNT se più di 3 */}
                 {isValid && dayProjects.length > 3 && (
-                  <span className="text-white/30 text-xs">+{dayProjects.length - 3}</span>
+                  <span className="text-[var(--text)]/30 text-xs">+{dayProjects.length - 3}</span>
                 )}
               </button>
             );
@@ -232,26 +232,26 @@ export default function CalendarPage() {
         {/* SELECTED DAY PROJECTS */}
         {selectedDay && (
           <div className="px-5 mt-4">
-            <h3 className="text-sm font-semibold text-white/50 mb-3">
+            <h3 className="text-sm font-semibold text-[var(--text)]/50 mb-3">
               {selectedDay} {MONTHS[currentMonth]}
             </h3>
 
             {selectedProjects.length === 0 ? (
-              <p className="text-white/20 text-sm py-4 text-center">Nessun progetto in scadenza</p>
+              <p className="text-[var(--text)]/20 text-sm py-4 text-center">Nessun progetto in scadenza</p>
             ) : (
               <div className="space-y-2">
                 {selectedProjects.map((project) => (
                   <Link
                     key={project.slug}
                     href={`/projects/${project.slug}`}
-                    className="flex items-center gap-3 border border-white/10 rounded-xl px-4 py-3 hover:border-white/20 transition-colors"
+                    className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-3 hover:border-white/20 transition-colors"
                   >
                     <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
                       {getCategoryIcon(project.category)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{project.title}</p>
-                      <p className="text-xs text-white/30 mt-0.5">{project.category}</p>
+                      <p className="text-xs text-[var(--text)]/30 mt-0.5">{project.category}</p>
                     </div>
                     <span className={`w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLOR[project.priority]}`} />
                   </Link>
@@ -264,12 +264,12 @@ export default function CalendarPage() {
         {/* TUTTI I PROGETTI CON DEADLINE QUESTO MESE */}
         {!selectedDay && (
           <div className="px-5 mt-4">
-            <h3 className="text-sm font-semibold text-white/50 mb-3">
+            <h3 className="text-sm font-semibold text-[var(--text)]/50 mb-3">
               Scadenze di {MONTHS[currentMonth]}
             </h3>
 
             {loading ? (
-              <p className="text-white/20 text-sm text-center py-4">Caricamento...</p>
+              <p className="text-[var(--text)]/20 text-sm text-center py-4">Caricamento...</p>
             ) : (
               (() => {
                 const monthProjects = projects.filter((p) => {
@@ -279,7 +279,7 @@ export default function CalendarPage() {
                 }).sort((a, b) => a.deadline.localeCompare(b.deadline));
 
                 return monthProjects.length === 0 ? (
-                  <p className="text-white/20 text-sm text-center py-4">Nessuna scadenza questo mese</p>
+                  <p className="text-[var(--text)]/20 text-sm text-center py-4">Nessuna scadenza questo mese</p>
                 ) : (
                   <div className="space-y-2">
                     {monthProjects.map((project) => {
@@ -289,16 +289,16 @@ export default function CalendarPage() {
                         <Link
                           key={project.slug}
                           href={`/projects/${project.slug}`}
-                          className="flex items-center gap-3 border border-white/10 rounded-xl px-4 py-3 hover:border-white/20 transition-colors"
+                          className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-3 hover:border-white/20 transition-colors"
                         >
                           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
-                            <span className={`text-sm font-bold ${isPast ? "text-red-400" : "text-white/60"}`}>
+                            <span className={`text-sm font-bold ${isPast ? "text-red-400" : "text-[var(--text)]/60"}`}>
                               {day}
                             </span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{project.title}</p>
-                            <p className={`text-xs mt-0.5 ${isPast ? "text-red-400/60" : "text-white/30"}`}>
+                            <p className={`text-xs mt-0.5 ${isPast ? "text-red-400/60" : "text-[var(--text)]/30"}`}>
                               {isPast ? "Scaduto" : project.category}
                             </p>
                           </div>
@@ -315,40 +315,40 @@ export default function CalendarPage() {
       </div>
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Home</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
         </Link>
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Calendario</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
         <div className="w-10 h-10" />
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Tools</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-white/30 font-medium">Settings</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Settings</span>
         </Link>
       </nav>
     </main>
