@@ -1691,7 +1691,7 @@ const TOOL_CATEGORIES = [
         emoji: null,
         tools: [
           { id: "harmonic" as ToolId, name: "Analisi Armonica", description: "Scale, accordi e note compatibili" },
-          { id: "bpm" as ToolId, name: "Convertitore BPM / Note", description: "BPM→ms e conversione nota↔frequenza" },
+          { id: "bpm" as ToolId, name: "BPM to ms / Note to Hz", description: "BPM→ms e conversione nota↔frequenza" },
         ],
       },
       {
