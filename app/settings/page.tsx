@@ -490,9 +490,7 @@ export default function SettingsPage() {
             </div>
           </div>
         </section>
-      </div>
-
-      {/* ── APP FOOTER INFO ── */}
+              {/* ── APP FOOTER INFO ── */}
       <section className="mt-10 px-1">
         <div className="border-t border-white/8 pt-5 flex items-center gap-4">
           
@@ -519,6 +517,7 @@ export default function SettingsPage() {
 
         </div>
       </section>
+      </div>
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-black/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
