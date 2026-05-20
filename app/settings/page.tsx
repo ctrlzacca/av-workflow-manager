@@ -443,12 +443,20 @@ export default function SettingsPage() {
                 </div>
               </div>
                   ) : (
-                    <button
-                      onClick={() => setShowAddCat(true)}
-                      className="w-full mt-3 py-4 border border-[color:var(--border)] rounded-2xl text-[var(--text)]/40 text-sm hover:border-[color:var(--border)] hover:text-[var(--text)]/60 transition-colors"
-                    >
-                      + Nuova categoria
-                    </button>
+              <button
+                onClick={() => setShowAddCat(true)}
+                className="
+                  w-full mt-3 py-4
+                  bg-[var(--button-bg)]
+                  text-[var(--button-text)]
+                  border border-[color:var(--border)]
+                  rounded-2xl
+                  text-sm
+                  transition-colors
+                "
+              >
+                + Nuova categoria
+              </button>
                   )}
                 </section>
 
