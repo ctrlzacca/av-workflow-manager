@@ -162,7 +162,7 @@ function HarmonicTool() {
               key={note}
               onClick={() => { setRootIndex(i); setSelectedChord(null); }}
               className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                rootIndex === i ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                rootIndex === i ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
               }`}
             >
               {note}
@@ -180,7 +180,7 @@ function HarmonicTool() {
               key={key}
               onClick={() => { setScaleKey(key); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                scaleKey === key ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                scaleKey === key ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
               }`}
             >
               {name}
@@ -198,7 +198,7 @@ function HarmonicTool() {
               key={ext.id}
               onClick={() => { setExtension(ext.id); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                extension === ext.id ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                extension === ext.id ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
               }`}
             >
               {ext.label}
@@ -291,7 +291,7 @@ function BpmTool() {
         <button
           onClick={() => setActiveSection("bpm")}
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            activeSection === "bpm" ? "bg-white text-[var(--text)]" : "text-[var(--text)]/40"
+            activeSection === "bpm" ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "text-[var(--text)]/40"
           }`}
         >
           BPM → ms
@@ -299,7 +299,7 @@ function BpmTool() {
         <button
           onClick={() => setActiveSection("notefreq")}
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            activeSection === "notefreq" ? "bg-white text-[var(--text)]" : "text-[var(--text)]/40"
+            activeSection === "notefreq" ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "text-[var(--text)]/40"
           }`}
         >
           Nota ↔ Hz
@@ -369,7 +369,7 @@ function BpmTool() {
                   key={note}
                   onClick={() => setSelectedNote(note)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all${
-                    selectedNote === note ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                    selectedNote === note ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
                   }`}
                 >
                   {note}
@@ -383,7 +383,7 @@ function BpmTool() {
                   key={oct}
                   onClick={() => setSelectedOctave(oct)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                    selectedOctave === oct ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                    selectedOctave === oct ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
                   }`}
                 >
                   {oct}
@@ -613,7 +613,7 @@ function deletePalette(id: number) {
 
       <button
         onClick={generatePalette}
-        className="w-full py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm"
+        className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm"
       >
         🎲 Genera nuova palette
       </button>
@@ -854,7 +854,7 @@ function ResolutionTool() {
               key={t}
               onClick={() => setOutputType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all border ${
-                outputType === t ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+                outputType === t ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {t === "monitor" ? "🖥 Monitor" : "📽 Proiettore"}
@@ -902,7 +902,7 @@ function ResolutionTool() {
               onClick={() => { setWidth(p.w); setHeight(p.h); }}
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
                 width === p.w && height === p.h
-                  ? "bg-white text-[var(--text)] border-[color:var(--border)]"
+                  ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]"
                   : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50 hover:border-[color:var(--border)]/30"
               }`}
             >
@@ -1059,7 +1059,7 @@ function FpsBudgetTool() {
               key={g.id}
               onClick={() => setGpuTier(g.id)}
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all ${
-                gpuTier === g.id ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+                gpuTier === g.id ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               <span>{g.label}</span>
@@ -1360,7 +1360,7 @@ function GlslTool() {
         <button
           onClick={saveEntry}
           disabled={!draft.title?.trim()}
-          className="w-full py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm disabled:opacity-40 transition-opacity"
+          className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-40 transition-opacity"
         >
           {isNew ? "Crea snippet" : "Salva modifiche"}
         </button>
@@ -1375,7 +1375,7 @@ function GlslTool() {
 
       <button
         onClick={openNew}
-        className="w-full py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+        className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
@@ -1524,7 +1524,7 @@ function TypographyTool() {
               setUnit(u);
             }}
             className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-              unit === u ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+              unit === u ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
             }`}
           >
             {u === "pt" ? "pt — Stampa" : "px — Schermo"}
@@ -1565,7 +1565,7 @@ function TypographyTool() {
               key={r.value}
               onClick={() => setRatio(r.value)}
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                ratio === r.value ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+                ratio === r.value ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {r.label.split(" (")[0]}
@@ -1823,7 +1823,11 @@ export default function ToolsPage() {
                 <div key={sub.label}>
                   <div className="flex items-center gap-2 mb-2">
                     {sub.icon ? (
-                      <img src={sub.icon} alt={sub.label} className="w-4 h-4 object-contain opacity-50" />
+                      <img
+                      src={sub.icon}
+                      alt={sub.label}
+                      className="w-4 h-4 object-contain opacity-70 dark-icon"
+                    />
                     ) : (
                       <span className="text-sm">{sub.emoji}</span>
                     )}
