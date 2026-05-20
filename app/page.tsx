@@ -491,7 +491,7 @@ export default function Home() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
             </svg>
           </div>
-          <span className="text-xs text-[var(--text)]/60 font-medium">Nuovo</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Nuovo</span>
         </button>
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
