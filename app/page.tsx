@@ -374,7 +374,7 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center flex-shrink-0">
                       {getCategoryIcon(project.category)}
                     </div>
-                    <span className="font-semibold text-base truncate">{project.title}</span>
+                    <span className="font-semibold text-base truncate text-white">{project.title}</span>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 mt-1">
                     <span className={`w-2 h-2 rounded-full ${STATUS_DOT[project.status]}`} />
