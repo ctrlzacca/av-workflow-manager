@@ -563,7 +563,7 @@ export default function ProjectPage() {
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-        className="flex-1 p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-[color:var(--border)]/20 text-sm"
+        className="flex-1 p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)] focus:outline-none focus:border-[color:var(--border)] text-sm"
         placeholder="Aggiungi task..."
       />
       <button onClick={addTask} className="bg-white text-[var(--text)] px-5 rounded-xl font-bold text-lg">+</button>
