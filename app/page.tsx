@@ -371,8 +371,8 @@ export default function Home() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center">
-                      <div className="[&_img]:invert [&_img]:opacity-70">
-                      {getCategoryIcon(project.category)}
+                      <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center [&_svg]:text-white [&_svg]:fill-current [&_svg]:stroke-current">
+                        {getCategoryIcon(project.category)}
                       </div>
                     </div>
                     <span className="font-semibold text-base truncate text-white">{project.title}</span>
