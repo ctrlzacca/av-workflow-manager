@@ -412,7 +412,7 @@ export default function Home() {
       {/* ADD PROJECT MODAL */}
       {showAdd && (
         <div className="fixed inset-0 z-20 bg-[var(--bg)] backdrop-blur flex items-end">
-          <div className="w-full bg-zinc-950 border-t border-[color:var(--border)] p-6 rounded-t-3xl">
+          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl">
             <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto mb-5" />
             <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 
@@ -422,36 +422,40 @@ export default function Home() {
               onChange={(e) => setNewProject(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Nome progetto..."
-              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
+              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[color:var(--text-placeholder)] focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
             />
 
-            {/* CATEGORY SELECTOR */}
-            <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
-              {[...categories.map((c) => c.name)].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setNewProjectCategory(cat)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
-                    newProjectCategory === cat
-                      ? "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]"
-                      : "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]"
-                  }`}
-                >
-                  {categories.length === 0 && (
-                    <p className="text-[var(--text)]/30 text-xs text-center py-2">
-                      Nessuna categoria — aggiungine una in Settings
-                    </p>
-                  )}
-                  {getCategoryIconSmall(cat)}
-                  {cat}
-                </button>
-              ))}
-            </div>
+            {categories.length === 0 ? (
+
+              <p className="text-[color:var(--text-soft)] text-xs text-center py-2">
+                Nessuna categoria — aggiungine una in Settings
+              </p>
+
+            ) : (
+
+              <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
+                {[...categories.map((c) => c.name)].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setNewProjectCategory(cat)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
+                      newProjectCategory === cat
+                        ? "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]"
+                        : "border-[color:var(--border)] text-[color:var(--text-soft)]"
+                    }`}
+                  >
+                    {getCategoryIconSmall(cat)}
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+            )}
 
             <div className="flex gap-3">
               <button
                 onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
-                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm font-medium"
+                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[color:var(--text-soft)] text-sm font-medium"
               >
                 Annulla
               </button>
