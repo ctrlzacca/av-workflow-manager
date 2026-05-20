@@ -8,10 +8,9 @@ export function renderIcon(
       <img
         src={icon}
         alt=""
-        className={`${size} object-contain opacity-70 dark:invert`}
+        className={`${size} object-contain dark-icon`}
       />
     );
   }
-
   return <span>{icon || "📁"}</span>;
 }

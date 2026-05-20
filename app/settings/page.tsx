@@ -44,19 +44,6 @@ export default function SettingsPage() {
   const [showAddCat, setShowAddCat] = useState(false);
   const [editingCat, setEditingCat] = useState<Category | null>(null);
 
-  function renderIcon(icon: string, isImage?: boolean) {
-  if (isImage && icon?.startsWith("/")) {
-    return (
-      <img
-        src={icon}
-        alt=""
-        className="w-3.5 h-3.5 object-contain opacity-70"
-      />
-    );
-  }
-
-  return <span className="text-[var(--text)]">{icon || "📁"}</span>;
-}
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -95,22 +82,13 @@ export default function SettingsPage() {
 
 
   function toggleTheme() {
-  const html = document.documentElement;
-
-  if (theme === "dark") {
-    html.classList.remove("dark");
-    html.classList.add("light");
-
-    localStorage.setItem("theme", "light");
-    setTheme("light");
-  } else {
-    html.classList.remove("light");
-    html.classList.add("dark");
-
-    localStorage.setItem("theme", "dark");
-    setTheme("dark");
+    const html = document.documentElement;
+    const newTheme = theme === "dark" ? "light" : "dark";
+    html.classList.remove("dark", "light");
+    html.classList.add(newTheme);
+    localStorage.setItem("theme", newTheme);
+    setTheme(newTheme);
   }
-}
 
   // ── ADD CATEGORY ──────────────────────────────────────────────────────────
 
