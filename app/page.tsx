@@ -385,7 +385,7 @@ export default function Home() {
                 {/* META ROW */}
                 <div className="flex items-center gap-2 mt-3 ml-11">
                   {project.folder?.trim() && (
-                    <span className="text-xs text-white/30 border border-[color:var(--border)] px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-white/30 border border-white/20 px-2 py-0.5 rounded-full">
                       {project.folder}
                     </span>
                   )}
@@ -398,8 +398,8 @@ export default function Home() {
                 {/* PROGRESS */}
                 <div className="mt-3 ml-11">
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 h-1 bg-[var(--card)]8 rounded-full overflow-hidden">
-                      <div className="h-full bg-[var(--card)]50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                    <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                      <div className="h-full bg-white/50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
                     </div>
                     <span className="text-xs text-white/25 flex-shrink-0">{progress}%</span>
                   </div>
