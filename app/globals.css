@@ -41,3 +41,13 @@ body {
 .dark .icon-image {
   filter: invert(1);
 }
+
+:root {
+  --button-bg: #ffffff;
+  --button-text: #000000;
+}
+
+.light {
+  --button-bg: #000000;
+  --button-text: #ffffff;
+}

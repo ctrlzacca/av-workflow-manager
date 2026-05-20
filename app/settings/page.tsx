@@ -300,8 +300,9 @@ export default function SettingsPage() {
 
           <button
             onClick={saveSettings}
-            className={`w-full mt-3 py-4 rounded-2xl font-semibold text-sm transition-all ${
-              saved ? "bg-green-500 text-[var(--text)]" : "bg-white text-[var(--text)]"
+            className={`w-full mt-3 py-4 rounded-2xl font-semibold text-sm transition-all 
+              ${
+              saved ? "bg-green-500 text-[var(--text)]" : "bg-[var(--button-bg)] text-[var(--button-text)]"
             }`}
           >
             {saved ? "✓ Salvato" : "Salva preferenze"}
