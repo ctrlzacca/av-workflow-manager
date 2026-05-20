@@ -422,7 +422,7 @@ export default function Home() {
               onChange={(e) => setNewProject(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Nome progetto..."
-              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
+              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)] focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
             />
 
             {/* CATEGORY SELECTOR */}
