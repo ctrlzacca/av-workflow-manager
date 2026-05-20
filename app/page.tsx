@@ -251,7 +251,7 @@ export default function Home() {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]/8 px-5 pt-14 pb-0">
 
         {/* TITOLO + SORT */}
         <div className="flex items-center justify-between mb-4">
@@ -284,8 +284,8 @@ export default function Home() {
               onClick={() => handleFilterChange(f)}
               className={`flex items-center gap-2 px-4 py-2 text-sm rounded-xl border flex-shrink-0 transition-all ${
                 filter === f
-                  ? "border-white/50 text-[var(--text)] bg-white/10 font-medium"
-                  : "border-[color:var(--border)] text-[var(--text)]/40 hover:border-white/20 hover:text-[var(--text)]/60"
+                  ? "border-[color:var(--border)]/50 text-[var(--text)] bg-white/10 font-medium"
+                  : "border-[color:var(--border)] text-[var(--text)]/40 hover:border-[color:var(--border)]/20 hover:text-[var(--text)]/60"
               }`}
             >
               {f !== "All" && getCategoryIconSmall(f)}
@@ -300,7 +300,7 @@ export default function Home() {
             <button
               onClick={() => setActiveFolder(null)}
               className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                activeFolder === null ? "border-white/25 text-[var(--text)]/50 bg-white/5" : "border-white/8 text-[var(--text)]/25"
+                activeFolder === null ? "border-[color:var(--border)]/25 text-[var(--text)]/50 bg-white/5" : "border-[color:var(--border)]/8 text-[var(--text)]/25"
               }`}
             >
               Tutte
@@ -312,7 +312,7 @@ export default function Home() {
                   key={folder}
                   onClick={() => setActiveFolder(folder)}
                   className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                    activeFolder === folder ? "border-white/25 text-[var(--text)]/50 bg-white/5" : "border-white/8 text-[var(--text)]/25"
+                    activeFolder === folder ? "border-[color:var(--border)]/25 text-[var(--text)]/50 bg-white/5" : "border-[color:var(--border)]/8 text-[var(--text)]/25"
                   }`}
                 >
                   {folder} <span className="opacity-50 ml-1">({count})</span>
@@ -333,7 +333,7 @@ export default function Home() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Cerca progetto..."
-                  className="flex-1 bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
+                  className="flex-1 bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
                   onBlur={() => { if (!search) setSearchOpen(false); }}
                 />
                 
@@ -366,7 +366,7 @@ export default function Home() {
                 key={project.slug}
                 href={`/projects/${project.slug}`}
                 style={{ background: getProjectBackground(project.slug) }}
-                className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-white/20 active:brightness-110 transition-all"
+                className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-[color:var(--border)]/20 active:brightness-110 transition-all"
               >
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
@@ -423,7 +423,7 @@ export default function Home() {
               onChange={(e) => setNewProject(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Nome progetto..."
-              className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-base mb-4"
+              className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-base mb-4"
             />
 
             {/* CATEGORY SELECTOR */}
@@ -434,7 +434,7 @@ export default function Home() {
                   onClick={() => setNewProjectCategory(cat)}
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
                     newProjectCategory === cat
-                      ? "border-white/50 bg-white/10 text-[var(--text)]"
+                      ? "border-[color:var(--border)]/50 bg-white/10 text-[var(--text)]"
                       : "border-[color:var(--border)] text-[var(--text)]/30"
                   }`}
                 >
@@ -468,7 +468,7 @@ export default function Home() {
       )}
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

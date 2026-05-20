@@ -58,7 +58,7 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full py-4 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm hover:border-white/20 hover:text-[var(--text)]/60 transition-colors"
+        className="w-full py-4 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm hover:border-[color:var(--border)]/20 hover:text-[var(--text)]/60 transition-colors"
       >
         + Aggiungi riferimento
       </button>
@@ -72,19 +72,19 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Titolo (es. Four Tet - Parallel Jalebi)"
-        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
+        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
       />
       <input
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="Link (YouTube, Spotify, SoundCloud...)"
-        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
+        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
       />
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="Nota (es. il bassline al minuto 2:30 mi ispira molto)"
-        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 resize-none h-20"
+        className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 resize-none h-20"
       />
       <div className="flex gap-2">
         <button
@@ -122,24 +122,24 @@ function MoodItem({
 
   if (editing) {
     return (
-      <div className="border border-white/20 rounded-xl p-4 space-y-3">
+      <div className="border border-[color:var(--border)]/20 rounded-xl p-4 space-y-3">
         <input
           autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
+          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
           placeholder="Titolo"
         />
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30"
+          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
           placeholder="Link"
         />
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 resize-none h-20"
+          className="w-full bg-white/5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 resize-none h-20"
           placeholder="Nota"
         />
         <div className="flex gap-2">
@@ -161,7 +161,7 @@ function MoodItem({
   }
 
   return (
-    <div className="border border-white/8 rounded-xl p-4">
+    <div className="border border-[color:var(--border)]/8 rounded-xl p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-[var(--text)]/80 truncate">{item.title}</p>
@@ -371,7 +371,7 @@ export default function ProjectPage() {
       className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col relative" 
       >
       {/* HEADER FISSO */}
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-0">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]/8 px-5 pt-14 pb-0">
 
         {/* BACK + LOGO + TITOLO */}
         <div className="flex items-center gap-3 mb-4">
@@ -488,7 +488,7 @@ export default function ProjectPage() {
               autoFocus
               type="text"
               placeholder="Nome cartella..."
-              className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-white/20 flex-1"
+              className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]/20 flex-1"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const val = (e.target as HTMLInputElement).value.trim();
@@ -527,13 +527,13 @@ export default function ProjectPage() {
         </div>
 
         {/* TABS */}
-        <div className="flex border-b border-white/8">
+        <div className="flex border-b border-[color:var(--border)]/8">
           {(["tasks", "info", "notes", "mood"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-                activeTab === tab ? "border-white text-[var(--text)]" : "border-transparent text-[var(--text)]/60"
+                activeTab === tab ? "border-[color:var(--border)] text-[var(--text)]" : "border-transparent text-[var(--text)]/60"
               }`}
             >
               
@@ -563,7 +563,7 @@ export default function ProjectPage() {
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-        className="flex-1 p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-white/20 text-sm"
+        className="flex-1 p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-[color:var(--border)]/20 text-sm"
         placeholder="Aggiungi task..."
       />
       <button onClick={addTask} className="bg-white text-[var(--text)] px-5 rounded-xl font-bold text-lg">+</button>
@@ -586,13 +586,13 @@ export default function ProjectPage() {
             updated.splice(to, 0, moved);
             updateField("tasks", updated);
           }}
-          className="flex items-center gap-3 border border-white/8 rounded-xl px-4 py-4 cursor-grab active:cursor-grabbing active:border-white/30 active:bg-white/5 transition-all"
+          className="flex items-center gap-3 border border-[color:var(--border)]/8 rounded-xl px-4 py-4 cursor-grab active:cursor-grabbing active:border-[color:var(--border)]/30 active:bg-white/5 transition-all"
         >
           {/* TOGGLE */}
           <button
             onClick={() => toggleTask(i)}
             className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-              task.done ? "bg-white border-white" : "border-white/20"
+              task.done ? "bg-white border-[color:var(--border)]" : "border-[color:var(--border)]/20"
             }`}
           >
             {task.done && (
@@ -661,7 +661,7 @@ export default function ProjectPage() {
               type="text"
               value={project.title}
               onChange={(e) => updateField("title", e.target.value)}
-              className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none border-b border-[color:var(--border)] focus:border-white/30 transition-colors pb-0.5"
+              className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none border-b border-[color:var(--border)] focus:border-[color:var(--border)]/30 transition-colors pb-0.5"
             />
           </div>
 
@@ -803,7 +803,7 @@ export default function ProjectPage() {
 
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">

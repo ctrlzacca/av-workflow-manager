@@ -121,12 +121,12 @@ export default function CalendarPage() {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-white/8 px-5 pt-14 pb-4">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]/8 px-5 pt-14 pb-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold tracking-tight">Calendario</h1>
           <button
             onClick={goToToday}
-            className="text-xs text-[var(--text)]/40 border border-[color:var(--border)] px-3 py-1.5 rounded-lg hover:border-white/30 transition-colors"
+            className="text-xs text-[var(--text)]/40 border border-[color:var(--border)] px-3 py-1.5 rounded-lg hover:border-[color:var(--border)]/30 transition-colors"
           >
             Oggi
           </button>
@@ -243,7 +243,7 @@ export default function CalendarPage() {
                   <Link
                     key={project.slug}
                     href={`/projects/${project.slug}`}
-                    className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-3 hover:border-white/20 transition-colors"
+                    className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-3 hover:border-[color:var(--border)]/20 transition-colors"
                   >
                     <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
                       {getCategoryIcon(project.category)}
@@ -288,7 +288,7 @@ export default function CalendarPage() {
                         <Link
                           key={project.slug}
                           href={`/projects/${project.slug}`}
-                          className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-3 hover:border-white/20 transition-colors"
+                          className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-3 hover:border-[color:var(--border)]/20 transition-colors"
                         >
                           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
                             <span className={`text-sm font-bold ${isPast ? "text-red-400" : "text-[var(--text)]/60"}`}>
@@ -314,7 +314,7 @@ export default function CalendarPage() {
       </div>
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">

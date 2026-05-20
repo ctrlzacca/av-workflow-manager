@@ -206,7 +206,7 @@ export default function SettingsPage() {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-b border-white/8 px-5 pt-14 pb-4">
+      <header className="sticky top-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-b border-[color:var(--border)]/8 px-5 pt-14 pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
@@ -228,7 +228,7 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Preferenze di default
           </h2>
-          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+          <div className="bg-white/3 border border-[color:var(--border)]/8 rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Categoria</p>
@@ -314,7 +314,7 @@ export default function SettingsPage() {
             Categorie personalizzate
           </h2>
 
-          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+          <div className="bg-white/3 border border-[color:var(--border)]/8 rounded-2xl divide-y divide-white/5">
 
             {/* CATEGORIE CUSTOM */}
             {categories.map((cat) => (
@@ -385,7 +385,7 @@ export default function SettingsPage() {
 
           {/* ADD CATEGORY */}
           {showAddCat ? (
-            <div className="mt-3 bg-white/3 border border-white/8 rounded-2xl p-4 space-y-3">
+            <div className="mt-3 bg-white/3 border border-[color:var(--border)]/8 rounded-2xl p-4 space-y-3">
 
               {/* PRESET SOFTWARES */}
               <p className="text-xs text-[var(--text)]/30 mb-2">Scegli software</p>
@@ -398,7 +398,7 @@ export default function SettingsPage() {
                       setNewCatIcon(sw.icon);
                     }}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${
-                      newCatName === sw.name ? "border-white/50 bg-white/10 text-[var(--text)]" : "border-[color:var(--border)] text-[var(--text)]/40"
+                      newCatName === sw.name ? "border-[color:var(--border)]/50 bg-white/10 text-[var(--text)]" : "border-[color:var(--border)] text-[var(--text)]/40"
                     }`}
                   >
                       {renderIcon(sw.icon, sw.isImage)}
@@ -418,14 +418,14 @@ export default function SettingsPage() {
                   <input
                     value={newCatName}
                     onChange={(e) => setNewCatName(e.target.value)}
-                    className="flex-1 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                    className="flex-1 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]/20"
                     placeholder="Nome categoria"
                   />
                 </div>
                 <input
                   value={newCatFields}
                   onChange={(e) => setNewCatFields(e.target.value)}
-                  className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-white/20"
+                  className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]/20"
                   placeholder="Campi Info (es. Codec, Durata, Formato)"
                 />
                 <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
@@ -444,7 +444,7 @@ export default function SettingsPage() {
                   ) : (
                     <button
                       onClick={() => setShowAddCat(true)}
-                      className="w-full mt-3 py-4 border border-[color:var(--border)] rounded-2xl text-[var(--text)]/40 text-sm hover:border-white/20 hover:text-[var(--text)]/60 transition-colors"
+                      className="w-full mt-3 py-4 border border-[color:var(--border)] rounded-2xl text-[var(--text)]/40 text-sm hover:border-[color:var(--border)]/20 hover:text-[var(--text)]/60 transition-colors"
                     >
                       + Nuova categoria
                     </button>
@@ -456,7 +456,7 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Gestione dati
           </h2>
-          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+          <div className="bg-white/3 border border-[color:var(--border)]/8 rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Esporta progetti</p>
@@ -483,7 +483,7 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Info app
           </h2>
-          <div className="bg-white/3 border border-white/8 rounded-2xl divide-y divide-white/5">
+          <div className="bg-white/3 border border-[color:var(--border)]/8 rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Versione</p>
               <span className="text-xs text-[var(--text)]/30">{APP_VERSION}</span>
@@ -517,7 +517,7 @@ export default function SettingsPage() {
         </section>
               {/* ── APP FOOTER INFO ── */}
       <section className="mt-10 px-1">
-        <div className="border-t border-white/8 pt-5 flex items-center gap-4">
+        <div className="border-t border-[color:var(--border)]/8 pt-5 flex items-center gap-4">
           
           <img
             src="/icon-512.png"
@@ -541,7 +541,7 @@ export default function SettingsPage() {
       </div>
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-white/8 flex items-center justify-around px-6 pb-10 pt-4">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
