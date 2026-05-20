@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
+import type { Category } from "@/app/types/project";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -42,12 +43,12 @@ function getFirstDayOfMonth(year: number, month: number): number {
 export default function CalendarPage() {
   const router = useRouter();
   const today = new Date();
-
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -58,6 +59,10 @@ export default function CalendarPage() {
         .select("*")
         .not("deadline", "is", null)
         .neq("deadline", "");
+        const { data: catsData } = await supabase
+          .from("categories")
+          .select("*");
+        setCategories(catsData ?? []);
 
       if (error) { console.error("Error loading projects:", error.message); }
       setProjects(data ?? []);
@@ -103,18 +108,12 @@ export default function CalendarPage() {
 
   // ── CATEGORY ICON ─────────────────────────────────────────────────────────
 
-  function getCategoryIcon(categoryName: string) {
-    if (BUILTIN_LOGOS[categoryName]) {
-      return (
-        <img
-          src={BUILTIN_LOGOS[categoryName]}
-          alt={categoryName}
-          className="w-3.5 h-3.5 object-contain invert opacity-60"
-        />
-      );
-    }
-    return <span className="text-xs">📁</span>;
-  }
+    function getCategoryIcon(categoryName: string) {
+      const cat = categories.find((c) => c.name === categoryName);
+      return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-3.5 h-3.5");
+    
+        return <span className="text-xs">📁</span>;
+      }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
