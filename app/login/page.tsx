@@ -67,7 +67,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Email"
-            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
+            className="w-full p-4 bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
           />
           <input
             type="password"
@@ -75,7 +75,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Password"
-            className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
+            className="w-full p-4 bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
           />
         </div>
 

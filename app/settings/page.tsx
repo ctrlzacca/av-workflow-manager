@@ -210,7 +210,7 @@ export default function SettingsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
-            className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0"
+            className="w-9 h-9 rounded-xl bg-[var(--card)]5 flex items-center justify-center flex-shrink-0"
           >
             <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -228,7 +228,7 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Preferenze di default
           </h2>
-          <div className="bg-white/3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
+          <div className="bg-[var(--card)]3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Categoria</p>
@@ -237,7 +237,7 @@ export default function SettingsPage() {
               <select
                 value={defaultCategory}
                 onChange={(e) => setDefaultCategory(e.target.value)}
-                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+                className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
                 <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
               <select
                 value={defaultSort}
                 onChange={(e) => setDefaultSort(e.target.value)}
-                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none max-w-32"
+                className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none max-w-32"
               >
                 {SORT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
@@ -271,7 +271,7 @@ export default function SettingsPage() {
               <select
                 value={defaultFilter}
                 onChange={(e) => setDefaultFilter(e.target.value)}
-                className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+                className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 <option value="All" className="bg-[var(--bg)]">Tutti</option>
                 <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
@@ -291,7 +291,7 @@ export default function SettingsPage() {
 
             <button
               onClick={toggleTheme}
-              className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors"
+              className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-4 py-2 rounded-xl hover:bg-[var(--card)]10 transition-colors"
             >
               {theme === "dark" ? "Scuro" : "Chiaro"}
             </button>
@@ -315,7 +315,7 @@ export default function SettingsPage() {
             Categorie personalizzate
           </h2>
 
-          <div className="bg-white/3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
+          <div className="bg-[var(--card)]3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
 
             {/* CATEGORIE CUSTOM */}
             {categories.map((cat) => (
@@ -327,19 +327,19 @@ export default function SettingsPage() {
                       <input
                         value={editingCat.icon}
                         onChange={(e) => setEditingCat({ ...editingCat, icon: e.target.value })}
-                        className="w-12 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-center text-lg rounded-xl focus:outline-none"
+                        className="w-12 bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)] text-center text-lg rounded-xl focus:outline-none"
                       />
                       <input
                         value={editingCat.name}
                         onChange={(e) => setEditingCat({ ...editingCat, name: e.target.value })}
-                        className="flex-1 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none"
+                        className="flex-1 bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none"
                         placeholder="Nome categoria"
                       />
                     </div>
                     <input
                       value={Array.isArray(editingCat.fields) ? editingCat.fields.join(", ") : editingCat.fields}
                       onChange={(e) => setEditingCat({ ...editingCat, fields: e.target.value.split(",").map(f => f.trim()).filter(f => f) })}
-                      className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none"
+                      className="w-full bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none"
                       placeholder="Campi Info (es. Codec, Durata, Formato)"
                     />
                     <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
@@ -363,13 +363,13 @@ export default function SettingsPage() {
                     <div className="flex gap-2 flex-shrink-0">
                       <button
                         onClick={() => setEditingCat(cat)}
-                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text)]/30 hover:text-[var(--text)] transition-colors text-xs"
+                        className="w-8 h-8 rounded-lg bg-[var(--card)]5 flex items-center justify-center text-[var(--text)]/30 hover:text-[var(--text)] transition-colors text-xs"
                       >
                         ✎
                       </button>
                       <button
                         onClick={() => deleteCategory(cat)}
-                        className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text)]/30 hover:text-red-400 transition-colors text-xs"
+                        className="w-8 h-8 rounded-lg bg-[var(--card)]5 flex items-center justify-center text-[var(--text)]/30 hover:text-red-400 transition-colors text-xs"
                       >
                         ✕
                       </button>
@@ -386,7 +386,7 @@ export default function SettingsPage() {
 
           {/* ADD CATEGORY */}
           {showAddCat ? (
-            <div className="mt-3 bg-white/3 border border-[color:var(--border)] rounded-2xl p-4 space-y-3">
+            <div className="mt-3 bg-[var(--card)]3 border border-[color:var(--border)] rounded-2xl p-4 space-y-3">
 
               {/* PRESET SOFTWARES */}
               <p className="text-xs text-[var(--text)]/30 mb-2">Scegli software</p>
@@ -399,7 +399,7 @@ export default function SettingsPage() {
                       setNewCatIcon(sw.icon);
                     }}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${
-                      newCatName === sw.name ? "border-[color:var(--border)] bg-white/10 text-[var(--text)]" : "border-[color:var(--border)] text-[var(--text)]/40"
+                      newCatName === sw.name ? "border-[color:var(--border)] bg-[var(--card)]10 text-[var(--text)]" : "border-[color:var(--border)] text-[var(--text)]/40"
                     }`}
                   >
                       {renderIcon(sw.icon, sw.isImage)}
@@ -412,21 +412,21 @@ export default function SettingsPage() {
                 <p className="text-xs text-[var(--text)]/30">Oppure personalizza</p>
                 <div className="flex gap-2 items-center">
                   
-                  <div className="w-12 h-10 flex items-center justify-center bg-white/5 border border-[color:var(--border)] rounded-xl">
+                  <div className="w-12 h-10 flex items-center justify-center bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl">
                     {renderIcon(newCatIcon, newCatIcon.startsWith("/"))}
                   </div>
 
                   <input
                     value={newCatName}
                     onChange={(e) => setNewCatName(e.target.value)}
-                    className="flex-1 bg-white/5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]"
+                    className="flex-1 bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]"
                     placeholder="Nome categoria"
                   />
                 </div>
                 <input
                   value={newCatFields}
                   onChange={(e) => setNewCatFields(e.target.value)}
-                  className="w-full bg-white/5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]"
+                  className="w-full bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]"
                   placeholder="Campi Info (es. Codec, Durata, Formato)"
                 />
                 <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
@@ -465,13 +465,13 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Gestione dati
           </h2>
-          <div className="bg-white/3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
+          <div className="bg-[var(--card)]3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium">Esporta progetti</p>
                 <p className="text-xs text-[var(--text)]/30 mt-0.5">{projectCount} progetti · backup JSON</p>
               </div>
-              <button onClick={exportProjects} className="bg-white/5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-4 py-2 rounded-xl hover:bg-white/10 transition-colors">
+              <button onClick={exportProjects} className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-4 py-2 rounded-xl hover:bg-[var(--card)]10 transition-colors">
                 Esporta
               </button>
             </div>
@@ -492,7 +492,7 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
             Info app
           </h2>
-          <div className="bg-white/3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
+          <div className="bg-[var(--card)]3 border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
             <div className="flex items-center justify-between px-4 py-4">
               <p className="text-sm font-medium">Versione</p>
               <span className="text-xs text-[var(--text)]/30">{APP_VERSION}</span>
@@ -552,7 +552,7 @@ export default function SettingsPage() {
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
@@ -560,7 +560,7 @@ export default function SettingsPage() {
           <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
         </Link>
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -569,7 +569,7 @@ export default function SettingsPage() {
         </Link>
         <div className="w-10 h-10" />
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
@@ -577,7 +577,7 @@ export default function SettingsPage() {
           <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)]10 flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

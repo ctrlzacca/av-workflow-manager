@@ -371,7 +371,7 @@ export default function Home() {
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--card)]5 flex items-center justify-center flex-shrink-0">
                       {getCategoryIcon(project.category)}
                     </div>
                     <span className="font-semibold text-base truncate">{project.title}</span>
