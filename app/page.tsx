@@ -285,7 +285,7 @@ export default function Home() {
               className={`flex items-center gap-2 px-4 py-2 text-sm rounded-xl border flex-shrink-0 transition-all ${
                 filter === f
                   ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)]10 font-medium"
-                  : "border-[color:var(--border)] text-[var(--text)]/40 hover:border-[color:var(--border)] hover:text-[var(--text)]/60"
+                  : "border-[color:var(--border)] text-[var(--icon)] hover:border-[color:var(--border)] hover:text-[var(--text)]/60"
               }`}
             >
               {f !== "All" && getCategoryIconSmall(f)}
@@ -342,7 +342,7 @@ export default function Home() {
                 onClick={() => { setSearchOpen(!searchOpen); if (searchOpen) setSearch(""); }}
                 className="w-9 h-9 rounded-xl bg-[var(--card)]5 border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
               >
-                <svg className="w-4 h-4 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-[var(--icon)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
@@ -371,7 +371,7 @@ export default function Home() {
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center flex-shrink-0 border-[color:var(--border)] text-[var(--text)]/40">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center flex-shrink-0">
                       {getCategoryIcon(project.category)}
                     </div>
                     <span className="font-semibold text-base truncate text-white">{project.title}</span>
@@ -452,7 +452,7 @@ export default function Home() {
             <div className="flex gap-3">
               <button
                 onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
-                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm font-medium"
+                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[var(--icon)] text-sm font-medium"
               >
                 Annulla
               </button>
