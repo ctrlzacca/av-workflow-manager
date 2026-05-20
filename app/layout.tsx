@@ -31,12 +31,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-full flex flex-col">
         <SplashWrapper />
         {children}
-              <script dangerouslySetInnerHTML={{
-        __html: `
-          const theme = localStorage.getItem('theme') || 'dark';
-          document.documentElement.classList.add(theme);
-        `
-      }} />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.classList.add(theme);
+          `
+        }} />
       </body>
     </html>
   );

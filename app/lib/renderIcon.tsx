@@ -8,7 +8,7 @@ export function renderIcon(
       <img
         src={icon}
         alt=""
-        className={`${size} object-contain invert opacity-70`}
+        className={`${size} object-contain opacity-70 dark:invert`}
       />
     );
   }

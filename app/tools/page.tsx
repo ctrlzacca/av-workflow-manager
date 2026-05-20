@@ -162,7 +162,7 @@ function HarmonicTool() {
               key={note}
               onClick={() => { setRootIndex(i); setSelectedChord(null); }}
               className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                rootIndex === i ? "bg-white text-[var(--text)]" : "bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                rootIndex === i ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
               }`}
             >
               {note}
@@ -180,7 +180,7 @@ function HarmonicTool() {
               key={key}
               onClick={() => { setScaleKey(key); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                scaleKey === key ? "bg-white text-[var(--text)]" : "bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                scaleKey === key ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
               }`}
             >
               {name}
@@ -198,7 +198,7 @@ function HarmonicTool() {
               key={ext.id}
               onClick={() => { setExtension(ext.id); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                extension === ext.id ? "bg-white text-[var(--text)]" : "bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                extension === ext.id ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
               }`}
             >
               {ext.label}
@@ -213,7 +213,7 @@ function HarmonicTool() {
         <div className="flex gap-2 flex-wrap">
           {scaleNotes.map((note, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
-              <div className="w-10 h-10 rounded-xl bg-[var(--card)]10 border border-[color:var(--border)]/20 flex items-center justify-center text-sm font-semibold">
+              <div className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)]/20 flex items-center justify-center text-sm font-semibold">
                 {note}
               </div>
               <span className="text-xs text-[var(--text)]/30">
@@ -233,7 +233,7 @@ function HarmonicTool() {
               key={i}
               onClick={() => setSelectedChord(selectedChord === i ? null : i)}
               className={`border rounded-xl px-4 py-3 text-left transition-all ${
-                selectedChord === i ? "border-[color:var(--border)]/40 bg-[var(--card)]10" : "border-[color:var(--border)] hover:border-[color:var(--border)]/20"
+                selectedChord === i ? "border-[color:var(--border)]/40 bg-[var(--card)]" : "border-[color:var(--border)] hover:border-[color:var(--border)]/20"
               }`}
             >
               <p className="text-base font-bold">{chord.label}</p>
@@ -314,7 +314,7 @@ function BpmTool() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setBpm(b => Math.max(1, b - 1))}
-                className="w-10 h-10 rounded-xl bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors"
               >−</button>
               <input
                 type="number"
@@ -324,7 +324,7 @@ function BpmTool() {
               />
               <button
                 onClick={() => setBpm(b => Math.min(300, b + 1))}
-                className="w-10 h-10 rounded-xl bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors"
               >+</button>
             </div>
             <input
@@ -369,7 +369,7 @@ function BpmTool() {
                   key={note}
                   onClick={() => setSelectedNote(note)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all${
-                    selectedNote === note ? "bg-white text-[var(--text)]" : "bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                    selectedNote === note ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
                   }`}
                 >
                   {note}
@@ -383,7 +383,7 @@ function BpmTool() {
                   key={oct}
                   onClick={() => setSelectedOctave(oct)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                    selectedOctave === oct ? "bg-white text-[var(--text)]" : "bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                    selectedOctave === oct ? "bg-white text-[var(--text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
                   }`}
                 >
                   {oct}
@@ -407,7 +407,7 @@ function BpmTool() {
                 value={inputFreq}
                 onChange={(e) => setInputFreq(e.target.value)}
                 placeholder="es. 440"
-                className="flex-1 text-center text-2xl font-bold bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
+                className="flex-1 text-center text-2xl font-bold bg-[var(--card)] border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
               />
               <span className="text-[var(--text)]/40 text-sm">Hz</span>
             </div>
@@ -854,7 +854,7 @@ function ResolutionTool() {
               key={t}
               onClick={() => setOutputType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all border ${
-                outputType === t ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)]5 border-[color:var(--border)] text-[var(--text)]/50"
+                outputType === t ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {t === "monitor" ? "🖥 Monitor" : "📽 Proiettore"}
@@ -871,14 +871,14 @@ function ResolutionTool() {
             type="number"
             value={width}
             onChange={(e) => setWidth(Math.max(1, Number(e.target.value)))}
-            className=" w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
+            className=" w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-[var(--card)] border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
           />
           <span className="text-[var(--text)]/30 font-bold">×</span>
           <input
             type="number"
             value={height}
             onChange={(e) => setHeight(Math.max(1, Number(e.target.value)))}
-            className="w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
+            className="w-fit scale-90 origin-left flex-1 text-center text-xl font-bold bg-[var(--card)] border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
           />
         </div>
       </div>
@@ -903,7 +903,7 @@ function ResolutionTool() {
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
                 width === p.w && height === p.h
                   ? "bg-white text-[var(--text)] border-[color:var(--border)]"
-                  : "bg-[var(--card)]5 border-[color:var(--border)] text-[var(--text)]/50 hover:border-[color:var(--border)]/30"
+                  : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50 hover:border-[color:var(--border)]/30"
               }`}
             >
               {p.label}
@@ -953,7 +953,7 @@ function ResolutionTool() {
             {related.map((r) => (
               <div
                 key={r.label}
-                className="flex justify-between items-center cursor-pointer hover:bg-[var(--card)]5 px-2 py-1 rounded-lg transition-colors"
+                className="flex justify-between items-center cursor-pointer hover:bg-[var(--card)] px-2 py-1 rounded-lg transition-colors"
                 onClick={() => { setWidth(r.w); setHeight(r.h); }}
               >
                 <span className="text-xs text-[var(--text)]/50">{r.label}</span>
@@ -1059,7 +1059,7 @@ function FpsBudgetTool() {
               key={g.id}
               onClick={() => setGpuTier(g.id)}
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all ${
-                gpuTier === g.id ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)]5 border-[color:var(--border)] text-[var(--text)]/50"
+                gpuTier === g.id ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               <span>{g.label}</span>
@@ -1078,14 +1078,14 @@ function FpsBudgetTool() {
               type="number"
               value={width}
               onChange={(e) => setWidth(Number(e.target.value))}
-              className="w-full text-center text-sm font-bold bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl py-2.5 focus:outline-none text-[var(--text)]"
+              className="w-full text-center text-sm font-bold bg-[var(--card)] border border-[color:var(--border)] rounded-xl py-2.5 focus:outline-none text-[var(--text)]"
             />
             <span className="text-[var(--text)]/30 text-xs">×</span>
             <input
               type="number"
               value={height}
               onChange={(e) => setHeight(Number(e.target.value))}
-              className="w-full text-center text-sm font-bold bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl py-2.5 focus:outline-none text-[var(--text)]"
+              className="w-full text-center text-sm font-bold bg-[var(--card)] border border-[color:var(--border)] rounded-xl py-2.5 focus:outline-none text-[var(--text)]"
             />
           </div>
         </div>
@@ -1094,7 +1094,7 @@ function FpsBudgetTool() {
           <select
             value={targetFps}
             onChange={(e) => setTargetFps(Number(e.target.value))}
-            className="w-full bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)] text-sm px-2 py-2.5 rounded-xl focus:outline-none"
+            className="w-full bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)] text-sm px-2 py-2.5 rounded-xl focus:outline-none"
           >
             {[24, 30, 60].map((f) => (
               <option key={f} value={f} className="bg-[var(--bg)]">{f} fps</option>
@@ -1142,12 +1142,12 @@ function FpsBudgetTool() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <button
                         onClick={() => updateOp(op.label, count - 1)}
-                        className="w-6 h-6 rounded-lg bg-[var(--card)]5 text-[var(--text)]/40 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center"
                       >−</button>
                       <span className="text-sm font-mono w-4 text-center text-[var(--text)]/70">{count}</span>
                       <button
                         onClick={() => updateOp(op.label, count + 1)}
-                        className="w-6 h-6 rounded-lg bg-[var(--card)]5 text-[var(--text)]/40 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center"
                       >+</button>
                     </div>
                   </div>
@@ -1168,7 +1168,7 @@ function FpsBudgetTool() {
           <p className={`text-sm font-semibold ${getStatusColor()}`}>{getStatusLabel()}</p>
           <p className={`text-2xl font-bold ${getStatusColor()}`}>{usagePercent}%</p>
         </div>
-        <div className="w-full h-2 bg-[var(--card)]8 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-[var(--card)] rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-300 ${
               usagePercent < 60 ? "bg-green-400" : usagePercent < 85 ? "bg-yellow-400" : "bg-red-400"
@@ -1338,7 +1338,7 @@ function GlslTool() {
             value={draft.code ?? ""}
             onChange={(e) => setDraft({ ...draft, code: e.target.value })}
             placeholder={"// Incolla o scrivi il tuo codice GLSL...\nvoid main() {\n  \n}"}
-            className="w-full bg-[var(--card)]3 border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors"
+            className="w-full bg-[var(--card)] border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors"
             rows={14}
             spellCheck={false}
           />
@@ -1351,7 +1351,7 @@ function GlslTool() {
             value={draft.notes ?? ""}
             onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
             placeholder="Descrizione, operatori usati, come funziona..."
-            className="w-full bg-[var(--card)]3 border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-sm text-[var(--text)]/70 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors"
+            className="w-full bg-[var(--card)] border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-sm text-[var(--text)]/70 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors"
             rows={4}
           />
         </div>
@@ -1393,7 +1393,7 @@ function GlslTool() {
             <button
               key={entry.id}
               onClick={() => openEntry(entry)}
-              className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)]5 transition-all text-left"
+              className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)] transition-all text-left"
             >
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">{entry.title}</p>
@@ -1524,7 +1524,7 @@ function TypographyTool() {
               setUnit(u);
             }}
             className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-              unit === u ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)]5 border-[color:var(--border)] text-[var(--text)]/50"
+              unit === u ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
             }`}
           >
             {u === "pt" ? "pt — Stampa" : "px — Schermo"}
@@ -1539,7 +1539,7 @@ function TypographyTool() {
           <span className="text-xs font-mono text-[var(--text)]/70">{baseSize} {unit}</span>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => setBaseSize(b => Math.max(6, b - 1))} className="w-9 h-9 rounded-xl bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">−</button>
+          <button onClick={() => setBaseSize(b => Math.max(6, b - 1))} className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">−</button>
           <input
             type="range"
             min={unit === "pt" ? 6 : 8}
@@ -1549,7 +1549,7 @@ function TypographyTool() {
             onChange={(e) => setBaseSize(Number(e.target.value))}
             className="flex-1 accent-white"
           />
-          <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">+</button>
+          <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">+</button>
         </div>
         <p className="text-xs text-[var(--text)]/25 mt-1 text-right">
           = {unit === "pt" ? ptToPx(baseSize) : pxToPt(baseSize)} {unit === "pt" ? "px" : "pt"}
@@ -1565,7 +1565,7 @@ function TypographyTool() {
               key={r.value}
               onClick={() => setRatio(r.value)}
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                ratio === r.value ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)]5 border-[color:var(--border)] text-[var(--text)]/50"
+                ratio === r.value ? "bg-white text-[var(--text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {r.label.split(" (")[0]}
@@ -1672,7 +1672,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
       <Link href="/" className="flex flex-col items-center gap-1.5">
-        <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
           <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
@@ -1681,7 +1681,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
       </Link>
 
       <Link href="/calendar" className="flex flex-col items-center gap-1.5">
-        <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
           <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -1692,7 +1692,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
       <div className="w-10 h-10" />
 
       <div className="flex flex-col items-center gap-1.5">
-        <div className="w-10 h-10 rounded-xl bg-[var(--card)]10 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
           <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
           </svg>
@@ -1701,7 +1701,7 @@ function BottomNav({ activePage }: { activePage?: string }) {
       </div>
 
       <Link href="/settings" className="flex flex-col items-center gap-1.5">
-        <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
           <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1790,7 +1790,7 @@ export default function ToolsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTool(null)}
-              className="w-9 h-9 rounded-xl bg-[var(--card)]5 flex items-center justify-center flex-shrink-0"
+              className="w-9 h-9 rounded-xl bg-[var(--card)] flex items-center justify-center flex-shrink-0"
             >
               <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1837,7 +1837,7 @@ export default function ToolsPage() {
                         <button
                           key={String(tool.id)}
                           onClick={() => setActiveTool(tool.id)}
-                          className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)]5 transition-all text-left"
+                          className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)] transition-all text-left"
                         >
                           <div>
                             <p className="text-sm font-semibold">{tool.name}</p>

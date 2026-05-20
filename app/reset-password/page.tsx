@@ -25,8 +25,8 @@ export default function ResetPasswordPage() {
         <h1 className="text-2xl font-bold mb-1">Nuova password</h1>
         <p className="text-[var(--text)]/30 text-sm mb-8">Scegli una nuova password per il tuo account.</p>
         <div className="space-y-3">
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Nuova password" className="w-full p-4 bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm" />
-          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Conferma password" className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm" />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Nuova password" className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm" />
+          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Conferma password" className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm" />
         </div>
         {error && <p className="text-red-400 text-xs mt-3">{error}</p>}
         <button onClick={handleReset} disabled={loading} className="w-full mt-5 py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm disabled:opacity-50">

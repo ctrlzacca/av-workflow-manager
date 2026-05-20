@@ -72,19 +72,19 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Titolo (es. Four Tet - Parallel Jalebi)"
-        className="w-full bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
+        className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
       />
       <input
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         placeholder="Link (YouTube, Spotify, SoundCloud...)"
-        className="w-full bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
+        className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
       />
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="Nota (es. il bassline al minuto 2:30 mi ispira molto)"
-        className="w-full bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 resize-none h-20"
+        className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 resize-none h-20"
       />
       <div className="flex gap-2">
         <button
@@ -127,19 +127,19 @@ function MoodItem({
           autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
+          className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
           placeholder="Titolo"
         />
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
+          className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30"
           placeholder="Link"
         />
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 resize-none h-20"
+          className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 resize-none h-20"
           placeholder="Nota"
         />
         <div className="flex gap-2">
@@ -180,7 +180,7 @@ function MoodItem({
         <div className="flex gap-1 flex-shrink-0">
           <button
             onClick={() => setEditing(true)}
-            className="text-[var(--text)]/30 hover:text-[var(--text)] transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--card)]10 text-xs"
+            className="text-[var(--text)]/30 hover:text-[var(--text)] transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--card)] text-xs"
           >
             ✎
           </button>
@@ -377,14 +377,14 @@ export default function ProjectPage() {
         <div className="flex items-center gap-3 mb-4">
           <button
             onClick={() => router.push("/")}
-            className="w-9 h-9 rounded-xl bg-[var(--card)]5 flex items-center justify-center flex-shrink-0"
+            className="w-9 h-9 rounded-xl bg-[var(--card)] flex items-center justify-center flex-shrink-0"
           >
             <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
-          <div className="w-9 h-9 rounded-xl bg-[var(--card)]5 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[var(--card)] flex items-center justify-center flex-shrink-0">
             {getCategoryIcon(project.category)}
           </div>
 
@@ -410,7 +410,7 @@ export default function ProjectPage() {
           <select
             value={project.status}
             onChange={(e) => updateField("status", e.target.value as Project["status"])}
-            className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
             <option value="Active" className="bg-[var(--bg)]">Active</option>
             <option value="Paused" className="bg-[var(--bg)]">Paused</option>
@@ -420,7 +420,7 @@ export default function ProjectPage() {
           <select
             value={project.priority}
             onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
-            className={`bg-[var(--card)]5 border border-[color:var(--border)] text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
+            className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
           >
             <option value="Low" className="bg-[var(--bg)]">Low</option>
             <option value="Medium" className="bg-[var(--bg)]">Medium</option>
@@ -430,7 +430,7 @@ export default function ProjectPage() {
           <select
             value={project.category}
             onChange={(e) => updateField("category", e.target.value)}
-            className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
             <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
             <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
@@ -445,7 +445,7 @@ export default function ProjectPage() {
             type="date"
             value={project.deadline}
             onChange={(e) => updateField("deadline", e.target.value)}
-            className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           />
         </div>
 
@@ -459,7 +459,7 @@ export default function ProjectPage() {
                   if (e.target.value === "__new__") { setShowNewFolder(true); updateField("folder", ""); }
                   else { updateField("folder", e.target.value); }
                 }}
-                className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/40 text-xs px-3 py-2 rounded-xl focus:outline-none"
+                className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/40 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 <option value="" className="bg-[var(--bg)]">Nessuna cartella</option>
                 {availableFolders.map((f) => (
@@ -476,7 +476,7 @@ export default function ProjectPage() {
                     await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
                     updateField("folder", "");
                   }}
-                  className="w-8 h-8 rounded-xl bg-[var(--card)]5 border border-[color:var(--border)] flex items-center justify-center text-[var(--text)]/60 hover:text-red-400 transition-colors text-xs"
+                  className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center text-[var(--text)]/60 hover:text-red-400 transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -488,7 +488,7 @@ export default function ProjectPage() {
               autoFocus
               type="text"
               placeholder="Nome cartella..."
-              className="bg-[var(--card)]5 border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]/20 flex-1"
+              className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]/20 flex-1"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const val = (e.target as HTMLInputElement).value.trim();
@@ -521,8 +521,8 @@ export default function ProjectPage() {
             <span>{doneTasks}/{project.tasks.length} tasks completate</span>
             <span>{progress}%</span>
           </div>
-          <div className="w-full h-1 bg-[var(--card)]8 rounded-full">
-            <div className="h-full bg-[var(--card)]50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+          <div className="w-full h-1 bg-[var(--card)] rounded-full">
+            <div className="h-full bg-[var(--card)] rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
@@ -563,7 +563,7 @@ export default function ProjectPage() {
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") addTask(); }}
-        className="flex-1 p-4 bg-[var(--card)]5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-[color:var(--border)]/20 text-sm"
+        className="flex-1 p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-[color:var(--border)]/20 text-sm"
         placeholder="Aggiungi task..."
       />
       <button onClick={addTask} className="bg-white text-[var(--text)] px-5 rounded-xl font-bold text-lg">+</button>
@@ -586,7 +586,7 @@ export default function ProjectPage() {
             updated.splice(to, 0, moved);
             updateField("tasks", updated);
           }}
-          className="flex items-center gap-3 border border-[color:var(--border)]/8 rounded-xl px-4 py-4 cursor-grab active:cursor-grabbing active:border-[color:var(--border)]/30 active:bg-[var(--card)]5 transition-all"
+          className="flex items-center gap-3 border border-[color:var(--border)] rounded-xl px-4 py-4 cursor-grab active:cursor-grabbing active:border-[color:var(--border)]/30 active:bg-[var(--card)] transition-all"
         >
           {/* TOGGLE */}
           <button
@@ -616,7 +616,7 @@ export default function ProjectPage() {
                 [updated[i - 1], updated[i]] = [updated[i], updated[i - 1]];
                 updateField("tasks", updated);
               }}
-              className="text-[var(--text)]/70 hover:text-[var(--text)]/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--card)]10 text-sm disabled:opacity-20"
+              className="text-[var(--text)]/70 hover:text-[var(--text)]/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--card)] text-sm disabled:opacity-20"
               disabled={i === 0}
             >
               ▲
@@ -628,7 +628,7 @@ export default function ProjectPage() {
                 [updated[i], updated[i + 1]] = [updated[i + 1], updated[i]];
                 updateField("tasks", updated);
               }}
-              className="text-[var(--text)]/70 hover:text-[var(--text)]/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--card)]10 text-sm disabled:opacity-20"
+              className="text-[var(--text)]/70 hover:text-[var(--text)]/70 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--card)] text-sm disabled:opacity-20"
               disabled={i === project.tasks.length - 1}
             >
               ▼
@@ -805,7 +805,7 @@ export default function ProjectPage() {
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
@@ -813,7 +813,7 @@ export default function ProjectPage() {
           <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
         </Link>
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -822,7 +822,7 @@ export default function ProjectPage() {
         </Link>
         <div className="w-10 h-10" />
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
@@ -830,7 +830,7 @@ export default function ProjectPage() {
           <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)]5 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
