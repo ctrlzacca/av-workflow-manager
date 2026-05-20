@@ -17,7 +17,7 @@ const STATUS_COLOR: Record<Project["status"], string> = {
 };
 
 const PRIORITY_COLOR: Record<Project["priority"], string> = {
-  Low: "text-white/40",
+  Low: "text-[color:var(--text-soft)]",
   Medium: "text-yellow-400",
   High: "text-red-400",
 };
@@ -35,7 +35,7 @@ export default function ProjectCard({ project, onDelete }: ProjectCardProps) {
   const openTasks = project.tasks.filter((t) => !t.done).length;
 
   return (
-    <div className="border border-white/10 p-5 rounded-lg hover:border-white/20 transition-colors">
+    <div className="border border-[color:var(--border)] p-5 rounded-lg hover:bg-[var(--card)] transition-colors">
 
       {/* HEADER */}
       <div className="flex justify-between items-start">
@@ -46,7 +46,7 @@ export default function ProjectCard({ project, onDelete }: ProjectCardProps) {
       </div>
 
       {/* META */}
-      <div className="mt-3 flex gap-3 text-sm text-white/50 flex-wrap">
+      <div className="mt-3 flex gap-3 text-sm text-[color:var(--text-soft)] flex-wrap">
         <span>{project.category}</span>
         <span className={PRIORITY_COLOR[project.priority]}>
           {project.priority}
@@ -57,15 +57,15 @@ export default function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
       {/* PROGRESS */}
       <div className="mt-4">
-        <div className="flex justify-between text-xs text-white/30 mb-1">
+        <div className="flex justify-between text-xs text-[color:var(--text-soft)] mb-1">
           <span>
             {project.tasks.filter((t) => t.done).length}/{project.tasks.length} done
           </span>
           <span>{progress}%</span>
         </div>
-        <div className="w-full h-1 bg-white/10">
+        <div className="w-full h-1 bg-[var(--card)] rounded-full overflow-hidden">
           <div
-            className="h-1 bg-white transition-all duration-300"
+            className="h-1 bg-[var(--text)] transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -75,13 +75,13 @@ export default function ProjectCard({ project, onDelete }: ProjectCardProps) {
       <div className="flex justify-between items-center mt-4">
         <Link
           href={`/projects/${project.slug}`}
-          className="text-sm text-white/50 hover:text-white transition-colors"
+          className="text-sm text-[color:var(--text-soft)] hover:text-[var(--text)] transition-colors"
         >
           Open project →
         </Link>
         <button
           onClick={onDelete}
-          className="text-sm text-white/20 hover:text-red-400 transition-colors"
+          className="text-sm text-[color:var(--text-soft)] hover:text-red-400 transition-colors"
         >
           Delete
         </button>
