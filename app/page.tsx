@@ -371,7 +371,7 @@ export default function Home() {
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--card)]5 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center flex-shrink-0">
                       {getCategoryIcon(project.category)}
                     </div>
                     <span className="font-semibold text-base truncate">{project.title}</span>
@@ -385,14 +385,14 @@ export default function Home() {
                 {/* META ROW */}
                 <div className="flex items-center gap-2 mt-3 ml-11">
                   {project.folder?.trim() && (
-                    <span className="text-xs text-[var(--text)]/30 border border-[color:var(--border)] px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-white/30 border border-[color:var(--border)] px-2 py-0.5 rounded-full">
                       {project.folder}
                     </span>
                   )}
                   {project.deadline && (
-                    <span className="text-xs text-[var(--text)]/25">{project.deadline}</span>
+                    <span className="text-xs text-white/25">{project.deadline}</span>
                   )}
-                  <span className="text-xs text-[var(--text)]/20 ml-auto">{STATUS_LABEL[project.status]}</span>
+                  <span className="text-xs text-white/20 ml-auto">{STATUS_LABEL[project.status]}</span>
                 </div>
 
                 {/* PROGRESS */}
@@ -401,7 +401,7 @@ export default function Home() {
                     <div className="flex-1 h-1 bg-[var(--card)]8 rounded-full overflow-hidden">
                       <div className="h-full bg-[var(--card)]50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
                     </div>
-                    <span className="text-xs text-[var(--text)]/25 flex-shrink-0">{progress}%</span>
+                    <span className="text-xs text-white/25 flex-shrink-0">{progress}%</span>
                   </div>
                 </div>
               </Link>
