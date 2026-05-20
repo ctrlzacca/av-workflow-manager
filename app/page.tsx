@@ -422,7 +422,7 @@ export default function Home() {
               onChange={(e) => setNewProject(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Nome progetto..."
-              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)] focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
+              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
             />
 
             {/* CATEGORY SELECTOR */}
@@ -434,7 +434,7 @@ export default function Home() {
                   className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
                     newProjectCategory === cat
                       ? "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]"
-                      : "border-[color:var(--border)] text-[var(--text)]/30"
+                      : "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]"
                   }`}
                 >
                   {categories.length === 0 && (
