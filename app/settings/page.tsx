@@ -135,20 +135,6 @@ export default function SettingsPage() {
     user_id: user.id,
   });
 
-  function renderIcon(icon: string, isImage?: boolean) {
-  if (isImage && icon?.startsWith("/")) {
-    return (
-      <img
-        src={icon}
-        alt=""
-        className="w-3.5 h-3.5 object-contain invert opacity-70"
-      />
-    );
-  }
-
-  return <span>{icon || "📁"}</span>;
-}
-
   if (error) { console.error("Error adding category:", error.message); return; }
 
   setNewCatName("");

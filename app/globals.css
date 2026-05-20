@@ -15,13 +15,17 @@
 }
 
 :root {
-  --bg: #000;
-  --text: #fff;
+  --bg: #000000;
+  --text: #ffffff;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
 }
 
 .light {
-  --bg: #fff;
-  --text: #000;
+  --bg: #ffffff;
+  --text: #000000;
+  --card: rgba(0,0,0,0.04);
+  --border: rgba(0,0,0,0.08);
 }
 
 body {
