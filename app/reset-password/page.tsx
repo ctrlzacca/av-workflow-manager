@@ -29,7 +29,7 @@ export default function ResetPasswordPage() {
           <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Conferma password" className="w-full p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-white/30 text-sm" />
         </div>
         {error && <p className="text-red-400 text-xs mt-3">{error}</p>}
-        <button onClick={handleReset} disabled={loading} className="w-full mt-5 py-4 bg-white text-black rounded-xl font-semibold text-sm disabled:opacity-50">
+        <button onClick={handleReset} disabled={loading} className="w-full mt-5 py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm disabled:opacity-50">
           {loading ? "Salvataggio..." : "Salva password"}
         </button>
       </div>

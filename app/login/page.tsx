@@ -88,7 +88,7 @@ export default function LoginPage() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full mt-5 py-4 bg-white text-black rounded-xl font-semibold text-sm disabled:opacity-50 transition-opacity"
+          className="w-full mt-5 py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm disabled:opacity-50 transition-opacity"
         >
           {loading ? "Accesso..." : "Accedi"}
         </button>

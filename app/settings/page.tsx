@@ -50,7 +50,7 @@ export default function SettingsPage() {
       <img
         src={icon}
         alt=""
-        className="w-3.5 h-3.5 object-contain invert opacity-70"
+        className="w-3.5 h-3.5 object-contain opacity-70"
       />
     );
   }
@@ -301,7 +301,7 @@ export default function SettingsPage() {
           <button
             onClick={saveSettings}
             className={`w-full mt-3 py-4 rounded-2xl font-semibold text-sm transition-all ${
-              saved ? "bg-green-500 text-[var(--text)]" : "bg-white text-black"
+              saved ? "bg-green-500 text-[var(--text)]" : "bg-white text-[var(--text)]"
             }`}
           >
             {saved ? "✓ Salvato" : "Salva preferenze"}
@@ -344,7 +344,7 @@ export default function SettingsPage() {
                     <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
                     <div className="flex gap-2">
                       <button onClick={() => setEditingCat(null)} className="flex-1 py-2 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-xs">Annulla</button>
-                      <button onClick={updateCategory} className="flex-1 py-2 bg-white text-black rounded-xl text-xs font-semibold">Salva</button>
+                      <button onClick={updateCategory} className="flex-1 py-2 bg-white text-[var(--text)] rounded-xl text-xs font-semibold">Salva</button>
                     </div>
                   </div>
                 ) : (
@@ -436,7 +436,7 @@ export default function SettingsPage() {
                   >
                     Annulla
                   </button>
-                  <button onClick={addCategory} className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold">
+                  <button onClick={addCategory} className="flex-1 py-3 bg-white text-[var(--text)] rounded-xl text-sm font-semibold">
                     Crea
                   </button>
                 </div>

@@ -95,7 +95,7 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
         </button>
         <button
           onClick={handleAdd}
-          className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold"
+          className="flex-1 py-3 bg-white text-[var(--text)] rounded-xl text-sm font-semibold"
         >
           Aggiungi
         </button>
@@ -151,7 +151,7 @@ function MoodItem({
           </button>
           <button
             onClick={() => { onSave({ title: title.trim(), url: url.trim(), note: note.trim() }); setEditing(false); }}
-            className="flex-1 py-3 bg-white text-black rounded-xl text-sm font-semibold"
+            className="flex-1 py-3 bg-white text-[var(--text)] rounded-xl text-sm font-semibold"
           >
             Salva
           </button>
@@ -323,7 +323,7 @@ export default function ProjectPage() {
         <img
           src={preset.icon}
           alt={categoryName}
-          className="w-4 h-4 object-contain invert opacity-70"
+          className="w-4 h-4 object-contain opacity-70"
         />
       );
     }
@@ -335,7 +335,7 @@ export default function ProjectPage() {
       <img
         src={cat.icon}
         alt={cat.name}
-        className="w-4 h-4 object-contain invert opacity-70"
+        className="w-4 h-4 object-contain opacity-70"
       />
     );
   }
@@ -507,7 +507,7 @@ export default function ProjectPage() {
                 if (val) updateField("folder", val);
                 setShowNewFolder(false);
               }}
-              className="bg-white text-black text-xs px-3 py-2 rounded-xl font-semibold flex-shrink-0"
+              className="bg-white text-[var(--text)] text-xs px-3 py-2 rounded-xl font-semibold flex-shrink-0"
             >
               OK
             </button>
@@ -566,7 +566,7 @@ export default function ProjectPage() {
         className="flex-1 p-4 bg-white/5 border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/50 focus:outline-none focus:border-white/20 text-sm"
         placeholder="Aggiungi task..."
       />
-      <button onClick={addTask} className="bg-white text-black px-5 rounded-xl font-bold text-lg">+</button>
+      <button onClick={addTask} className="bg-white text-[var(--text)] px-5 rounded-xl font-bold text-lg">+</button>
     </div>
 
     <div className="space-y-2">
@@ -596,7 +596,7 @@ export default function ProjectPage() {
             }`}
           >
             {task.done && (
-              <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
             )}
