@@ -55,7 +55,7 @@ export default function SettingsPage() {
     );
   }
 
-  return <span>{icon || "📁"}</span>;
+  return <span className="text-[var(--text)]">{icon || "📁"}</span>;
 }
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
