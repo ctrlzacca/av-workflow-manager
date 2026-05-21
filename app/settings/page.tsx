@@ -218,7 +218,13 @@ export default function SettingsPage() {
                 className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">{cat.icon} {cat.name}</option>
+                    <option
+                  key={cat.id}
+                  value={cat.name}
+                  className="bg-[var(--bg)]"
+                >
+                  {cat.name}
+                </option>
                 ))}
               </select>
             </div>
@@ -244,15 +250,25 @@ export default function SettingsPage() {
                 <p className="text-sm font-medium">Filtro</p>
                 <p className="text-xs text-[var(--text)]/30 mt-0.5">Filtro attivo all'apertura dell'app</p>
               </div>
-              <select
-                value={defaultFilter}
-                onChange={(e) => setDefaultFilter(e.target.value)}
-                className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
-              >
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">{cat.icon} {cat.name}</option>
-                ))}
-              </select>
+            <select
+              value={defaultFilter}
+              onChange={(e) => setDefaultFilter(e.target.value)}
+              className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
+            >
+              <option value="All" className="bg-[var(--bg)]">
+                All
+              </option>
+
+              {categories.map((cat) => (
+                <option
+                  key={cat.id}
+                  value={cat.name}
+                  className="bg-[var(--bg)]"
+                >
+                  {cat.name}
+                </option>
+              ))}
+            </select>
             </div>
             <div className="flex items-center justify-between px-4 py-4">
             <div>
