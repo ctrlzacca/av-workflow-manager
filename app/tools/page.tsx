@@ -1425,12 +1425,48 @@ const SCALE_RATIOS = [
   { label: "Golden Ratio (1.618)", value: 1.618 },
 ];
 
+  const FONT_PRESETS: { name: string; lineHeightSuggested: number; note: string }[] = [
+    { name: "Helvetica", lineHeightSuggested: 1.4, note: "Sans-serif geometrico, interlinea compatta" },
+    { name: "Arial", lineHeightSuggested: 1.45, note: "Sans-serif neutro, simile a Helvetica" },
+    { name: "Garamond", lineHeightSuggested: 1.6, note: "Serif classico, necessita più respiro" },
+    { name: "Times New Roman", lineHeightSuggested: 1.5, note: "Serif tradizionale, standard editoriale" },
+    { name: "Futura", lineHeightSuggested: 1.35, note: "Geometrico, molto compatto" },
+    { name: "Bodoni", lineHeightSuggested: 1.55, note: "Serif didone, contrasto alto" },
+    { name: "Gill Sans", lineHeightSuggested: 1.45, note: "Umanistico, leggibile" },
+    { name: "Minion", lineHeightSuggested: 1.5, note: "Serif editoriale, ottimo per testo lungo" },
+    { name: "Custom", lineHeightSuggested: 1.5, note: "Inserisci il tuo font" },
+  ];
+
+  const FONT_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+  const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
+    A3: { w: 297, h: 420, label: "A3 — 297 × 420 mm" },
+    A4: { w: 210, h: 297, label: "A4 — 210 × 297 mm" },
+    A5: { w: 148, h: 210, label: "A5 — 148 × 210 mm" },
+    A6: { w: 105, h: 148, label: "A6 — 105 × 148 mm" },
+  };
+
+  // suggerisce la font size ottimale in pt in base al formato
+  function suggestFontSize(format: string): { min: number; max: number; ideal: number } {
+    const suggestions: Record<string, { min: number; max: number; ideal: number }> = {
+      A3: { min: 11, max: 14, ideal: 12 },
+      A4: { min: 9, max: 12, ideal: 10 },
+      A5: { min: 8, max: 10, ideal: 9 },
+      A6: { min: 7, max: 9, ideal: 8 },
+    };
+    return suggestions[format] ?? { min: 9, max: 12, ideal: 10 };
+  }
+
 function TypographyTool() {
   const [unit, setUnit] = useState<"pt" | "px">("pt");
   const [baseSize, setBaseSize] = useState(10);
   const [ratio, setRatio] = useState(1.333);
   const [lineHeightRatio, setLineHeightRatio] = useState(1.5);
   const [copied, setCopied] = useState<string | null>(null);
+  const [fontFamily, setFontFamily] = useState("Helvetica");
+  const [fontWeight, setFontWeight] = useState(400);
+  const [pageFormat, setPageFormat] = useState<"A3" | "A4" | "A5" | "A6">("A4");
+  const [showPreview, setShowPreview] = useState(false);
 
   const DPI = 72; // standard tipografico
 
@@ -1511,7 +1547,90 @@ function TypographyTool() {
   }
 
   return (
+    
     <div className="space-y-5">
+
+            {/* FONT SELECTOR */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Font di riferimento</p>
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {FONT_PRESETS.map((f) => (
+            <button
+              key={f.name}
+              onClick={() => {
+                setFontFamily(f.name);
+                if (f.name !== "Custom") setLineHeightRatio(f.lineHeightSuggested);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+                fontFamily === f.name ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              }`}
+            >
+              {f.name}
+            </button>
+          ))}
+        </div>
+        {fontFamily !== "Custom" && (
+          <p className="text-xs text-white/30">
+            {FONT_PRESETS.find((f) => f.name === fontFamily)?.note}
+          </p>
+        )}
+        {fontFamily === "Custom" && (
+          <input
+            placeholder="Nome font..."
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+          />
+        )}
+      </div>
+
+      {/* FONT WEIGHT */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Peso font</p>
+        <div className="flex flex-wrap gap-1.5">
+          {FONT_WEIGHTS.map((w) => (
+            <button
+              key={w}
+              onClick={() => setFontWeight(w)}
+              className={`w-12 py-1.5 rounded-xl text-xs border transition-all ${
+                fontWeight === w ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              }`}
+              style={{ fontWeight: w }}
+            >
+              {w}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* PAGE FORMAT */}
+      <div>
+        <p className="text-xs text-white/40 mb-1.5">Formato pagina</p>
+        <div className="flex gap-2">
+          {Object.entries(PAGE_FORMATS).map(([key, val]) => (
+            <button
+              key={key}
+              onClick={() => {
+                setPageFormat(key as any);
+                const s = suggestFontSize(key);
+                setBaseSize(unit === "pt" ? s.ideal : parseFloat(ptToPx(s.ideal).toFixed(0)));
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
+                pageFormat === key ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+              }`}
+            >
+              {key}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-white/30 mt-1.5">{PAGE_FORMATS[pageFormat].label}</p>
+        {(() => {
+          const s = suggestFontSize(pageFormat);
+          return (
+            <p className="text-xs text-white/25 mt-0.5">
+              Font size consigliata: <span className="text-white/50">{s.min}–{s.max} pt</span> · ideale <span className="text-white/50">{s.ideal} pt</span>
+            </p>
+          );
+        })()}
+      </div>
 
       {/* UNIT SELECTOR */}
       <div className="flex gap-2">
