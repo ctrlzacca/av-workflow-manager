@@ -6,6 +6,7 @@ import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
+import { useRef } from "react";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -105,6 +106,8 @@ export default function Home() {
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -328,12 +331,16 @@ export default function Home() {
             }`}>
               {searchOpen && (
                 <input
-                  autoFocus
+                  ref={searchInputRef}
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cerca progetto..."
-                  className="flex-1 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/"
-                  onBlur={() => { if (!search) setSearchOpen(false); }}
+                  onClick={() => {
+                    setSearchOpen(!searchOpen);
+                    if (!searchOpen) {
+                      setTimeout(() => searchInputRef.current?.focus(), 50);
+                    } else {
+                      setSearch("");
+                    }
+                  }}
                 />
                 
               )}

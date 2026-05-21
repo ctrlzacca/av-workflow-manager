@@ -211,6 +211,7 @@ export default function ProjectPage() {
   const [showNewFolder, setShowNewFolder] = useState(false);
   const [activeTab, setActiveTab] = useState<"tasks" | "info" | "notes" | "mood">("tasks");
   const [showSaved, setShowSaved] = useState(false);
+  const [localNotes, setLocalNotes] = useState<string | null>(null);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -432,8 +433,6 @@ export default function ProjectPage() {
             onChange={(e) => updateField("category", e.target.value)}
             className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           >
-            <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
-            <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
             {categories.map((cat) => (
             <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">
               {cat.name}
@@ -760,14 +759,24 @@ export default function ProjectPage() {
         )}
 
         {/* ── TAB NOTES ── */}
-        {activeTab === "notes" && (
-          <textarea
-            value={project.notes ?? ""}
-            onChange={(e) => updateField("notes", e.target.value)}
-            placeholder="Scrivi qui le tue note..."
-            className="w-full h-80 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40 resize-none leading-relaxed"
-          />
-        )}
+          {activeTab === "notes" && (
+            <div className="flex flex-col gap-3">
+              <textarea
+                value={localNotes ?? project.notes ?? ""}
+                onChange={(e) => setLocalNotes(e.target.value)}
+                placeholder="Scrivi qui le tue note..."
+                className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15 resize-none leading-relaxed"
+              />
+              {localNotes !== null && localNotes !== project.notes && (
+                <button
+                  onClick={() => { updateField("notes", localNotes); }}
+                  className="w-full py-3 bg-white text-black rounded-xl text-sm font-semibold"
+                >
+                  Salva note
+                </button>
+              )}
+            </div>
+          )}
 
             {/* ── TAB MOOD ── */}
     {activeTab === "mood" && (

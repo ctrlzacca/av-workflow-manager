@@ -217,8 +217,6 @@ export default function SettingsPage() {
                 onChange={(e) => setDefaultCategory(e.target.value)}
                 className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-2 rounded-xl focus:outline-none"
               >
-                <option value="Ableton" className="bg-[var(--bg)]">Ableton</option>
-                <option value="TouchDesigner" className="bg-[var(--bg)]">TouchDesigner</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">{cat.icon} {cat.name}</option>
                 ))}
