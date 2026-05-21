@@ -57,7 +57,7 @@ export default function LoginPage() {
 
         {/* HEADER */}
         <h1 className="text-2xl font-bold tracking-tight mb-1">AV Workflow Manager</h1>
-        <p className="text-[var(--text)]/30 text-sm mb-10">Accedi al tuo account</p>
+        <p className="text-[var(--text)]/50 hover:text-[var(--text)]/80 transition-colors text-sm mb-10">Accedi al tuo account</p>
 
         {/* FORM */}
         <div className="space-y-3">
@@ -67,7 +67,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Email"
-            className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
+            className="w-full p-4 bg-[var(--card)] border border-[var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/25 focus:outline-none focus:border-[var(--text)]/40 text-sm transition-all"
           />
           <input
             type="password"
@@ -75,26 +75,28 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Password"
-            className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/20 focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
+            className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--text)]/40 hover:text-[var(--text)]/70 transition-colors focus:outline-none focus:border-[color:var(--border)]/30 text-sm"
           />
         </div>
 
         {/* ERROR */}
         {error && (
-          <p className="text-red-400 text-xs mt-3">{error}</p>
+          <p className="text-[color:var(--danger)] text-xs mt-3">
+          {error}
+        </p>
         )}
 
         {/* LOGIN BUTTON */}
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full mt-5 py-4 bg-white text-[var(--text)] rounded-xl font-semibold text-sm disabled:opacity-50 transition-opacity"
+          className="w-full mt-5 py-4 bg-[var(--card)] border border-[var(--border)] text-[var(--text)] rounded-xl font-semibold text-sm disabled:opacity-50 transition-all hover:brightness-110"
         >
           {loading ? "Accesso..." : "Accedi"}
         </button>
         
               {!resetMode ? (
-        <button onClick={() => setResetMode(true)} className="text-[var(--text)]/30 text-xs hover:text-[var(--text)]/60 transition-colors">
+        <button onClick={() => setResetMode(true)} className="text-[var(--text)]/50 hover:text-[var(--text)]/80 transition-colors text-xs hover:text-[var(--text)]/60 transition-colors">
           Password dimenticata?
         </button>
       ) : (
@@ -104,21 +106,21 @@ export default function LoginPage() {
           ) : (
             <>
               <p className="text-[var(--text)]/40 text-xs">Inserisci la tua email per ricevere il link di reset.</p>
-              <button onClick={handleReset} disabled={loading} className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/60 text-sm">
+              <button onClick={handleReset} disabled={loading} className="w-full py-3 bg-[var(--card)] border border-[var(--border)] rounded-xl text-[var(--text)]/70 text-sm hover:brightness-110 transition-all">
                 Invia link di reset
               </button>
             </>
           )}
-          <button onClick={() => { setResetMode(false); setResetSent(false); }} className="text-[var(--text)]/20 text-xs hover:text-[var(--text)]/40 w-full text-center">
+          <button onClick={() => { setResetMode(false); setResetSent(false); }} className="text-[var(--text)]/40 hover:text-[var(--text)]/70 transition-colors text-xs hover:text-[var(--text)]/40 w-full text-center">
             Torna al login
           </button>
         </div>
       )}
 
         {/* REGISTER LINK */}
-        <p className="text-center text-[var(--text)]/30 text-xs mt-6">
+        <p className="text-center text-[var(--text)]/50 text-xs mt-6">
           Non hai un account?{" "}
-          <Link href="/register" className="text-[var(--text)]/60 hover:text-[var(--text)] transition-colors">
+          <Link href="/register" className="text-[var(--text)]/80 hover:text-[var(--text)] transition-colors">
             Registrati
           </Link>
         </p>

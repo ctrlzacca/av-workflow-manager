@@ -464,13 +464,13 @@ useEffect(() => {
 
         {/* CATEGORY SELECTOR */}
             {categories.length === 0 ? (
-              <div className="border border-white/10 rounded-xl p-4 mb-4 text-center space-y-3">
-                <p className="text-white/50 text-sm">Nessuna categoria ancora.</p>
-                <p className="text-white/30 text-xs">Aggiungi prima un software in Settings per poter creare un progetto.</p>
+              <div className="border border-[color:var(--border)] rounded-xl p-4 mb-4 text-center space-y-3">
+                <p className="text-[var(--text)] text-sm">Nessuna categoria ancora.</p>
+                <p className="text-[var(--text)] text-xs">Aggiungi prima un software in Settings per poter creare un progetto.</p>
                 <Link
                   href="/settings"
                   onClick={() => setShowAdd(false)}
-                  className="block w-full py-3 bg-white text-black rounded-xl text-sm font-semibold"
+                  className="block w-full py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
                 >
                   Vai a Settings →
                 </Link>
@@ -482,7 +482,7 @@ useEffect(() => {
                     key={cat.id ?? cat.name}
                     type="button"
                     onClick={() => setNewProjectCategory(cat.name)}
-                    className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-white bg-white/10 text-white" : "border-[color:var(--border)] text-[var(--text)]"}`}
+                    className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-[color:var(--button-bg)] bg-[var(--button-bg)] text-[var(--button-text)]" : "border-[color:var(--border)] text-[var(--text)]"}`}
                   >
                     {cat.name}
                   </button>
@@ -509,7 +509,7 @@ useEffect(() => {
           <Link
             href="/settings"
             onClick={() => setShowAdd(false)}
-            className="block text-center text-xs text-white/20 hover:text-white/40 transition-colors mt-2"
+            className="block text-center text-xs text-[var(--text)] hover:text-[var(--text-hover)] transition-colors mt-2"
           >
             Gestisci categorie →
           </Link>
