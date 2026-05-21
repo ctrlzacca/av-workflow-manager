@@ -224,12 +224,12 @@ export default function Home() {
     const preset = PRESET_SOFTWARES.find((p) => p.name === categoryName);
 
     if (preset) {
-      return renderIcon(preset.icon, preset.isImage, "w-4 h-4");
+      return renderIcon(preset.icon, preset.isImage, "w-4 h-4", true);
     }
 
     const cat = categories.find((c) => c.name === categoryName);
 
-    return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-4 h-4");
+    return renderIcon(cat?.icon ?? "📁", cat?.is_image, "w-4 h-4", true);
   }
 
   function getCategoryIconSmall(categoryName: string) {
@@ -371,9 +371,9 @@ export default function Home() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center text-white">
-                      {getCategoryIcon(project.category)}
-                    </div>
+                      <div className="[&_img]:invert [&_img]:opacity-70">
+                        {getCategoryIcon(project.category)}
+                      </div>
                     </div>
                     <span className="font-semibold text-base truncate text-white">{project.title}</span>
                   </div>

@@ -330,7 +330,7 @@ function BpmTool() {
             <input
               type="range" min={40} max={300} value={bpm}
               onChange={(e) => setBpm(Number(e.target.value))}
-              className="w-full mt-3 accent-white"
+              className="w-full mt-3 accent-[var(--text)]"
             />
           </div>
 
@@ -602,7 +602,7 @@ function deletePalette(id: number) {
           max={10}
           value={count}
           onChange={(e) => setCount(Number(e.target.value))}
-          className="w-full accent-white"
+          className="w-full accent-[var(--text)]"
         />
 
         <div className="flex justify-between text-xs text-[var(--text)]/20 mt-1">
@@ -1547,7 +1547,7 @@ function TypographyTool() {
             step={0.5}
             value={baseSize}
             onChange={(e) => setBaseSize(Number(e.target.value))}
-            className="flex-1 accent-white"
+            className="flex-1 accent-[var(--text)]"
           />
           <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">+</button>
         </div>
@@ -1587,7 +1587,7 @@ function TypographyTool() {
           step={0.05}
           value={lineHeightRatio}
           onChange={(e) => setLineHeightRatio(Number(e.target.value))}
-          className="w-full accent-white"
+          className="w-full accent-[var(--text)]"
         />
         <div className="flex justify-between text-xs text-[var(--text)]/20 mt-1">
           <span>1.2 — compatto</span>

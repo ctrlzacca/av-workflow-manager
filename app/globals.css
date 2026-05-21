@@ -39,3 +39,9 @@ body {
   filter: none;
   opacity: 0.7;
 }
+
+/* Icona sempre bianca — usata su sfondi sempre scuri (es. card progetto) */
+.icon-always-white {
+  filter: invert(1);
+  opacity: 0.7;
+}
