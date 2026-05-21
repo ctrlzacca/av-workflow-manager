@@ -462,31 +462,32 @@ useEffect(() => {
               className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[color:var(--text-placeholder)] focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
             />
 
+        {/* CATEGORY SELECTOR */}
             {categories.length === 0 ? (
-
-              <p className="text-[color:var(--text-soft)] text-xs text-center py-2">
-                Nessuna categoria — aggiungine una in Settings
-              </p>
-
+              <div className="border border-white/10 rounded-xl p-4 mb-4 text-center space-y-3">
+                <p className="text-white/50 text-sm">Nessuna categoria ancora.</p>
+                <p className="text-white/30 text-xs">Aggiungi prima un software in Settings per poter creare un progetto.</p>
+                <Link
+                  href="/settings"
+                  onClick={() => setShowAdd(false)}
+                  className="block w-full py-3 bg-white text-black rounded-xl text-sm font-semibold"
+                >
+                  Vai a Settings →
+                </Link>
+              </div>
             ) : (
-
               <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
-                {[...categories.map((c) => c.name)].map((cat) => (
+                {categories.map((cat) => (
                   <button
-                    key={cat}
-                    onClick={() => setNewProjectCategory(cat)}
-                    className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all flex-shrink-0 ${
-                      newProjectCategory === cat
-                        ? "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]"
-                        : "border-[color:var(--border)] text-[color:var(--text-soft)]"
-                    }`}
+                    key={cat.id ?? cat.name}
+                    type="button"
+                    onClick={() => setNewProjectCategory(cat.name)}
+                    className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-white bg-white/10 text-white" : "border-[color:var(--border)] text-[var(--text)]"}`}
                   >
-                    {getCategoryIconSmall(cat)}
-                    {cat}
+                    {cat.name}
                   </button>
                 ))}
               </div>
-
             )}
 
             <div className="flex gap-3">
@@ -496,14 +497,22 @@ useEffect(() => {
               >
                 Annulla
               </button>
-              <button
-                onClick={addProject}
-                className="flex-1 py-4 bg-[var(--card)] text-[var(--text)] rounded-xl font-semibold text-sm"
-              >
-                Crea progetto
-              </button>
+                <button
+                  onClick={addProject}
+                  disabled={categories.length === 0 || !newProjectCategory}
+                  className="flex-1 py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30"
+                >
+                  Crea progetto
+                </button>
             </div>
           </div>
+          <Link
+            href="/settings"
+            onClick={() => setShowAdd(false)}
+            className="block text-center text-xs text-white/20 hover:text-white/40 transition-colors mt-2"
+          >
+            Gestisci categorie →
+          </Link>
         </div>
       )}
 
