@@ -18,7 +18,7 @@ const MONTHS = [
 const DAYS = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
 
 const PRIORITY_COLOR: Record<Project["priority"], string> = {
-  Low: "bg-[var(--card)]",
+  Low: "bg-[var(--text)]",
   Medium: "bg-yellow-400",
   High: "bg-red-400",
 };
