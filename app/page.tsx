@@ -360,10 +360,10 @@ useEffect(() => {
                 if (searchOpen) {
                   setSearch("");
                   setSearchOpen(false);
-                  return;
+                } else {
+                  setSearchOpen(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 50);
                 }
-
-                setSearchOpen(true);
               }}
               className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
             >
