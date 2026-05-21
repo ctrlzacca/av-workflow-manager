@@ -765,12 +765,12 @@ export default function ProjectPage() {
                 value={localNotes ?? project.notes ?? ""}
                 onChange={(e) => setLocalNotes(e.target.value)}
                 placeholder="Scrivi qui le tue note..."
-                className="w-full h-80 bg-transparent text-white/80 text-sm focus:outline-none placeholder:text-white/15 resize-none leading-relaxed"
+                className="w-full h-80 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40 resize-none leading-relaxed"
               />
               {localNotes !== null && localNotes !== project.notes && (
                 <button
                   onClick={() => { updateField("notes", localNotes); }}
-                  className="w-full py-3 bg-white text-black rounded-xl text-sm font-semibold"
+                  className="w-full py-3 bg-[var(--card)] text-[var(--text)] rounded-xl text-sm font-semibold"
                 >
                   Salva note
                 </button>
