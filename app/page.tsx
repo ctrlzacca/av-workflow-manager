@@ -323,37 +323,51 @@ export default function Home() {
             })}
           </div>
         )}
-        {/* SEARCH */}
+          {/* SEARCH */}
         <div className="flex justify-end mt-3 mb-1">
-          {search !== null && (
-            <div className={`flex items-center gap-2 transition-all duration-200 ${
+          <div
+            className={`flex items-center gap-2 transition-all duration-200 ${
               searchOpen ? "w-full" : "w-9"
-            }`}>
-              {searchOpen && (
-                <input
-                  ref={searchInputRef}
-                  value={search}
-                  onClick={() => {
-                    setSearchOpen(!searchOpen);
-                    if (!searchOpen) {
-                      setTimeout(() => searchInputRef.current?.focus(), 50);
-                    } else {
-                      setSearch("");
-                    }
-                  }}
-                />
-                
-              )}
-              <button
-                onClick={() => { setSearchOpen(!searchOpen); if (searchOpen) setSearch(""); }}
-                className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
+            }`}
+          >
+            {searchOpen && (
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Cerca progetto..."
+                className="flex-1 h-9 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none focus:border-[color:var(--border)]/40"
+              />
+            )}
+
+            <button
+              onClick={() => {
+                if (searchOpen) {
+                  setSearch("");
+                  setSearchOpen(false);
+                } else {
+                  setSearchOpen(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 50);
+                }
+              }}
+              className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
+            >
+              <svg
+                className="w-4 h-4 text-[var(--text)]/40"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <svg className="w-4 h-4 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
-          )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
