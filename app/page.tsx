@@ -498,7 +498,7 @@ useEffect(() => {
               </button>
               <button
                 onClick={addProject}
-                className="flex-1 py-4 bg-[var(--bg)] text-[var(--text)] rounded-xl font-semibold text-sm"
+                className="flex-1 py-4 bg-[var(--card)] text-[var(--text)] rounded-xl font-semibold text-sm"
               >
                 Crea progetto
               </button>
