@@ -340,20 +340,20 @@ useEffect(() => {
           {/* SEARCH */}
         <div className="flex justify-end mt-3 mb-1">
           <div
-            className={`flex items-center gap-2 transition-all duration-200 ${
-              searchOpen ? "w-full" : "w-9"
-            }`}
+            className="flex items-center gap-2"
           >
-            {searchOpen && (
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Cerca progetto..."
-                className="flex-1 h-9 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none focus:border-[color:var(--border)]/40"
-              />
-            )}
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cerca progetto..."
+              className={`h-9 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none focus:border-[color:var(--border)]/40 transition-all duration-200 ${
+                searchOpen
+                  ? "w-48 opacity-100"
+                  : "w-0 opacity-0 pointer-events-none"
+              }`}
+            />
 
             <button
               onClick={() => {
