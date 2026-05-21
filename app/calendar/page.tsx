@@ -126,7 +126,7 @@ export default function CalendarPage() {
           <h1 className="text-xl font-bold tracking-tight">Calendario</h1>
           <button
             onClick={goToToday}
-            className="text-xs text-[var(--text)]/40 border border-[color:var(--border)] px-3 py-1.5 rounded-lg hover:border-[color:var(--border)]/30 transition-colors"
+            className="text-xs text-[var(--text)] border border-[color:var(--border)] px-3 py-1.5 rounded-lg hover:border-[color:var(--border)]/30 transition-colors"
           >
             Oggi
           </button>
@@ -204,7 +204,7 @@ export default function CalendarPage() {
 
                 {/* TODAY DOT */}
                 {isToday && (
-                  <span className="w-1 h-1 rounded-full bg-white mt-0.5" />
+                  <span className="w-1 h-1 rounded-full bg-[var(--text)] mt-0.5" />
                 )}
 
                 {/* PROJECT DOTS */}
