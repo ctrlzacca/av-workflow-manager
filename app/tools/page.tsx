@@ -1552,7 +1552,7 @@ function TypographyTool() {
 
             {/* FONT SELECTOR */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Font di riferimento</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Font di riferimento</p>
         <div className="flex flex-wrap gap-1.5 mb-2">
           {FONT_PRESETS.map((f) => (
             <button
@@ -1562,7 +1562,7 @@ function TypographyTool() {
                 if (f.name !== "Custom") setLineHeightRatio(f.lineHeightSuggested);
               }}
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                fontFamily === f.name ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+                fontFamily === f.name ? "bg-[var(--text)] text-[var(--bg)] border-[color:var(--text)]" : "bg-[var(--text)]/5 border-[color:var(--text)]/10 text-[var(--text)]/50"
               }`}
             >
               {f.name}
@@ -1570,28 +1570,27 @@ function TypographyTool() {
           ))}
         </div>
         {fontFamily !== "Custom" && (
-          <p className="text-xs text-white/30">
+          <p className="text-xs text-[var(--text)]/30">
             {FONT_PRESETS.find((f) => f.name === fontFamily)?.note}
           </p>
         )}
         {fontFamily === "Custom" && (
           <input
             placeholder="Nome font..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
-          />
+            className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[color:var(--border)]/30"          />
         )}
       </div>
 
       {/* FONT WEIGHT */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Peso font</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Peso font</p>
         <div className="flex flex-wrap gap-1.5">
           {FONT_WEIGHTS.map((w) => (
             <button
               key={w}
               onClick={() => setFontWeight(w)}
               className={`w-12 py-1.5 rounded-xl text-xs border transition-all ${
-                fontWeight === w ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+                fontWeight === w ? "bg-[var(--text)] text-[var(--bg)] border-[color:var(--text)]" : "bg-[var(--text)]/5 border-[color:var(--text)]/10 text-[var(--text)]/50"
               }`}
               style={{ fontWeight: w }}
             >
@@ -1603,7 +1602,7 @@ function TypographyTool() {
 
       {/* PAGE FORMAT */}
       <div>
-        <p className="text-xs text-white/40 mb-1.5">Formato pagina</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Formato pagina</p>
         <div className="flex gap-2">
           {Object.entries(PAGE_FORMATS).map(([key, val]) => (
             <button
@@ -1614,7 +1613,7 @@ function TypographyTool() {
                 setBaseSize(unit === "pt" ? s.ideal : parseFloat(ptToPx(s.ideal).toFixed(0)));
               }}
               className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
-                pageFormat === key ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/50"
+                pageFormat === key ? "bg-[var(--text)] text-[var(--bg)] border-[color:var(--text)]" : "bg-[var(--text)]/5 border-[color:var(--text)]/10 text-[var(--text)]/50"
               }`}
             >
               {key}
@@ -1625,8 +1624,8 @@ function TypographyTool() {
         {(() => {
           const s = suggestFontSize(pageFormat);
           return (
-            <p className="text-xs text-white/25 mt-0.5">
-              Font size consigliata: <span className="text-white/50">{s.min}–{s.max} pt</span> · ideale <span className="text-white/50">{s.ideal} pt</span>
+            <p className="text-xs text-[var(--text)]/25 mt-0.5">
+              Font size consigliata: <span className="text-[var(--text)]/50">{s.min}–{s.max} pt</span> · ideale <span className="text-[var(--text)]/50">{s.ideal} pt</span>
             </p>
           );
         })()}
