@@ -16,25 +16,30 @@ const PRIORITY_COLOR: Record<Project["priority"], string> = {
   High: "text-red-400",
 };
 
-  // dopo CATEGORY_LOGO
 function getProjectBackground(slug: string): string {
   let hash = 0;
+
   for (let i = 0; i < slug.length; i++) {
     hash = slug.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const palettes = [
-    ["#1a1a2e", "#16213e", "#0f3460"],
-    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
-    ["#0a1628", "#0d2137", "#0a2818"],
-    ["#1e1a0a", "#2e2010", "#1e0a0a"],
-    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
-    ["#1a0a1a", "#2e102e", "#1a0a2e"],
-    ["#0a1e0a", "#102e10", "#0a2e1a"],
-    ["#1e0a0a", "#2e1010", "#2e1a0a"],
-  ];
-  const palette = palettes[Math.abs(hash) % palettes.length];
+
+  const hue = Math.abs(hash) % 360;
+  const hue2 = (hue + 40) % 360;
+
+  const saturation = 70;
+
+  const light1 = 18;
+  const light2 = 12;
+
   const angle = Math.abs(hash >> 4) % 360;
-  return `linear-gradient(${angle}deg, ${palette[0]}99, ${palette[1]}99, ${palette[2]}99)`;
+
+  return `
+    linear-gradient(
+      ${angle}deg,
+      hsl(${hue}, ${saturation}%, ${light1}%),
+      hsl(${hue2}, ${saturation}%, ${light2}%)
+    )
+  `;
 }
 
 // ─── MOOD FORM ────────────────────────────────────────────────────────────────
