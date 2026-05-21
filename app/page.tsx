@@ -131,6 +131,14 @@ export default function Home() {
     setLoading(false);
   }
 
+useEffect(() => {
+  if (searchOpen) {
+    requestAnimationFrame(() => {
+      searchInputRef.current?.focus();
+    });
+  }
+}, [searchOpen])
+
   useEffect(() => {
     // leggi preferenze di default
     const savedFilter = localStorage.getItem("defaultFilter");
@@ -352,10 +360,10 @@ export default function Home() {
                 if (searchOpen) {
                   setSearch("");
                   setSearchOpen(false);
-                } else {
-                  setSearchOpen(true);
-                  setTimeout(() => searchInputRef.current?.focus(), 50);
+                  return;
                 }
+
+                setSearchOpen(true);
               }}
               className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
             >
