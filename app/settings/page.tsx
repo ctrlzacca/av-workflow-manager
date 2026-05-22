@@ -432,7 +432,7 @@ export default function SettingsPage() {
                   >
                     Annulla
                   </button>
-                  <button onClick={addCategory} className="flex-1 py-3 bg-white text-[var(--text)] rounded-xl text-sm font-semibold">
+                  <button onClick={addCategory} className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold">
                     Crea
                   </button>
                 </div>
