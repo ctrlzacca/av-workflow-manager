@@ -64,7 +64,7 @@ const PRIORITY_ORDER: Record<Project["priority"], number> = {
 };
 
 const PRIORITY_DOT: Record<Project["priority"], string> = {
-  Low: "bg-[var(--card)]",
+  Low: "bg-[var(--text)]",
   Medium: "bg-yellow-400",
   High: "bg-red-400",
 };
