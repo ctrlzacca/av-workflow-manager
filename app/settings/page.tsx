@@ -340,7 +340,7 @@ export default function SettingsPage() {
                     <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
                     <div className="flex gap-2">
                       <button onClick={() => setEditingCat(null)} className="flex-1 py-2 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-xs">Annulla</button>
-                      <button onClick={updateCategory} className="flex-1 py-2 bg-white text-[var(--text)] rounded-xl text-xs font-semibold">Salva</button>
+                      <button onClick={updateCategory} className="flex-1 py-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-xs font-semibold">Salva</button>
                     </div>
                   </div>
                 ) : (
