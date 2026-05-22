@@ -20,25 +20,34 @@ function getProgress(project: Project): number {
   return Math.round((done / project.tasks.length) * 100);
 }
 
-function getProjectBackground(slug: string, cardColor?: string, categoryColor?: string): string {
-  // usa il colore esplicito del progetto se impostato
-  if (cardColor) {
-    const hex = cardColor;
-    return `linear-gradient(135deg, ${hex}cc, ${hex}88)`;
+function getProjectBackground(project: Project, categories: Category[]): string {
+  const category = categories.find((c) => c.name === project.category);
+
+  if (category?.color) {
+    return category.color;
   }
-  // usa il colore della categoria se disponibile
-  if (categoryColor) {
-    return `linear-gradient(135deg, ${categoryColor}cc, ${categoryColor}55)`;
-  }
-  // fallback: random basato su slug
+
   let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+
+  for (let i = 0; i < project.slug.length; i++) {
+    hash = project.slug.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const hue = Math.abs(hash) % 360;
-  const hue2 = (hue + 40) % 360;
+
+  const palettes = [
+    ["#1a1a2e", "#16213e", "#0f3460"],
+    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
+    ["#0a1628", "#0d2137", "#0a2818"],
+    ["#1e1a0a", "#2e2010", "#1e0a0a"],
+    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
+    ["#1a0a1a", "#2e102e", "#1a0a2e"],
+    ["#0a1e0a", "#102e10", "#0a2e1a"],
+    ["#1e0a0a", "#2e1010", "#2e1a0a"],
+  ];
+
+  const palette = palettes[Math.abs(hash) % palettes.length];
   const angle = Math.abs(hash >> 4) % 360;
-  return `linear-gradient(${angle}deg, hsl(${hue},70%,18%), hsl(${hue2},70%,12%))`;
+
+  return `linear-gradient(${angle}deg, ${palette[0]}, ${palette[1]}, ${palette[2]})`;
 }
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -174,7 +183,6 @@ useEffect(() => {
     plugins: "", links: "", extra_info: "",
     custom_fields: {},
     user_id: user.id,
-    card_color: ""
   };
 
   const { error } = await supabase.from("projects").insert(newProj);
@@ -395,7 +403,7 @@ useEffect(() => {
               <Link
                 key={project.slug}
                 href={`/projects/${project.slug}`}
-                style={{ background: getProjectBackground(project.slug) }}
+                style={{ background: getProjectBackground(project, categories)}}
                 className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-[color:var(--border)] active:brightness-110 transition-all"
               >
                 {/* TOP ROW */}

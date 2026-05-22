@@ -41,5 +41,4 @@ export type Project = {
   url: string;
   note: string;
   }>;
-  card_color?: string;
 };

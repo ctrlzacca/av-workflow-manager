@@ -331,6 +331,17 @@ export default function SettingsPage() {
                       onChange={(e) => setEditingCat({ ...editingCat, color: e.target.value })}
                       className="w-12 h-10 rounded-xl border border-[color:var(--border)] cursor-pointer bg-transparent"
                     />
+                    <button
+                      onClick={() =>
+                        setEditingCat({
+                          ...editingCat,
+                          color: "",
+                        })
+                      }
+                      className="text-xs text-[var(--text)]/40"
+                    >
+                      Usa gradiente random
+                    </button>
                     <input
                       value={Array.isArray(editingCat.fields) ? editingCat.fields.join(", ") : editingCat.fields}
                       onChange={(e) => setEditingCat({ ...editingCat, fields: e.target.value.split(",").map(f => f.trim()).filter(f => f) })}
