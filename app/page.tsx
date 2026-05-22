@@ -492,7 +492,7 @@ useEffect(() => {
           <Link
             href="/settings"
             onClick={() => setShowAdd(false)}
-            className="block text-center text-xs text-white/50 hover:text-white transition-colors mt-2 py-2"
+            className="block text-center text-xs text-[var(--text)] hover:text-[var(--text-hover)] transition-colors mt-2 py-2"
           >
             Gestisci categorie →
           </Link>
