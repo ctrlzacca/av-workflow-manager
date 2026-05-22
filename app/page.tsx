@@ -174,6 +174,7 @@ useEffect(() => {
     plugins: "", links: "", extra_info: "",
     custom_fields: {},
     user_id: user.id,
+    card_color: ""
   };
 
   const { error } = await supabase.from("projects").insert(newProj);

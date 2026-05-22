@@ -40,6 +40,6 @@ export type Project = {
   title: string;
   url: string;
   note: string;
-  card_color?: string
   }>;
+  card_color?: string;
 };
