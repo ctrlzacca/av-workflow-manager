@@ -16,30 +16,32 @@ const PRIORITY_COLOR: Record<Project["priority"], string> = {
   High: "text-red-400",
 };
 
-function getProjectBackground(slug: string): string {
-  let hash = 0;
+function getProjectBackground(project: Project, categories: Category[]): string {
+  const category = categories.find((c) => c.name === project.category);
 
-  for (let i = 0; i < slug.length; i++) {
-    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  // 1. PRIORITÀ: colore custom categoria
+  if (category?.color) {
+    return category.color;
   }
 
-  const hue = Math.abs(hash) % 360;
-  const hue2 = (hue + 40) % 360;
+  // 2. fallback stabile (NON hash diverso dallo slug page)
+  let hash = 0;
+  for (let i = 0; i < project.slug.length; i++) {
+    hash = project.slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-  const saturation = 70;
+  const palettes = [
+    ["#1a1a2e", "#16213e", "#0f3460"],
+    ["#1a1a1a", "#2d1b2e", "#1a0a2e"],
+    ["#0a1628", "#0d2137", "#0a2818"],
+    ["#1e0a0a", "#2e1010", "#2e1a0a"],
+    ["#0a1a1a", "#0d2e2e", "#0a1e2e"],
+  ];
 
-  const light1 = 18;
-  const light2 = 12;
-
+  const palette = palettes[Math.abs(hash) % palettes.length];
   const angle = Math.abs(hash >> 4) % 360;
 
-  return `
-    linear-gradient(
-      ${angle}deg,
-      hsl(${hue}, ${saturation}%, ${light1}%),
-      hsl(${hue2}, ${saturation}%, ${light2}%)
-    )
-  `;
+  return `linear-gradient(${angle}deg, ${palette[0]}, ${palette[1]}, ${palette[2]})`;
 }
 
 // ─── MOOD FORM ────────────────────────────────────────────────────────────────
@@ -174,7 +176,7 @@ function MoodItem({
           <a  href={item.url.startsWith("http") ? item.url : `https://${item.url}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-blue-400 truncate block mt-0.5"
+            className="text-xs text-[var(--text)]/60 hover:text-[var(--text)]/90 transition-colors truncate block mt-0.5"
           >
             {item.url.replace(/^https?:\/\//, "")}
           </a>
@@ -549,7 +551,7 @@ export default function ProjectPage() {
           <div
             className="absolute left-0 right-0 -z-10 opacity-60 pointer-events-none"
             style={{
-              background: getProjectBackground(slug),
+              background: getProjectBackground(project, categories),
               top: "0",
               bottom: "0",
             }}
@@ -669,7 +671,7 @@ export default function ProjectPage() {
               type="text"
               value={project.title}
               onChange={(e) => updateField("title", e.target.value)}
-              className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none border-b border-[color:var(--border)] focus:border-[color:var(--border)]/30 transition-colors pb-0.5"
+              className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none border-b border-[color:var(--border)] focus:border-[color:var(--border)]/30 transition-colors pb-0.5"
             />
           </div>
 
@@ -678,11 +680,11 @@ export default function ProjectPage() {
               <>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">BPM</span>
-                  <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+                  <input type="text" value={project.bpm ?? ""} onChange={(e) => updateField("bpm", e.target.value)} placeholder="es. 120" className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Tonalità</span>
-                  <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+                  <input type="text" value={project.key ?? ""} onChange={(e) => updateField("key", e.target.value)} placeholder="es. C minor" className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
               </>
             )}
@@ -692,11 +694,11 @@ export default function ProjectPage() {
               <>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Risoluzione</span>
-                  <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+                  <input type="text" value={project.resolution ?? ""} onChange={(e) => updateField("resolution", e.target.value)} placeholder="es. 1920x1080" className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
                 <div className="flex items-center gap-4 py-4">
                   <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">FPS</span>
-                  <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+                  <input type="text" value={project.fps ?? ""} onChange={(e) => updateField("fps", e.target.value)} placeholder="es. 60" className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
                 </div>
               </>
             )}
@@ -710,7 +712,7 @@ export default function ProjectPage() {
                   value={project.custom_fields?.[fieldName] ?? ""}
                   onChange={(e) => updateCustomField(fieldName, e.target.value)}
                   placeholder={`es. ${fieldName}...`}
-                  className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40"
+                  className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40"
                 />
               </div>
             ))}
@@ -718,7 +720,7 @@ export default function ProjectPage() {
             {/* CAMPI COMUNI */}
             <div className="flex items-center gap-4 py-4">
               <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Plugin</span>
-              <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+              <input type="text" value={project.plugins ?? ""} onChange={(e) => updateField("plugins", e.target.value)} placeholder="es. Serum, Reverb" className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
             </div>
 
             <div className="flex items-center gap-4 py-4">
@@ -736,13 +738,13 @@ export default function ProjectPage() {
                   <button onClick={() => updateField("links", "")} className="text-[var(--text)]/50 hover:text-red-400 transition-colors flex-shrink-0 w-8 h-8 flex items-center justify-center border border-[color:var(--border)] rounded-lg text-xs">✕</button>
                 </div>
               ) : (
-                <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+                <input type="text" value={project.links ?? ""} onChange={(e) => updateField("links", e.target.value)} placeholder="https://..." className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
               )}
             </div>
 
             <div className="flex items-center gap-4 py-4">
               <span className="text-[var(--text)]/60 text-sm w-24 flex-shrink-0">Extra</span>
-              <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-transparent text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
+              <input type="text" value={project.extra_info ?? ""} onChange={(e) => updateField("extra_info", e.target.value)} placeholder="Info aggiuntive..." className="flex-1 bg-[var(--card)] text-[var(--text)]/80 text-sm focus:outline-none placeholder:text-[var(--text)]/40" />
             </div>
 
             {/* DELETE */}
