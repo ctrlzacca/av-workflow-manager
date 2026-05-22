@@ -133,7 +133,7 @@ export default function SettingsPage() {
 
     const { error } = await supabase
       .from("categories")
-      .update({ name: editingCat.name, icon: editingCat.icon, fields })
+      .update({ name: editingCat.name, icon: editingCat.icon, fields, color: editingCat.color })
       .eq("id", editingCat.id);
 
     if (error) { console.error("Error updating category:", error.message); return; }
@@ -325,6 +325,12 @@ export default function SettingsPage() {
                         placeholder="Nome categoria"
                       />
                     </div>
+                    <input
+                      type="color"
+                      value={editingCat.color || "#1a1a2e"}
+                      onChange={(e) => setEditingCat({ ...editingCat, color: e.target.value })}
+                      className="w-12 h-10 rounded-xl border border-[color:var(--border)] cursor-pointer bg-transparent"
+                    />
                     <input
                       value={Array.isArray(editingCat.fields) ? editingCat.fields.join(", ") : editingCat.fields}
                       onChange={(e) => setEditingCat({ ...editingCat, fields: e.target.value.split(",").map(f => f.trim()).filter(f => f) })}

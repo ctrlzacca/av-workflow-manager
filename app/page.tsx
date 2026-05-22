@@ -20,30 +20,25 @@ function getProgress(project: Project): number {
   return Math.round((done / project.tasks.length) * 100);
 }
 
-function getProjectBackground(slug: string): string {
+function getProjectBackground(slug: string, cardColor?: string, categoryColor?: string): string {
+  // usa il colore esplicito del progetto se impostato
+  if (cardColor) {
+    const hex = cardColor;
+    return `linear-gradient(135deg, ${hex}cc, ${hex}88)`;
+  }
+  // usa il colore della categoria se disponibile
+  if (categoryColor) {
+    return `linear-gradient(135deg, ${categoryColor}cc, ${categoryColor}55)`;
+  }
+  // fallback: random basato su slug
   let hash = 0;
-
   for (let i = 0; i < slug.length; i++) {
     hash = slug.charCodeAt(i) + ((hash << 5) - hash);
   }
-
   const hue = Math.abs(hash) % 360;
   const hue2 = (hue + 40) % 360;
-
-  const saturation = 70;
-
-  const light1 = 18;
-  const light2 = 12;
-
   const angle = Math.abs(hash >> 4) % 360;
-
-  return `
-    linear-gradient(
-      ${angle}deg,
-      hsl(${hue}, ${saturation}%, ${light1}%),
-      hsl(${hue2}, ${saturation}%, ${light2}%)
-    )
-  `;
+  return `linear-gradient(${angle}deg, hsl(${hue},70%,18%), hsl(${hue2},70%,12%))`;
 }
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────

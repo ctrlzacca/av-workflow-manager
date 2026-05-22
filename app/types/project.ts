@@ -14,6 +14,7 @@ export type Category = {
   created_at?: string;
   user_id?: string;
   default_tasks?: Array<{ title: string; done: boolean }>;
+  color?: string
 };
 
 export type Project = {
@@ -39,5 +40,6 @@ export type Project = {
   title: string;
   url: string;
   note: string;
+  card_color?: string
   }>;
 };
