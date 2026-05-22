@@ -489,7 +489,13 @@ useEffect(() => {
                 ))}
               </div>
             )}
-
+          <Link
+            href="/settings"
+            onClick={() => setShowAdd(false)}
+            className="block text-center text-xs text-white/50 hover:text-white transition-colors mt-2 py-2"
+          >
+            Gestisci categorie →
+          </Link>
             <div className="flex gap-3">
               <button
                 onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
@@ -506,13 +512,6 @@ useEffect(() => {
                 </button>
             </div>
           </div>
-          <Link
-            href="/settings"
-            onClick={() => setShowAdd(false)}
-            className="block text-center text-xs text-white/50 hover:text-white transition-colors mt-2 py-2"
-          >
-            Gestisci categorie →
-          </Link>
         </div>
       )}
 
