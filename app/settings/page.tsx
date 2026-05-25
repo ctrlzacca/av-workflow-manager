@@ -112,9 +112,8 @@ export default function SettingsPage() {
     is_image: isImageIcon, // nuovo campo — vedi passo 5
     fields,
     user_id: user.id,
+    color: newCatColor,
   });
-  color: newCatColor
-  setNewCatColor("#1a1a2e");
 
   if (error) { console.error("Error adding category:", error.message); return; }
 
@@ -122,6 +121,7 @@ export default function SettingsPage() {
   setNewCatIcon("📁");
   setNewCatFields("");
   setShowAddCat(false);
+  setNewCatColor("#1a1a2e");
   loadData();
 }
 
