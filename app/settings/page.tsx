@@ -34,6 +34,7 @@ export default function SettingsPage() {
   const [projectCount, setProjectCount] = useState(0);
   const [saved, setSaved] = useState(false);
   const [theme, setTheme] = useState("dark");
+  const [newCatColor, setNewCatColor] = useState("#1a1a2e");
 
   // ── CATEGORIE CUSTOM ──────────────────────────────────────────────────────
 
@@ -112,6 +113,8 @@ export default function SettingsPage() {
     fields,
     user_id: user.id,
   });
+  color: newCatColor
+  setNewCatColor("#1a1a2e");
 
   if (error) { console.error("Error adding category:", error.message); return; }
 
@@ -435,6 +438,12 @@ export default function SettingsPage() {
                   className="w-full bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/70 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]"
                   placeholder="Campi Info (es. Codec, Durata, Formato)"
                 />
+                <input
+                type="color"
+                value={newCatColor || "#1a1a2e"}
+                onChange={(e) => setNewCatColor(e.target.value)}
+                className="w-12 h-10 rounded-xl border border-[color:var(--border)] cursor-pointer bg-transparent"
+              />
                 <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
                 <div className="flex gap-2">
                   <button
