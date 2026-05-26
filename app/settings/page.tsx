@@ -10,7 +10,7 @@ import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.5.0";
 const GITHUB_URL = "https://github.com/ctrlzacca/av-workflow-manager";
 
 const SORT_OPTIONS = [
