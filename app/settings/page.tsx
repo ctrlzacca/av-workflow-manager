@@ -187,7 +187,7 @@ export default function SettingsPage() {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-b border-[color:var(--border)] px-5 pt-14 pb-4">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
