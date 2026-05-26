@@ -187,7 +187,7 @@ export default function SettingsPage() {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
   {/* HEADER */}
-  <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]">
+  <div className="fixed top-0 left-0 right-0 w-full z-50 bg-[var(--bg)] border-b border-[color:var(--border)]">
     
     <div
       className="px-5 pb-4"
