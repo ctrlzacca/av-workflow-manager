@@ -223,7 +223,7 @@ export default function SettingsPage() {
   </div>
 
       {/* CONTENT */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 pb-36 space-y-8">
+      <div className="flex-1 overflow-y-auto px-5 pt-28 pb-36">
 
         {/* ── PREFERENZE DI DEFAULT ── */}
         <section>
