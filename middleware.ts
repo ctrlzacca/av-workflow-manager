@@ -23,9 +23,20 @@ export async function middleware(req: NextRequest) {
 
   const { data: { session } } = await supabase.auth.getSession();
 
-const isAuthPage = req.nextUrl.pathname.startsWith("/login") ||
+  const publicFiles = [
+  "/manifest.json",
+  "/manifest.webmanifest",
+  "/sw.js",
+];
+
+if (publicFiles.includes(req.nextUrl.pathname)) {
+  return NextResponse.next();
+}
+
+const isAuthPage =
+  req.nextUrl.pathname.startsWith("/login") ||
   req.nextUrl.pathname.startsWith("/register") ||
-  req.nextUrl.pathname.startsWith("/splash");
+  req.nextUrl.pathname.startsWith("/splash") ||
   req.nextUrl.pathname.startsWith("/reset-password");
 
   if (!session && !isAuthPage) {
@@ -40,5 +51,7 @@ const isAuthPage = req.nextUrl.pathname.startsWith("/login") ||
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|manifest\\.json|manifest\\.webmanifest|sw\\.js).*)",
+  ],
 };
