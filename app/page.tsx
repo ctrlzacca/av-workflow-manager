@@ -273,7 +273,7 @@ useEffect(() => {
 
             {/* BANNER FLOTTANTE INSTALLAZIONE APP */}
       {canInstall && !isInstalled && (
-        <div className="fixed bottom-4 left-4 right-4 z-50">
+        <div className="fixed top-4 left-4 right-4 z-50">
           <div className="bg-[var(--card)]/95 backdrop-blur-md border border-[var(--border)] rounded-xl px-4 py-3 flex items-center justify-between shadow-lg">
             
             <p className="text-xs text-[var(--text)]/80 leading-tight">
