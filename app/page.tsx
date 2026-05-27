@@ -7,6 +7,7 @@ import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 import { useRef } from "react";
+import { usePwaInstall } from "./hooks/usePwaInstall";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
