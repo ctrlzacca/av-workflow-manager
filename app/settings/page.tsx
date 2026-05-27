@@ -364,7 +364,7 @@ export default function SettingsPage() {
                       }
                       className="text-xs text-[var(--text)]/40"
                     >
-                      Usa gradiente random
+                    {newCatColor ? "Usa gradiente random" : "✓ Gradiente random attivo"}
                     </button>
                     <input
                       value={Array.isArray(editingCat.fields) ? editingCat.fields.join(", ") : editingCat.fields}
