@@ -463,8 +463,14 @@ export default function SettingsPage() {
                 type="color"
                 value={newCatColor || "#1a1a2e"}
                 onChange={(e) => setNewCatColor(e.target.value)}
-                className="w-12 h-10 rounded-xl border border-[color:var(--border)] cursor-pointer bg-transparent"
+                  className={`w-12 h-10 rounded-xl border border-[color:var(--border)] cursor-pointer bg-transparent ${!newCatColor ? "opacity-30" : ""}`}
               />
+                <button
+                onClick={() => setNewCatColor("")}
+                className="text-xs text-[var(--text)]/40 hover:text-[var(--text)]/60 transition-colors"
+              >
+                {newCatColor ? "Usa gradiente random" : "✓ Gradiente random attivo"}
+              </button>
                 <p className="text-xs text-[var(--text)]/25">Separa i campi con una virgola</p>
                 <div className="flex gap-2">
                   <button
