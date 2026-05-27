@@ -271,26 +271,6 @@ useEffect(() => {
   return (
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
-            {/* BANNER FLOTTANTE INSTALLAZIONE APP */}
-      {canInstall && !isInstalled && (
-        <div className="fixed top-4 left-4 right-4 z-50">
-          <div className="bg-[var(--card)]/95 backdrop-blur-md border border-[var(--border)] rounded-xl px-4 py-3 flex items-center justify-between shadow-lg">
-            
-            <p className="text-xs text-[var(--text)]/80 leading-tight">
-              Installa l'app per accesso rapido
-            </p>
-
-            <button
-              onClick={install}
-              className="px-3 py-1.5 rounded-lg bg-[var(--button-bg)] text-[var(--button-text)] text-xs font-medium whitespace-nowrap"
-            >
-              Installa
-            </button>
-
-          </div>
-        </div>
-      )}
-
       {/* HEADER FISSO */}
       <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-0">
 
@@ -409,6 +389,26 @@ useEffect(() => {
           </div>
         </div>
       </header>
+
+            {/* INSTALL BANNER ↓ QUI */}
+      {canInstall && !isInstalled && (
+        <div className="px-5 pt-2">
+          <div className="bg-[var(--card)]/95 backdrop-blur-md border border-[var(--border)] rounded-xl px-4 py-3 flex items-center justify-between shadow-sm">
+            
+            <p className="text-xs text-[var(--text)]/80 leading-tight">
+              Installa l'app per accesso rapido
+            </p>
+
+            <button
+              onClick={install}
+              className="px-3 py-1.5 rounded-lg bg-[var(--button-bg)] text-[var(--button-text)] text-xs font-medium"
+            >
+              Installa
+            </button>
+
+          </div>
+        </div>
+      )}
 
       {/* PROJECT LIST */}
       <div className="flex-1 overflow-y-auto px-5 py-4 pb-36">
