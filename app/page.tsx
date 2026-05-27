@@ -85,6 +85,7 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   Blocked: "Bloccato",
 };
 
+const { canInstall, isInstalled, install } = usePwaInstall();
 
 
 // ─── SORT ────────────────────────────────────────────────────────────────────
@@ -516,6 +517,19 @@ useEffect(() => {
                 </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* BANNER FLOTTANTE INSTALLAZIONE APP */}
+      {!isInstalled && canInstall && (
+        <div className="fixed bottom-20 left-0 right-0 z-10 bg-[var(--card)] border border-[color:var(--border)] rounded-xl p-4 m-4">
+          <p className="text-[var(--text)] text-sm">Installa l'app per un'esperienza migliore.</p>
+          <button
+            onClick={install}
+            className="mt-2 py-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+          >
+            Installa
+          </button>
         </div>
       )}
 
