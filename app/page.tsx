@@ -86,8 +86,6 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   Blocked: "Bloccato",
 };
 
-const { canInstall, isInstalled, install } = usePwaInstall();
-
 
 // ─── SORT ────────────────────────────────────────────────────────────────────
 
@@ -119,6 +117,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { canInstall, isInstalled, install } = usePwaInstall();
 
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
