@@ -362,7 +362,7 @@ export default function SettingsPage() {
                           color: "",
                         })
                       }
-                      className="text-xs text-[var(--text)]/40"
+                      className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 hover:text-[var(--text)] hover:border-[color:var(--border)] transition-colors"
                     >
                     {newCatColor ? "Usa gradiente random" : "✓ Gradiente random attivo"}
                     </button>
@@ -467,7 +467,7 @@ export default function SettingsPage() {
               />
                 <button
                 onClick={() => setNewCatColor("")}
-                className="text-xs text-[var(--text)]/40 hover:text-[var(--text)]/60 transition-colors"
+              className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 hover:text-[var(--text)] hover:border-[color:var(--border)] transition-colors"
               >
                 {newCatColor ? "Usa gradiente random" : "✓ Gradiente random attivo"}
               </button>
