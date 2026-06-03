@@ -33,15 +33,17 @@ if (publicFiles.includes(req.nextUrl.pathname)) {
   return NextResponse.next();
 }
 
+const isApiRoute = req.nextUrl.pathname.startsWith("/api");
+
 const isAuthPage =
   req.nextUrl.pathname.startsWith("/login") ||
   req.nextUrl.pathname.startsWith("/register") ||
   req.nextUrl.pathname.startsWith("/splash") ||
   req.nextUrl.pathname.startsWith("/reset-password");
 
-  if (!session && !isAuthPage) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+if (!session && !isAuthPage && !isApiRoute) {
+  return NextResponse.redirect(new URL("/login", req.url));
+}
 
   if (session && isAuthPage) {
     return NextResponse.redirect(new URL("/", req.url));
