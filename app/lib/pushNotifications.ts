@@ -8,7 +8,7 @@ export async function subscribeToPush(daysBeore: number): Promise<boolean> {
 
   const sub = await reg.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    applicationServerKey: process.env._VAPID_PUBLIC_KEY!,
   });
 
   const res = await fetch("/api/push/subscribe", {
