@@ -7,6 +7,7 @@ import { supabase } from "@/app/lib/supabase";
 import type { Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
+import { subscribeToPush, unsubscribeFromPush } from "@/app/lib/pushNotifications";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -180,6 +181,16 @@ export default function SettingsPage() {
     setProjectCount(0);
     router.push("/");
   }
+
+  // state
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [daysBefore, setDaysBefore] = useState(3);
+    useEffect(() => {
+    navigator.serviceWorker?.ready.then(async (reg) => {
+      const sub = await reg.pushManager.getSubscription();
+      setPushEnabled(!!sub);
+    });
+  }, []);
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
 
@@ -355,7 +366,7 @@ export default function SettingsPage() {
                       onChange={(e) => setEditingCat({ ...editingCat, color: e.target.value })}
                       className="w-12 h-10 rounded-xl border border-[color:var(--border)] cursor-pointer bg-transparent"
                     />
-                    
+
                     <button
                       onClick={() =>
                         setEditingCat({
@@ -527,6 +538,62 @@ export default function SettingsPage() {
                 Elimina
               </button>
             </div>
+          </div>
+        </section>
+
+        {/* ── NOTIFICHE ── */}
+        <section>
+          <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
+            Notifiche scadenze
+          </h2>
+          <div className="bg-[var(--card)] border border-[color:var(--border)] rounded-2xl divide-y divide-white/5">
+            <div className="flex items-center justify-between px-4 py-4">
+              <div>
+                <p className="text-sm font-medium">Notifiche push</p>
+                <p className="text-xs text-[var(--text)]/30 mt-0.5">
+                  {pushEnabled ? "Attive" : "Disattivate"}
+                </p>
+              </div>
+              <button
+                onClick={async () => {
+                  if (pushEnabled) {
+                    await unsubscribeFromPush();
+                    setPushEnabled(false);
+                  } else {
+                    const ok = await subscribeToPush(daysBefore);
+                    setPushEnabled(ok);
+                  }
+                }}
+                className={`text-xs px-4 py-2 rounded-xl border transition-colors ${
+                  pushEnabled
+                    ? "border-red-400/20 text-red-400/70 bg-red-400/10"
+                    : "border-[color:var(--border)] text-[var(--text)]/60 bg-[var(--card)]"
+                }`}
+              >
+                {pushEnabled ? "Disattiva" : "Attiva"}
+              </button>
+            </div>
+
+            {pushEnabled && (
+              <div className="px-4 py-4">
+                <p className="text-sm font-medium mb-3">Anticipo notifica</p>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 5, 7, 14].map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => { setDaysBefore(d); subscribeToPush(d); }}
+                      className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
+                        daysBefore === d
+                          ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                          : "border-[color:var(--border)] text-[var(--text)]/50"
+                      }`}
+                    >
+                      {d}g
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
