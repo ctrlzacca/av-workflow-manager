@@ -23,6 +23,16 @@ export async function subscribeToPush(daysBeore: number): Promise<boolean> {
 )
   });
 
+    const body = sub.toJSON();
+    await fetch("/api/push/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        subscription: body,
+        daysBefore: daysBeore,
+    }),
+    });
+
   const res = await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
