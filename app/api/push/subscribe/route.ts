@@ -26,20 +26,11 @@ export async function POST(req: Request) {
 
   const { subscription, daysBefore } = await req.json();
 
-  const { error } = await supabase.from("push_subscriptions").upsert(
-    {
-      user_id: user.id,
-      subscription,
-      days_before: daysBefore,
-    },
-    {
-      onConflict: "user_id",
-    }
-  );
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  await supabase.from("push_subscriptions").insert({
+    user_id: user.id,
+    subscription,
+    days_before: daysBefore,
+  });
 
   return NextResponse.json({ ok: true });
 }

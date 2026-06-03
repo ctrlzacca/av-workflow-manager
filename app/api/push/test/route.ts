@@ -11,16 +11,16 @@ export async function GET() {
     .from("push_subscriptions")
     .select("*");
 
-  const sub = subs?.[0];
-
-  await webpush.sendNotification(
-    sub.subscription,
-    JSON.stringify({
-      title: "TEST",
-      body: "funziona",
-      url: "/",
-    })
-  );
+  for (const sub of subs ?? []) {
+    await webpush.sendNotification(
+      sub.subscription,
+      JSON.stringify({
+        title: "TEST",
+        body: "funziona",
+        url: "/",
+      })
+    );
+  }
 
   return Response.json({ ok: true });
 }
