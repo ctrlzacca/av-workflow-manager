@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   }
 
   // UPSERT PER DEVICE (endpoint = identity del device)
-  const { error } = await supabase.from("push_subscriptions").upsert(
+  const { data, error } = await supabase.from("push_subscriptions").upsert(
     {
       user_id: user.id,
       subscription,
@@ -45,6 +45,8 @@ export async function POST(req: Request) {
       onConflict: "endpoint",
     }
   );
+
+  console.log("UPSERT RESULT:", { data, error });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
