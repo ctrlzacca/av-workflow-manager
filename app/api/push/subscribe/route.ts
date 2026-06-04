@@ -1,50 +1,46 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => cookieStore.getAll(),
-        setAll: () => {},
-      },
-    }
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // fallback safety
   if (!user) {
-    return NextResponse.json({ error: "No user" }, { status: 401 });
+    return NextResponse.json(
+      { error: "No user (check auth flow)" },
+      { status: 401 }
+    );
   }
 
   const { subscription, daysBefore } = await req.json();
 
   if (!subscription?.endpoint) {
     return NextResponse.json(
-      { error: "Invalid subscription" },
+      { error: "Invalid subscription (missing endpoint)" },
       { status: 400 }
     );
   }
 
-  // UPSERT PER DEVICE (endpoint = identity del device)
-  const { data, error } = await supabase.from("push_subscriptions").upsert(
-    {
-      user_id: user.id,
-      subscription,
-      endpoint: subscription.endpoint,
-      days_before: daysBefore,
-    },
-    {
-      onConflict: "endpoint",
-    }
-  );
+  const { data, error } = await supabase
+    .from("push_subscriptions")
+    .upsert(
+      {
+        user_id: user.id,
+        subscription,
+        endpoint: subscription.endpoint,
+        days_before: daysBefore,
+      },
+      {
+        onConflict: "endpoint",
+      }
+    );
 
   console.log("UPSERT RESULT:", { data, error });
 
