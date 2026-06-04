@@ -26,13 +26,29 @@ export async function POST(req: Request) {
 
   const { subscription, daysBefore } = await req.json();
 
+  if (!subscription?.endpoint) {
+    return NextResponse.json(
+      { error: "Invalid subscription" },
+      { status: 400 }
+    );
+  }
 
-await supabase.from("push_subscriptions").upsert({
-  user_id: user.id,
-  subscription,
-  days_before: daysBefore,
-}, { onConflict: "user_id" });
+  // UPSERT PER DEVICE (endpoint = identity del device)
+  const { error } = await supabase.from("push_subscriptions").upsert(
+    {
+      user_id: user.id,
+      subscription,
+      endpoint: subscription.endpoint,
+      days_before: daysBefore,
+    },
+    {
+      onConflict: "endpoint",
+    }
+  );
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
-
 }

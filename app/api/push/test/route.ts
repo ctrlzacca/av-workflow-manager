@@ -2,9 +2,9 @@ import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
 
 export async function GET() {
-const email = process.env.VAPID_EMAIL;
-const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-const privateKey = process.env.VAPID_PRIVATE_KEY;
+  const email = process.env.VAPID_EMAIL;
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
 
   if (!email || !publicKey || !privateKey) {
     throw new Error("Missing VAPID env variables");
@@ -21,8 +21,6 @@ const privateKey = process.env.VAPID_PRIVATE_KEY;
     .from("push_subscriptions")
     .select("*");
 
-  console.log("SUBS:", subs);
-
   if (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
@@ -31,24 +29,34 @@ const privateKey = process.env.VAPID_PRIVATE_KEY;
     return Response.json({ ok: true, message: "no subscriptions" });
   }
 
-  const sub = subs[0];
+  console.log("SUBS COUNT:", subs.length);
 
-  try {
-    const result = await webpush.sendNotification(
-      sub.subscription,
-      JSON.stringify({
-        title: "TEST",
-        body: "FUNZIONA",
-        url: "/",
-      })
-    );
+  let successCount = 0;
+  let failCount = 0;
 
-    console.log("PUSH SENT OK:", result);
-  } catch (err) {
-    console.log("PUSH ERROR:", err);
+  for (const sub of subs) {
+    try {
+      await webpush.sendNotification(
+        sub.subscription,
+        JSON.stringify({
+          title: "TEST",
+          body: "FUNZIONA",
+          url: "/",
+        })
+      );
+
+      successCount++;
+    } catch (err) {
+      console.log("PUSH ERROR:", err);
+      failCount++;
+    }
   }
 
-  console.log("SENDING PUSH TO:", subs.length);
+  console.log("PUSH RESULT:", { successCount, failCount });
 
-  return Response.json({ ok: true });
+  return Response.json({
+    ok: true,
+    sent: successCount,
+    failed: failCount,
+  });
 }
