@@ -8,13 +8,11 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
 
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
 
 if (!VAPID_PUBLIC_KEY) {
   throw new Error("Missing VAPID public key");
 }
-
-const vapidKey = VAPID_PUBLIC_KEY as string;
 
 export async function subscribeToPush(daysBefore: number): Promise<boolean> {
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
@@ -26,25 +24,31 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
 
   const sub = await reg.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(vapidKey),
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
   });
 
   const body = sub.toJSON();
 
+  // 👇 recuperiamo user dal frontend (FONDAMENTALE)
+  const userRes = await fetch("/api/auth/me");
+  const { user } = await userRes.json();
+
+  if (!user) {
+    console.error("No user found");
+    return false;
+  }
 
   await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       subscription: body,
-      daysBefore: daysBefore,
+      daysBefore,
+      userId: user.id,
     }),
   });
 
   return true;
-
-console.log("SUBSCRIBE CALLED");
-
 }
 
 export async function unsubscribeFromPush(): Promise<void> {

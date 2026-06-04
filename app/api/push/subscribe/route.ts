@@ -7,23 +7,18 @@ export async function POST(req: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { subscription, daysBefore, userId } = await req.json();
 
-  // fallback safety
-  if (!user) {
+  if (!userId) {
     return NextResponse.json(
-      { error: "No user (check auth flow)" },
-      { status: 401 }
+      { error: "Missing userId" },
+      { status: 400 }
     );
   }
 
-  const { subscription, daysBefore } = await req.json();
-
   if (!subscription?.endpoint) {
     return NextResponse.json(
-      { error: "Invalid subscription (missing endpoint)" },
+      { error: "Invalid subscription" },
       { status: 400 }
     );
   }
@@ -32,7 +27,7 @@ export async function POST(req: Request) {
     .from("push_subscriptions")
     .upsert(
       {
-        user_id: user.id,
+        user_id: userId,
         subscription,
         endpoint: subscription.endpoint,
         days_before: daysBefore,
