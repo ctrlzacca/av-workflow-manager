@@ -25,6 +25,7 @@ export async function POST(req: Request) {
   }
 
   const { subscription, daysBefore } = await req.json();
+  
 
 await supabase.from("push_subscriptions").upsert({
   user_id: user.id,
