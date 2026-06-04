@@ -20,13 +20,30 @@ self.addEventListener('notificationclick', (e) => {
 });
 
 self.addEventListener('push', (event) => {
-  console.log("PUSH RECEIVED", event);
+  console.log('PUSH RECEIVED');
 
-  const data = event.data?.json() ?? {};
+  let data = {};
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      console.error("Invalid JSON payload", e);
+    }
+  }
+
+  console.log("DATA PARSED:", data);
 
   event.waitUntil(
-    self.registration.showNotification("TEST DEBUG", {
-      body: JSON.stringify(data),
-    })
+    self.registration.showNotification(
+      data.title || 'TEST',
+      {
+        body: data.body || 'no body',
+        icon: '/icon-192.png',
+        data: {
+          url: data.url || '/',
+        },
+      }
+    )
   );
 });
