@@ -30,7 +30,8 @@ export async function GET() {
     return Response.json({ ok: true, message: "no subscriptions" });
   }
 
-  await webpush.sendNotification(
+try {
+  const result = await webpush.sendNotification(
     sub.subscription,
     JSON.stringify({
       title: "TEST",
@@ -38,6 +39,11 @@ export async function GET() {
       url: "/",
     })
   );
+
+  console.log("PUSH SENT OK:", result);
+} catch (err) {
+  console.log("PUSH ERROR:", err);
+}
 
   return Response.json({ ok: true });
 }
