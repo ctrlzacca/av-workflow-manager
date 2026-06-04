@@ -6,7 +6,13 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function GET() {
+webpush.setVapidDetails(
+  process.env.VAPID_EMAIL!,
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+);
+export async function GET()
+{
   const { data: subs } = await supabase
     .from("push_subscriptions")
     .select("*");
