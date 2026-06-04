@@ -18,3 +18,15 @@ self.addEventListener('notificationclick', (e) => {
   e.notification.close();
   e.waitUntil(clients.openWindow(e.notification.data.url));
 });
+
+self.addEventListener('push', (event) => {
+  console.log("PUSH RECEIVED", event);
+
+  const data = event.data?.json() ?? {};
+
+  event.waitUntil(
+    self.registration.showNotification("TEST DEBUG", {
+      body: JSON.stringify(data),
+    })
+  );
+});
