@@ -17,6 +17,8 @@ export async function GET()
     .from("push_subscriptions")
     .select("*");
 
+console.log("SUBS:", subs);
+
   for (const sub of subs ?? []) {
     await webpush.sendNotification(
       sub.subscription,
