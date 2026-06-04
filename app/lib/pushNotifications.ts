@@ -8,7 +8,15 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
 
-export async function subscribeToPush(daysBeore: number): Promise<boolean> {
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+
+if (!VAPID_PUBLIC_KEY) {
+  throw new Error("Missing VAPID public key");
+}
+
+const vapidKey = VAPID_PUBLIC_KEY as string;
+
+export async function subscribeToPush(daysBefore: number): Promise<boolean> {
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
 
   const permission = await Notification.requestPermission();
@@ -18,27 +26,27 @@ export async function subscribeToPush(daysBeore: number): Promise<boolean> {
 
   const sub = await reg.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-)
+    applicationServerKey: urlBase64ToUint8Array(vapidKey),
   });
 
-    const body = sub.toJSON();
-    await fetch("/api/push/subscribe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subscription: body,
-        daysBefore: daysBeore,
-      }),
-    });
+  const body = sub.toJSON();
 
-    return true;
+  await fetch("/api/push/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      subscription: body,
+      daysBefore: daysBefore,
+    }),
+  });
+
+  return true;
 }
 
 export async function unsubscribeFromPush(): Promise<void> {
   const reg = await navigator.serviceWorker.ready;
   const sub = await reg.pushManager.getSubscription();
+
   if (sub) {
     await sub.unsubscribe();
     await fetch("/api/push/unsubscribe", { method: "POST" });

@@ -2,11 +2,15 @@ import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
 
 export async function GET() {
-  webpush.setVapidDetails(
-    process.env.VAPID_EMAIL!,
-    process.env.VAPID_PUBLIC_KEY!,
-    process.env.VAPID_PRIVATE_KEY!
-  );
+  const email = process.env.VAPID_EMAIL;
+  const publicKey = process.env.VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+
+  if (!email || !publicKey || !privateKey) {
+    throw new Error("Missing VAPID env variables");
+  }
+
+  webpush.setVapidDetails(email, publicKey, privateKey);
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,32 +24,29 @@ export async function GET() {
   console.log("SUBS:", subs);
 
   if (error) {
-    console.log("SUPABASE ERROR:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 
-  const sub = subs?.[0];
-
-  if (!sub) {
+  if (!subs || subs.length === 0) {
     return Response.json({ ok: true, message: "no subscriptions" });
   }
 
-try {
-  const result = 
-  await webpush.sendNotification(
-    sub.subscription,
-    JSON.stringify({
-      notification: {
+  const sub = subs[0];
+
+  try {
+    const result = await webpush.sendNotification(
+      sub.subscription,
+      JSON.stringify({
         title: "TEST",
         body: "FUNZIONA",
-      }
-    })
-  );
+        url: "/",
+      })
+    );
 
-  console.log("PUSH SENT OK:", result);
-} catch (err) {
-  console.log("PUSH ERROR:", err);
-}
+    console.log("PUSH SENT OK:", result);
+  } catch (err) {
+    console.log("PUSH ERROR:", err);
+  }
 
   return Response.json({ ok: true });
 }
