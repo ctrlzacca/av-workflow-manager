@@ -8,14 +8,16 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
 }
 
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
 if (!VAPID_PUBLIC_KEY) {
   throw new Error("Missing VAPID public key");
 }
 
 export async function subscribeToPush(daysBefore: number): Promise<boolean> {
-  if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    return false;
+  }
 
   const permission = await Notification.requestPermission();
   if (permission !== "granted") return false;
@@ -24,21 +26,27 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
 
   const sub = await reg.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
   });
 
   const body = sub.toJSON();
 
-  // 👇 recuperiamo user dal frontend (FONDAMENTALE)
-  const userRes = await fetch("/api/auth/me");
-  const { user } = await userRes.json();
+  // 👉 USER preso direttamente da Supabase client browser
+  const { createClient } = await import("@supabase/supabase-js");
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    console.error("No user found");
+    console.error("No user logged in");
     return false;
   }
 
-  await fetch("/api/push/subscribe", {
+  const res = await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -47,6 +55,9 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
       userId: user.id,
     }),
   });
+
+  const json = await res.json();
+  console.log("SUBSCRIBE RESPONSE:", json);
 
   return true;
 }
@@ -57,6 +68,9 @@ export async function unsubscribeFromPush(): Promise<void> {
 
   if (sub) {
     await sub.unsubscribe();
-    await fetch("/api/push/unsubscribe", { method: "POST" });
+
+    await fetch("/api/push/unsubscribe", {
+      method: "POST",
+    });
   }
 }
