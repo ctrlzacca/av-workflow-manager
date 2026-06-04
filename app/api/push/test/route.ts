@@ -2,9 +2,9 @@ import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
 
 export async function GET() {
-  const email = process.env.VAPID_EMAIL;
-  const publicKey = process.env.VAPID_PUBLIC_KEY;
-  const privateKey = process.env.VAPID_PRIVATE_KEY;
+const email = process.env.VAPID_EMAIL;
+const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+const privateKey = process.env.VAPID_PRIVATE_KEY;
 
   if (!email || !publicKey || !privateKey) {
     throw new Error("Missing VAPID env variables");
