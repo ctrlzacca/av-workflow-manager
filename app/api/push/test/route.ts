@@ -48,5 +48,7 @@ const privateKey = process.env.VAPID_PRIVATE_KEY;
     console.log("PUSH ERROR:", err);
   }
 
+  console.log("SENDING PUSH TO:", subs.length);
+
   return Response.json({ ok: true });
 }

@@ -31,6 +31,7 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
 
   const body = sub.toJSON();
 
+
   await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -41,6 +42,9 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
   });
 
   return true;
+
+console.log("SUBSCRIBE CALLED");
+
 }
 
 export async function unsubscribeFromPush(): Promise<void> {
