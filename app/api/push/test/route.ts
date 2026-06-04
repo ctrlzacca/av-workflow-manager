@@ -32,14 +32,15 @@ export async function GET() {
 
 try {
   const result = 
-await webpush.sendNotification(
-  sub.subscription,
-  JSON.stringify({
-    title: "TEST",
-    body: "FUNZIONA",
-    url: "https://example.com"
-  })
-);
+  await webpush.sendNotification(
+    sub.subscription,
+    JSON.stringify({
+      notification: {
+        title: "TEST",
+        body: "FUNZIONA",
+      }
+    })
+  );
 
   console.log("PUSH SENT OK:", result);
 } catch (err) {
