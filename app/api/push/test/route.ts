@@ -1,34 +1,43 @@
 import webpush from "web-push";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-export async function GET()
-{
+export async function GET() {
   webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-  const { data: subs } = await supabase
+    process.env.VAPID_EMAIL!,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data: subs, error } = await supabase
     .from("push_subscriptions")
     .select("*");
 
-console.log("SUBS:", subs);
+  console.log("SUBS:", subs);
 
-  for (const sub of subs ?? []) {
-    await webpush.sendNotification(
-      sub.subscription,
-      JSON.stringify({
-        title: "TEST",
-        body: "funziona",
-        url: "/",
-      })
-    );
+  if (error) {
+    console.log("SUPABASE ERROR:", error);
+    return Response.json({ error: error.message }, { status: 500 });
   }
+
+  const sub = subs?.[0];
+
+  if (!sub) {
+    return Response.json({ ok: true, message: "no subscriptions" });
+  }
+
+  await webpush.sendNotification(
+    sub.subscription,
+    JSON.stringify({
+      title: "TEST",
+      body: "funziona",
+      url: "/",
+    })
+  );
 
   return Response.json({ ok: true });
 }
