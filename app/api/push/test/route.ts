@@ -31,14 +31,15 @@ export async function GET() {
   }
 
 try {
-  const result = await webpush.sendNotification(
-    sub.subscription,
-    JSON.stringify({
-      title: "TEST",
-      body: "funziona",
-      url: "/",
-    })
-  );
+  const result = 
+await webpush.sendNotification(
+  sub.subscription,
+  JSON.stringify({
+    title: "TEST",
+    body: "FUNZIONA",
+    url: "https://example.com"
+  })
+);
 
   console.log("PUSH SENT OK:", result);
 } catch (err) {
