@@ -276,9 +276,34 @@ useEffect(() => {
 
   {/* RIGA 1 — Logo + Titolo */}
   <div className="flex items-center gap-3 mb-4">
-    <img src="/icon-512.png" alt="AV" className="w-10 h-10 rounded-xl" />
-    <p className="text-[var(--text)] font-bold text-lg tracking-tight">Workflow Manager</p>
+    <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
+    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1">Workflow Manager</p>
   </div>
+
+    {/* RICERCA */}
+    <div className="flex items-center gap-2 flex-shrink-0">
+      <input
+        ref={searchInputRef}
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Cerca..."
+        className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
+        searchOpen ? "w-28 opacity-100" : "w-0 opacity-0 pointer-events-none"
+        }`}
+      />
+      <button
+        onClick={() => {
+          if (searchOpen) { setSearch(""); setSearchOpen(false); }
+          else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
+        }}
+        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
+      >
+        <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+    </div>
 
   {/* RIGA 2 — Filtri categoria + Ricerca */}
   <div className="flex items-center gap-2 mb-2">
@@ -298,32 +323,8 @@ useEffect(() => {
         </button>
       ))}
     </div>
-
-    {/* RICERCA */}
-    <div className="flex items-center gap-2 flex-shrink-0">
-      <input
-        ref={searchInputRef}
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Cerca..."
-        className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
-          searchOpen ? "w-32 opacity-100" : "w-0 opacity-0 pointer-events-none"
-        }`}
-      />
-      <button
-        onClick={() => {
-          if (searchOpen) { setSearch(""); setSearchOpen(false); }
-          else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
-        }}
-        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
-      >
-        <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </button>
-    </div>
   </div>
+
 
   {/* RIGA 3 — Sottofiltri cartelle */}
   {availableFolders.length > 0 && (
