@@ -271,124 +271,106 @@ useEffect(() => {
   return (
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
-      {/* HEADER FISSO */}
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-0">
+{/* HEADER HOME */}
+<header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3">
 
-        {/* TITOLO + SORT */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <img
-              src="/icon-512.png"
-              alt="AV"
-              className="w-14 h-14 rounded-2xl"
-            />
-            <div>
-              <p className="text-[var(--text)]/50 text-xs font-medium tracking-widest uppercase">Workflow Manager</p>
-            </div>
-          </div>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-lg focus:outline-none"
+  {/* RIGA 1 — Logo + Titolo */}
+  <div className="flex items-center gap-3 mb-4">
+    <img src="/icon-512.png" alt="AV" className="w-10 h-10 rounded-xl" />
+    <p className="text-[var(--text)] font-bold text-lg tracking-tight">Workflow Manager</p>
+  </div>
+
+  {/* RIGA 2 — Filtri categoria + Ricerca */}
+  <div className="flex items-center gap-2 mb-2">
+    <div className="flex gap-2 overflow-x-auto scrollbar-none flex-1">
+      {allFilters.map((f) => (
+        <button
+          key={f}
+          onClick={() => handleFilterChange(f)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl border flex-shrink-0 transition-all ${
+            filter === f
+              ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)] font-medium"
+              : "border-[color:var(--border)] text-[var(--text)]/50"
+          }`}
+        >
+          {f !== "All" && getCategoryIconSmall(f)}
+          {f}
+        </button>
+      ))}
+    </div>
+
+    {/* RICERCA */}
+    <div className="flex items-center gap-2 flex-shrink-0">
+      <input
+        ref={searchInputRef}
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Cerca..."
+        className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
+          searchOpen ? "w-32 opacity-100" : "w-0 opacity-0 pointer-events-none"
+        }`}
+      />
+      <button
+        onClick={() => {
+          if (searchOpen) { setSearch(""); setSearchOpen(false); }
+          else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
+        }}
+        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
+      >
+        <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  {/* RIGA 3 — Sottofiltri cartelle */}
+  {availableFolders.length > 0 && (
+    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none mb-2">
+      <button
+        onClick={() => setActiveFolder(null)}
+        className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all ${
+          activeFolder === null
+            ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]"
+            : "border-[color:var(--border)] text-[var(--text)]/25"
+        }`}
+      >
+        Tutte
+      </button>
+      {availableFolders.map((folder) => {
+        const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
+        return (
+          <button
+            key={folder}
+            onClick={() => setActiveFolder(folder)}
+            className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all ${
+              activeFolder === folder
+                ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]"
+                : "border-[color:var(--border)] text-[var(--text)]/25"
+            }`}
           >
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
-            ))}
-          </select>
-        </div>
+            {folder} <span className="opacity-50 ml-1">({count})</span>
+          </button>
+        );
+      })}
+    </div>
+  )}
 
-        {/* CATEGORY FILTERS */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {allFilters.map((f) => (
-            <button
-              key={f}
-              onClick={() => handleFilterChange(f)}
-              className={`flex items-center gap-2 px-4 py-2 text-sm rounded-xl border flex-shrink-0 transition-all ${
-                filter === f
-                  ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)] font-medium"
-                  : "border-[color:var(--border)] text-[var(--text)] hover:border-[color:var(--border)] hover:text-[var(--text)]/60"
-              }`}
-            >
-              {f !== "All" && getCategoryIconSmall(f)}
-              {f}
-            </button>
-          ))}
-        </div>
+  {/* RIGA 4 — Sort discreto */}
+  <div className="flex justify-end">
+    <select
+      value={sort}
+      onChange={(e) => setSort(e.target.value as SortOption)}
+      className="bg-transparent text-[var(--text)]/30 text-xs focus:outline-none cursor-pointer"
+    >
+      {SORT_OPTIONS.map((o) => (
+        <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
+      ))}
+    </select>
+  </div>
 
-        {/* FOLDER SUBFILTERS */}
-        {availableFolders.length > 0 && (
-          <div className="flex gap-2 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
-            <button
-              onClick={() => setActiveFolder(null)}
-              className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                activeFolder === null ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]" : "border-[color:var(--border)] text-[var(--text)]/25"
-              }`}
-            >
-              Tutte
-            </button>
-            {availableFolders.map((folder) => {
-              const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
-              return (
-                <button
-                  key={folder}
-                  onClick={() => setActiveFolder(folder)}
-                  className={`px-3 py-1.5 text-xs rounded-lg border flex-shrink-0 transition-all ${
-                    activeFolder === folder ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]" : "border-[color:var(--border)] text-[var(--text)]/25"
-                  }`}
-                >
-                  {folder} <span className="opacity-50 ml-1">({count})</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-          {/* SEARCH */}
-        <div className="flex justify-end mt-3 mb-1">
-          <div
-            className="flex items-center gap-2"
-          >
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cerca progetto..."
-              className={`h-9 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none focus:border-[color:var(--border)]/40 transition-all duration-200 ${
-                searchOpen
-                  ? "w-48 opacity-100"
-                  : "w-0 opacity-0 pointer-events-none"
-              }`}
-            />
-
-            <button
-              onClick={() => {
-                if (searchOpen) {
-                  setSearch("");
-                  setSearchOpen(false);
-                } else {
-                  setSearchOpen(true);
-                  setTimeout(() => searchInputRef.current?.focus(), 50);
-                }
-              }}
-              className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
-            >
-              <svg
-                className="w-4 h-4 text-[var(--text)]/40"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+</header>
 
             {/* INSTALL BANNER ↓ QUI */}
       {canInstall && !isInstalled && (

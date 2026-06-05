@@ -378,7 +378,7 @@ export default function ProjectPage() {
     <main
       className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col relative" 
       >
-      {/* HEADER FISSO */}
+      {/* HEADER SLUG */}
       <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]/8 px-5 pt-14 pb-0">
 
         {/* BACK + LOGO + TITOLO */}
