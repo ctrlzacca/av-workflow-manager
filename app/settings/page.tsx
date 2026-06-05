@@ -556,11 +556,14 @@ export default function SettingsPage() {
               </div>
               <button
                 onClick={async () => {
+                    console.log("Button clicked, pushEnabled:", pushEnabled);
                   if (pushEnabled) {
                     await unsubscribeFromPush();
                     setPushEnabled(false);
                   } else {
+                        console.log("Calling subscribeToPush...");
                     const ok = await subscribeToPush(daysBefore);
+                        console.log("Subscribe result:", ok);
                     setPushEnabled(ok);
                   }
                 }}

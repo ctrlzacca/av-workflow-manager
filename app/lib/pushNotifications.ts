@@ -15,11 +15,14 @@ if (!VAPID_PUBLIC_KEY) {
 }
 
 export async function subscribeToPush(daysBefore: number): Promise<boolean> {
+  console.log("subscribeToPush called", daysBefore);
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        console.log("No service worker or PushManager");
     return false;
   }
-
+  console.log("Requesting permission...");
   const permission = await Notification.requestPermission();
+  console.log("Permission:", permission);
   if (permission !== "granted") return false;
 
   const reg = await navigator.serviceWorker.ready;
