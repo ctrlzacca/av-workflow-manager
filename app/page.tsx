@@ -277,7 +277,7 @@ useEffect(() => {
   {/* RIGA 1 — Logo + Titolo + Ricerca */}
   <div className="flex items-center gap-3 mb-4">
     <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
-    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1 shrink-0 whitespace-nowrap">Workflow Manager</p>
+    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1 whitespace-nowrap">Workflow Manager</p>
 
     <div className="flex items-center gap-2 flex-shrink-0">
       <input
