@@ -1414,118 +1414,63 @@ function GlslTool() {
 }
 // ── TYPOGRAPHY CALCULATOR ─────────────────────────────────────────────────────
 
-const SCALE_RATIOS = [
-  { label: "Minor Second (1.067)", value: 1.067 },
-  { label: "Major Second (1.125)", value: 1.125 },
-  { label: "Minor Third (1.200)", value: 1.200 },
-  { label: "Major Third (1.250)", value: 1.250 },
-  { label: "Perfect Fourth (1.333)", value: 1.333 },
-  { label: "Augmented Fourth (1.414)", value: 1.414 },
-  { label: "Perfect Fifth (1.500)", value: 1.500 },
-  { label: "Golden Ratio (1.618)", value: 1.618 },
+const FONT_PRESETS: { name: string; lineHeightMin: number; lineHeightMax: number; note: string }[] = [
+  { name: "Helvetica", lineHeightMin: 1.1, lineHeightMax: 1.2, note: "Sans-serif geometrico, interlinea compatta" },
+  { name: "Arial", lineHeightMin: 1.1, lineHeightMax: 1.2, note: "Sans-serif neutro, simile a Helvetica" },
+  { name: "Futura", lineHeightMin: 1.1, lineHeightMax: 1.15, note: "Geometrico, molto compatto" },
+  { name: "Gill Sans", lineHeightMin: 1.15, lineHeightMax: 1.2, note: "Umanistico, leggibile" },
+  { name: "Garamond", lineHeightMin: 1.15, lineHeightMax: 1.25, note: "Serif classico, necessita più respiro" },
+  { name: "Times New Roman", lineHeightMin: 1.15, lineHeightMax: 1.2, note: "Serif tradizionale, standard editoriale" },
+  { name: "Bodoni", lineHeightMin: 1.2, lineHeightMax: 1.3, note: "Serif didone, contrasto alto" },
+  { name: "Minion", lineHeightMin: 1.15, lineHeightMax: 1.2, note: "Serif editoriale, ottimo per testo lungo" },
+  { name: "Custom", lineHeightMin: 1.1, lineHeightMax: 1.2, note: "Inserisci il tuo font" },
 ];
 
-  const FONT_PRESETS: { name: string; lineHeightSuggested: number; note: string }[] = [
-    { name: "Helvetica", lineHeightSuggested: 1.4, note: "Sans-serif geometrico, interlinea compatta" },
-    { name: "Arial", lineHeightSuggested: 1.45, note: "Sans-serif neutro, simile a Helvetica" },
-    { name: "Garamond", lineHeightSuggested: 1.6, note: "Serif classico, necessita più respiro" },
-    { name: "Times New Roman", lineHeightSuggested: 1.5, note: "Serif tradizionale, standard editoriale" },
-    { name: "Futura", lineHeightSuggested: 1.35, note: "Geometrico, molto compatto" },
-    { name: "Bodoni", lineHeightSuggested: 1.55, note: "Serif didone, contrasto alto" },
-    { name: "Gill Sans", lineHeightSuggested: 1.45, note: "Umanistico, leggibile" },
-    { name: "Minion", lineHeightSuggested: 1.5, note: "Serif editoriale, ottimo per testo lungo" },
-    { name: "Custom", lineHeightSuggested: 1.5, note: "Inserisci il tuo font" },
-  ];
+const FONT_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
-  const FONT_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
+  A3: { w: 297, h: 420, label: "A3 — 297 × 420 mm" },
+  A4: { w: 210, h: 297, label: "A4 — 210 × 297 mm" },
+  A5: { w: 148, h: 210, label: "A5 — 148 × 210 mm" },
+  A6: { w: 105, h: 148, label: "A6 — 105 × 148 mm" },
+};
 
-  const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
-    A3: { w: 297, h: 420, label: "A3 — 297 × 420 mm" },
-    A4: { w: 210, h: 297, label: "A4 — 210 × 297 mm" },
-    A5: { w: 148, h: 210, label: "A5 — 148 × 210 mm" },
-    A6: { w: 105, h: 148, label: "A6 — 105 × 148 mm" },
+function suggestFontSize(format: string, unit: "pt" | "px"): { min: number; max: number; ideal: number } {
+  const suggestions: Record<string, { min: number; max: number; ideal: number }> = {
+    A3: { min: 11, max: 14, ideal: 12 },
+    A4: { min: 9, max: 12, ideal: 10 },
+    A5: { min: 8, max: 10, ideal: 9 },
+    A6: { min: 7, max: 9, ideal: 8 },
   };
-
-  // suggerisce la font size ottimale in pt in base al formato
-  function suggestFontSize(format: string): { min: number; max: number; ideal: number } {
-    const suggestions: Record<string, { min: number; max: number; ideal: number }> = {
-      A3: { min: 11, max: 14, ideal: 12 },
-      A4: { min: 9, max: 12, ideal: 10 },
-      A5: { min: 8, max: 10, ideal: 9 },
-      A6: { min: 7, max: 9, ideal: 8 },
+  const base = suggestions[format] ?? { min: 9, max: 12, ideal: 10 };
+  if (unit === "px") {
+    return {
+      min: parseFloat((base.min * (96 / 72)).toFixed(1)),
+      max: parseFloat((base.max * (96 / 72)).toFixed(1)),
+      ideal: parseFloat((base.ideal * (96 / 72)).toFixed(1)),
     };
-    return suggestions[format] ?? { min: 9, max: 12, ideal: 10 };
   }
+  return base;
+}
 
 function TypographyTool() {
-  const [unit, setUnit] = useState<"pt" | "px">("pt");
-  const [baseSize, setBaseSize] = useState(10);
-  const [ratio, setRatio] = useState(1.333);
-  const [lineHeightRatio, setLineHeightRatio] = useState(1.5);
-  const [copied, setCopied] = useState<string | null>(null);
   const [fontFamily, setFontFamily] = useState("Helvetica");
+  const [customFont, setCustomFont] = useState("");
   const [fontWeight, setFontWeight] = useState(400);
-  const [pageFormat, setPageFormat] = useState<"A3" | "A4" | "A5" | "A6">("A4");
-  const [showPreview, setShowPreview] = useState(false);
+  const [pageFormat, setPageFormat] = useState<string>("A4");
+  const [unit, setUnit] = useState<"pt" | "px">("pt");
+  const [lineHeightPercent, setLineHeightPercent] = useState(115);
+  const [copied, setCopied] = useState<string | null>(null);
 
-  const DPI = 72; // standard tipografico
+  const preset = FONT_PRESETS.find((f) => f.name === fontFamily) ?? FONT_PRESETS[0];
+  const suggested = suggestFontSize(pageFormat, unit);
 
-  function ptToPx(pt: number): number {
-    return parseFloat((pt * (96 / 72)).toFixed(2));
-  }
+  const lhMin = Math.round(preset.lineHeightMin * 100);
+  const lhMax = Math.round(preset.lineHeightMax * 100);
 
-  function pxToPt(px: number): number {
-    return parseFloat((px * (72 / 96)).toFixed(2));
-  }
-
-  function convert(value: number): { primary: number; secondary: number } {
-    if (unit === "pt") return { primary: value, secondary: ptToPx(value) };
-    return { primary: value, secondary: pxToPt(value) };
-  }
-
-  function formatVal(v: number): string {
-    return v % 1 === 0 ? v.toString() : v.toFixed(1);
-  }
-
-  // scala tipografica dal basso verso l'alto
-  const base = unit === "pt" ? baseSize : baseSize;
-  const caption = parseFloat((base / ratio).toFixed(2));
-  const small = parseFloat((base * Math.pow(ratio, 0.5)).toFixed(2));
-  const sub = parseFloat((base * ratio).toFixed(2));
-  const h3 = parseFloat((base * Math.pow(ratio, 2)).toFixed(2));
-  const h2 = parseFloat((base * Math.pow(ratio, 3)).toFixed(2));
-  const h1 = parseFloat((base * Math.pow(ratio, 4)).toFixed(2));
-
-  // interlinea
-  function lineHeight(size: number): number {
-    return parseFloat((size * lineHeightRatio).toFixed(2));
-  }
-
-  // spaziature basate sul baseline grid
-  const baseline = lineHeight(base);
-  const spacingXS = parseFloat((baseline * 0.25).toFixed(2));
-  const spacingSM = parseFloat((baseline * 0.5).toFixed(2));
-  const spacingMD = parseFloat((baseline * 1).toFixed(2));
-  const spacingLG = parseFloat((baseline * 2).toFixed(2));
-  const spacingXL = parseFloat((baseline * 4).toFixed(2));
-
-  const hierarchy = [
-    { label: "H1 — Titolo principale", size: h1, weight: "700" },
-    { label: "H2 — Titolo sezione", size: h2, weight: "700" },
-    { label: "H3 — Sottotitolo", size: h3, weight: "600" },
-    { label: "Sub — Sottotitolo piccolo", size: sub, weight: "500" },
-    { label: "Body — Corpo testo", size: base, weight: "400" },
-    { label: "Small — Testo secondario", size: small, weight: "400" },
-    { label: "Caption — Didascalia", size: caption, weight: "400" },
-  ];
-
-  const spacings = [
-    { label: "XS", value: spacingXS, use: "Spaziatura interna minima" },
-    { label: "SM", value: spacingSM, use: "Padding elementi, gap tight" },
-    { label: "MD", value: spacingMD, use: "Baseline grid, margine standard" },
-    { label: "LG", value: spacingLG, use: "Spaziatura tra sezioni" },
-    { label: "XL", value: spacingXL, use: "Margini pagina, sezioni grandi" },
-  ];
+  const lhIdeal = parseFloat((suggested.ideal * (lineHeightPercent / 100)).toFixed(2));
+  const lhMin_val = parseFloat((suggested.ideal * preset.lineHeightMin).toFixed(2));
+  const lhMax_val = parseFloat((suggested.ideal * preset.lineHeightMax).toFixed(2));
 
   function copyValue(val: string) {
     navigator.clipboard.writeText(val);
@@ -1533,64 +1478,74 @@ function TypographyTool() {
     setTimeout(() => setCopied(null), 1500);
   }
 
-  function copyAll() {
-    const lines = [
-      `// Scala tipografica — base ${baseSize}${unit}, ratio ${ratio}`,
-      ...hierarchy.map((h) => `${h.label}: ${formatVal(h.size)}${unit} / leading ${formatVal(lineHeight(h.size))}${unit}`),
-      "",
-      "// Spaziature",
-      ...spacings.map((s) => `${s.label}: ${formatVal(s.value)}${unit}`),
-    ].join("\n");
-    navigator.clipboard.writeText(lines);
-    setCopied("all");
-    setTimeout(() => setCopied(null), 1500);
-  }
+  const displayFont = fontFamily === "Custom" ? (customFont || "sans-serif") : fontFamily;
 
   return (
-    
     <div className="space-y-5">
 
-            {/* FONT SELECTOR */}
+      {/* UNIT */}
+      <div className="flex gap-2">
+        {(["pt", "px"] as const).map((u) => (
+          <button
+            key={u}
+            onClick={() => setUnit(u)}
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
+              unit === u
+                ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+            }`}
+          >
+            {u === "pt" ? "pt — Stampa" : "px — Schermo"}
+          </button>
+        ))}
+      </div>
+
+      {/* FONT */}
       <div>
-        <p className="text-xs text-[var(--text)]/40 mb-1.5">Font di riferimento</p>
-        <div className="flex flex-wrap gap-1.5 mb-2">
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Font</p>
+        <div className="flex flex-wrap gap-1.5">
           {FONT_PRESETS.map((f) => (
             <button
               key={f.name}
               onClick={() => {
                 setFontFamily(f.name);
-                if (f.name !== "Custom") setLineHeightRatio(f.lineHeightSuggested);
+                setLineHeightPercent(Math.round((f.lineHeightMin + f.lineHeightMax) / 2 * 100));
               }}
               className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                fontFamily === f.name ? "bg-[var(--text)] text-[var(--bg)] border-[color:var(--text)]" : "bg-[var(--text)]/5 border-[color:var(--text)]/10 text-[var(--text)]/50"
+                fontFamily === f.name
+                  ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                  : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {f.name}
             </button>
           ))}
         </div>
-        {fontFamily !== "Custom" && (
-          <p className="text-xs text-[var(--text)]/30">
-            {FONT_PRESETS.find((f) => f.name === fontFamily)?.note}
-          </p>
-        )}
         {fontFamily === "Custom" && (
           <input
+            value={customFont}
+            onChange={(e) => setCustomFont(e.target.value)}
             placeholder="Nome font..."
-            className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[color:var(--border)]/30"          />
+            className="mt-2 w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] focus:outline-none"
+          />
+        )}
+        {fontFamily !== "Custom" && (
+          <p className="text-xs text-[var(--text)]/30 mt-1.5">{preset.note}</p>
         )}
       </div>
 
       {/* FONT WEIGHT */}
       <div>
-        <p className="text-xs text-[var(--text)]/40 mb-1.5">Peso font</p>
+        <p className="text-xs text-[var(--text)]/40 mb-1.5">Peso</p>
         <div className="flex flex-wrap gap-1.5">
           {FONT_WEIGHTS.map((w) => (
             <button
               key={w}
               onClick={() => setFontWeight(w)}
               className={`w-12 py-1.5 rounded-xl text-xs border transition-all ${
-                fontWeight === w ? "bg-[var(--text)] text-[var(--bg)] border-[color:var(--text)]" : "bg-[var(--text)]/5 border-[color:var(--text)]/10 text-[var(--text)]/50"
+                fontWeight === w
+                  ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                  : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
               style={{ fontWeight: w }}
             >
@@ -1600,186 +1555,132 @@ function TypographyTool() {
         </div>
       </div>
 
-      {/* PAGE FORMAT */}
+      {/* FORMATO PAGINA */}
       <div>
         <p className="text-xs text-[var(--text)]/40 mb-1.5">Formato pagina</p>
         <div className="flex gap-2">
-          {Object.entries(PAGE_FORMATS).map(([key, val]) => (
+          {Object.entries(PAGE_FORMATS).map(([key]) => (
             <button
               key={key}
-              onClick={() => {
-                setPageFormat(key as any);
-                const s = suggestFontSize(key);
-                setBaseSize(unit === "pt" ? s.ideal : parseFloat(ptToPx(s.ideal).toFixed(0)));
-              }}
+              onClick={() => setPageFormat(key)}
               className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
-                pageFormat === key ? "bg-[var(--text)] text-[var(--bg)] border-[color:var(--text)]" : "bg-[var(--text)]/5 border-[color:var(--text)]/10 text-[var(--text)]/50"
+                pageFormat === key
+                  ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                  : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
               {key}
             </button>
           ))}
         </div>
-        <p className="text-xs text-white/30 mt-1.5">{PAGE_FORMATS[pageFormat].label}</p>
-        {(() => {
-          const s = suggestFontSize(pageFormat);
-          return (
-            <p className="text-xs text-[var(--text)]/25 mt-0.5">
-              Font size consigliata: <span className="text-[var(--text)]/50">{s.min}–{s.max} pt</span> · ideale <span className="text-[var(--text)]/50">{s.ideal} pt</span>
-            </p>
-          );
-        })()}
+        <p className="text-xs text-[var(--text)]/30 mt-1">{PAGE_FORMATS[pageFormat].label}</p>
       </div>
 
-      {/* UNIT SELECTOR */}
-      <div className="flex gap-2">
-        {(["pt", "px"] as const).map((u) => (
-          <button
-            key={u}
-            onClick={() => {
-              if (u === "px" && unit === "pt") setBaseSize(parseFloat(ptToPx(baseSize).toFixed(0)));
-              if (u === "pt" && unit === "px") setBaseSize(parseFloat(pxToPt(baseSize).toFixed(0)));
-              setUnit(u);
-            }}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
-              unit === u ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
-            }`}
-          >
-            {u === "pt" ? "pt — Stampa" : "px — Schermo"}
-          </button>
-        ))}
-      </div>
-
-      {/* BASE SIZE */}
-      <div>
-        <div className="flex justify-between mb-1.5">
-          <p className="text-xs text-[var(--text)]/40">Corpo testo base</p>
-          <span className="text-xs font-mono text-[var(--text)]/70">{baseSize} {unit}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setBaseSize(b => Math.max(6, b - 1))} className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">−</button>
-          <input
-            type="range"
-            min={unit === "pt" ? 6 : 8}
-            max={unit === "pt" ? 14 : 20}
-            step={0.5}
-            value={baseSize}
-            onChange={(e) => setBaseSize(Number(e.target.value))}
-            className="flex-1 accent-[var(--text)]"
-          />
-          <button onClick={() => setBaseSize(b => Math.min(unit === "pt" ? 14 : 20, b + 1))} className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 flex items-center justify-center">+</button>
-        </div>
-        <p className="text-xs text-[var(--text)]/25 mt-1 text-right">
-          = {unit === "pt" ? ptToPx(baseSize) : pxToPt(baseSize)} {unit === "pt" ? "px" : "pt"}
-        </p>
-      </div>
-
-      {/* SCALE RATIO */}
-      <div>
-        <p className="text-xs text-[var(--text)]/40 mb-1.5">Scala modulare</p>
-        <div className="flex flex-wrap gap-1.5">
-          {SCALE_RATIOS.map((r) => (
-            <button
-              key={r.value}
-              onClick={() => setRatio(r.value)}
-              className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
-                ratio === r.value ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
-              }`}
-            >
-              {r.label.split(" (")[0]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* LINE HEIGHT */}
+      {/* RAPPORTO INTERLINEA */}
       <div>
         <div className="flex justify-between mb-1.5">
           <p className="text-xs text-[var(--text)]/40">Rapporto interlinea</p>
-          <span className="text-xs font-mono text-[var(--text)]/70">{lineHeightRatio}</span>
+          <span className="text-xs font-mono text-[var(--text)]/70">{lineHeightPercent}%</span>
         </div>
         <input
           type="range"
-          min={1.2}
-          max={2.0}
-          step={0.05}
-          value={lineHeightRatio}
-          onChange={(e) => setLineHeightRatio(Number(e.target.value))}
+          min={100}
+          max={150}
+          step={1}
+          value={lineHeightPercent}
+          onChange={(e) => setLineHeightPercent(Number(e.target.value))}
           className="w-full accent-[var(--text)]"
         />
         <div className="flex justify-between text-xs text-[var(--text)]/20 mt-1">
-          <span>1.2 — compatto</span>
-          <span>2.0 — ariosa</span>
+          <span>100%</span>
+          <span className="text-[var(--text)]/40">Consigliato per {fontFamily}: {lhMin}–{lhMax}%</span>
+          <span>150%</span>
         </div>
       </div>
 
-      {/* GERARCHIA */}
-      <div>
-        <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest mb-2">Gerarchia tipografica</p>
-        <div className="space-y-1.5">
-          {hierarchy.map((h) => {
-            const lh = lineHeight(h.size);
-            const secSize = unit === "pt" ? ptToPx(h.size) : pxToPt(h.size);
-            const secLh = unit === "pt" ? ptToPx(lh) : pxToPt(lh);
-            const valStr = `${formatVal(h.size)}${unit}`;
-            return (
+      {/* RISULTATI */}
+      <div className="space-y-2">
+
+        {/* FONT SIZE */}
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-3">Font size consigliata per {pageFormat}</p>
+          <div className="flex gap-2">
+            {[
+              { label: "Minima", value: suggested.min },
+              { label: "Ideale", value: suggested.ideal, highlight: true },
+              { label: "Massima", value: suggested.max },
+            ].map((item) => (
               <div
-                key={h.label}
-                onClick={() => copyValue(valStr)}
-                className="flex items-center justify-between border border-[color:var(--border)]/8 rounded-xl px-4 py-3 cursor-pointer hover:border-[color:var(--border)]/20 transition-colors"
+                key={item.label}
+                onClick={() => copyValue(`${item.value}${unit}`)}
+                className={`flex-1 rounded-xl p-3 text-center cursor-pointer transition-all border ${
+                  item.highlight
+                    ? "bg-[var(--card)] border-[color:var(--border)]"
+                    : "border-[color:var(--border)]/30"
+                }`}
               >
-                <div className="min-w-0">
-                  <p className="text-xs text-[var(--text)]/40 truncate">{h.label}</p>
-                  <p className="text-xs text-[var(--text)]/25 mt-0.5">
-                    leading {formatVal(lh)}{unit}
-                    <span className="ml-2 opacity-60">({formatVal(secLh)}{unit === "pt" ? "px" : "pt"})</span>
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0 ml-3">
-                  <p className="text-sm font-mono font-bold">{formatVal(h.size)}<span className="text-xs text-[var(--text)]/40 ml-0.5">{unit}</span></p>
-                  <p className="text-xs text-[var(--text)]/30">{formatVal(secSize)}{unit === "pt" ? "px" : "pt"}</p>
-                </div>
+                <p className="text-xs text-[var(--text)]/40 mb-1">{item.label}</p>
+                <p className="text-base font-mono font-bold">{item.value}</p>
+                <p className="text-xs text-[var(--text)]/30">{unit}</p>
+                {copied === `${item.value}${unit}` && (
+                  <p className="text-xs text-green-400 mt-1">✓</p>
+                )}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* SPAZIATURE */}
-      <div>
-        <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest mb-2">Spaziature</p>
-        <div className="space-y-1.5">
-          {spacings.map((s) => {
-            const sec = unit === "pt" ? ptToPx(s.value) : pxToPt(s.value);
-            const valStr = `${formatVal(s.value)}${unit}`;
-            return (
+        {/* INTERLINEA */}
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-3">
+            Interlinea per {suggested.ideal}{unit} ({fontFamily})
+          </p>
+          <div className="flex gap-2">
+            {[
+              { label: `Min ${lhMin}%`, value: lhMin_val },
+              { label: `${lineHeightPercent}%`, value: lhIdeal, highlight: true },
+              { label: `Max ${lhMax}%`, value: lhMax_val },
+            ].map((item) => (
               <div
-                key={s.label}
-                onClick={() => copyValue(valStr)}
-                className="flex items-center justify-between border border-[color:var(--border)]/8 rounded-xl px-4 py-3 cursor-pointer hover:border-[color:var(--border)]/20 transition-colors"
+                key={item.label}
+                onClick={() => copyValue(`${item.value}${unit}`)}
+                className={`flex-1 rounded-xl p-3 text-center cursor-pointer transition-all border ${
+                  item.highlight
+                    ? "bg-[var(--card)] border-[color:var(--border)]"
+                    : "border-[color:var(--border)]/30"
+                }`}
               >
-                <div>
-                  <p className="text-sm font-mono font-semibold">{s.label}</p>
-                  <p className="text-xs text-[var(--text)]/30 mt-0.5">{s.use}</p>
-                </div>
-                <div className="text-right flex-shrink-0 ml-3">
-                  <p className="text-sm font-mono font-bold">{formatVal(s.value)}<span className="text-xs text-[var(--text)]/40 ml-0.5">{unit}</span></p>
-                  <p className="text-xs text-[var(--text)]/30">{formatVal(sec)}{unit === "pt" ? "px" : "pt"}</p>
-                </div>
+                <p className="text-xs text-[var(--text)]/40 mb-1">{item.label}</p>
+                <p className="text-base font-mono font-bold">{item.value}</p>
+                <p className="text-xs text-[var(--text)]/30">{unit}</p>
+                {copied === `${item.value}${unit}` && (
+                  <p className="text-xs text-green-400 mt-1">✓</p>
+                )}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
+
+        {/* PREVIEW */}
+        <div className="border border-[color:var(--border)] rounded-2xl p-4">
+          <p className="text-xs text-[var(--text)]/40 mb-3">Preview</p>
+          <div
+            style={{
+              fontFamily: displayFont,
+              fontSize: `${suggested.ideal * (unit === "pt" ? 1.33 : 1)}px`,
+              lineHeight: `${lhIdeal * (unit === "pt" ? 1.33 : 1)}px`,
+              fontWeight: fontWeight,
+            }}
+            className="text-[var(--text)]/80"
+          >
+            Il corpo del testo scorre su più righe per mostrare il ritmo tipografico. La leggibilità dipende dal rapporto tra font size e interlinea.
+          </div>
+          <p className="text-xs text-[var(--text)]/25 mt-2">
+            {displayFont} {fontWeight} · {suggested.ideal}{unit} / {lhIdeal}{unit}
+          </p>
+        </div>
+
       </div>
-
-      {/* COPY ALL */}
-      <button
-        onClick={copyAll}
-        className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 text-sm hover:border-[color:var(--border)]/30 transition-colors"
-      >
-        {copied === "all" ? "✓ Tutto copiato" : "Copia tutti i valori"}
-      </button>
-
     </div>
   );
 }

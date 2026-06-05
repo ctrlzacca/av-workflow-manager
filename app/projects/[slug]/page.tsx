@@ -499,7 +499,7 @@ export default function ProjectPage() {
                     : "border-[color:var(--border)] text-[var(--text)]/50"
                 }`}
               >
-                {d === 0 ? "Oggi" : `${d}g`}
+                {d === 0 ? "Giorno scadenza" : `${d}g`}
               </button>
             );
           })}
