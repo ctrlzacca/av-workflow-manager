@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(req: Request) {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -24,10 +24,12 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await supabase
-    .from("push_subscriptions")
-    .delete()
-    .eq("user_id", user.id);
+const { endpoint } = await req.json();
+
+await supabase
+  .from("push_subscriptions")
+  .delete()
+  .eq("endpoint", endpoint);
 
   return NextResponse.json({ ok: true });
 }

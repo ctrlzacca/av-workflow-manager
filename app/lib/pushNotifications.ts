@@ -66,10 +66,13 @@ export async function unsubscribeFromPush(): Promise<void> {
   const sub = await reg.pushManager.getSubscription();
 
   if (sub) {
+    const endpoint = sub.endpoint;
     await sub.unsubscribe();
 
     await fetch("/api/push/unsubscribe", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ endpoint }),
     });
   }
 }
