@@ -456,7 +456,7 @@ export default function ProjectPage() {
           {/* NOTIFICATION DAYS */}
           {project.deadline && (
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-white/40">🔔</span>
+              <span className="text-xs text-[var(--text)]/50">Notifiche</span>
               {[0, 1, 2, 3, 5, 7, 14, 30].map((d) => {
                 const selected = (project.notification_days ?? []).includes(d);
                 return (
@@ -471,8 +471,8 @@ export default function ProjectPage() {
                     }}
                     className={`px-2.5 py-1 rounded-lg text-xs border transition-all ${
                       selected
-                        ? "bg-white text-black border-white"
-                        : "border-white/20 text-white/40"
+                        ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                        : "border-[color:var(--border)] text-[var(--text)]/50"
                     }`}
                   >
                     {d === 0 ? "Oggi" : `${d}g`}
