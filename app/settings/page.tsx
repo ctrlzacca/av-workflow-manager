@@ -578,31 +578,6 @@ export default function SettingsPage() {
                 {pushEnabled ? "Disattiva" : "Attiva"}
               </button>
             </div>
-
-            {pushEnabled && (
-              <div className="px-4 py-4">
-                <p className="text-sm font-medium mb-3">Anticipo notifica</p>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 5, 7, 14].map((d) => (
-                    <button
-                      key={d}
-                        onClick={async () => { 
-                          setDaysBefore(d); 
-                          const { data: { user } } = await supabase.auth.getUser();
-                          if (user) await subscribeToPush(d, user.id);
-                        }}
-                      className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
-                        daysBefore === d
-                          ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
-                          : "border-[color:var(--border)] text-[var(--text)]/50"
-                      }`}
-                    >
-                      {d}g
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </section>
 

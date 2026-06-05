@@ -453,7 +453,36 @@ export default function ProjectPage() {
             onChange={(e) => updateField("deadline", e.target.value)}
             className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
           />
+          {/* NOTIFICATION DAYS */}
+          {project.deadline && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-white/40">🔔</span>
+              {[0, 1, 2, 3, 5, 7, 14, 30].map((d) => {
+                const selected = (project.notification_days ?? []).includes(d);
+                return (
+                  <button
+                    key={d}
+                    onClick={() => {
+                      const current = project.notification_days ?? [];
+                      const updated = selected
+                        ? current.filter((x) => x !== d)
+                        : [...current, d].sort((a, b) => b - a);
+                      updateField("notification_days", updated);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs border transition-all ${
+                      selected
+                        ? "bg-white text-black border-white"
+                        : "border-white/20 text-white/40"
+                    }`}
+                  >
+                    {d === 0 ? "Oggi" : `${d}g`}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
+        
 
         {/* FOLDER */}
         <div className="flex items-center gap-2 mb-3">
