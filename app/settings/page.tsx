@@ -555,18 +555,20 @@ export default function SettingsPage() {
                 </p>
               </div>
               <button
-                onClick={async () => {
-                    console.log("Button clicked, pushEnabled:", pushEnabled);
-                  if (pushEnabled) {
-                    await unsubscribeFromPush();
-                    setPushEnabled(false);
-                  } else {
-                        console.log("Calling subscribeToPush...");
-                    const ok = await subscribeToPush(daysBefore);
-                        console.log("Subscribe result:", ok);
-                    setPushEnabled(ok);
-                  }
-                }}
+              onClick={async () => {
+                console.log("Button clicked, pushEnabled:", pushEnabled);
+                if (pushEnabled) {
+                  await unsubscribeFromPush();
+                  setPushEnabled(false);
+                } else {
+                  console.log("Calling subscribeToPush...");
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (!user) { console.error("No user"); return; }
+                  const ok = await subscribeToPush(daysBefore, user.id);
+                  console.log("Subscribe result:", ok);
+                  setPushEnabled(ok);
+                }
+              }}
                 className={`text-xs px-4 py-2 rounded-xl border transition-colors ${
                   pushEnabled
                     ? "border-red-400/20 text-red-400/70 bg-red-400/10"
@@ -584,7 +586,11 @@ export default function SettingsPage() {
                   {[1, 2, 3, 5, 7, 14].map((d) => (
                     <button
                       key={d}
-                      onClick={() => { setDaysBefore(d); subscribeToPush(d); }}
+                        onClick={async () => { 
+                          setDaysBefore(d); 
+                          const { data: { user } } = await supabase.auth.getUser();
+                          if (user) await subscribeToPush(d, user.id);
+                        }}
                       className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
                         daysBefore === d
                           ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"

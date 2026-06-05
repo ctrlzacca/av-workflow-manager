@@ -14,7 +14,7 @@ if (!VAPID_PUBLIC_KEY) {
   throw new Error("Missing VAPID public key");
 }
 
-export async function subscribeToPush(daysBefore: number): Promise<boolean> {
+export async function subscribeToPush(daysBefore: number, userId: string): Promise<boolean> {
   console.log("subscribeToPush called", daysBefore);
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
         console.log("No service worker or PushManager");
@@ -36,27 +36,18 @@ try {
     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
   });
   console.log("Sub created:", sub);
+  console.log("User:", userId);
+if (!userId) {
+  console.error("No user logged in");
+  return false;
+}
 
   const body = sub.toJSON();
-
-  const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
-  console.log("User:", user?.id);
-
-  if (!user) {
-    console.error("No user logged in");
-    return false;
-  }
 
   const res = await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ subscription: body, daysBefore, userId: user.id }),
+    body: JSON.stringify({ subscription: body, daysBefore, userId: userId }),
   });
 
   const json = await res.json();
