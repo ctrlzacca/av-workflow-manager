@@ -219,6 +219,7 @@ export default function ProjectPage() {
   const [activeTab, setActiveTab] = useState<"tasks" | "info" | "notes" | "mood">("tasks");
   const [showSaved, setShowSaved] = useState(false);
   const [localNotes, setLocalNotes] = useState<string | null>(null);
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -413,76 +414,99 @@ export default function ProjectPage() {
           </span>
         </div>
 
-        {/* META CONTROLS */}
-        <div className="flex gap-2 flex-wrap mb-3">
-          <select
-            value={project.status}
-            onChange={(e) => updateField("status", e.target.value as Project["status"])}
-            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
-          >
-            <option value="Active" className="bg-[var(--bg)]">Active</option>
-            <option value="Paused" className="bg-[var(--bg)]">Paused</option>
-            <option value="Blocked" className="bg-[var(--bg)]">Blocked</option>
-          </select>
+    {/* META CONTROLS */}
+    <div className="flex gap-2 flex-wrap mb-3">
+      <select
+        value={project.status}
+        onChange={(e) => updateField("status", e.target.value as Project["status"])}
+        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+      >
+        <option value="Active" className="bg-[var(--bg)]">Active</option>
+        <option value="Paused" className="bg-[var(--bg)]">Paused</option>
+        <option value="Blocked" className="bg-[var(--bg)]">Blocked</option>
+      </select>
 
-          <select
-            value={project.priority}
-            onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
-            className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
-          >
-            <option value="Low" className="bg-[var(--bg)]">Low</option>
-            <option value="Medium" className="bg-[var(--bg)]">Medium</option>
-            <option value="High" className="bg-[var(--bg)]">High</option>
-          </select>
+      <select
+        value={project.priority}
+        onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
+        className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
+      >
+        <option value="Low" className="bg-[var(--bg)]">Low</option>
+        <option value="Medium" className="bg-[var(--bg)]">Medium</option>
+        <option value="High" className="bg-[var(--bg)]">High</option>
+      </select>
 
-          <select
-            value={project.category}
-            onChange={(e) => updateField("category", e.target.value)}
-            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
-          >
-            {categories.map((cat) => (
-            <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">
-              {cat.name}
-            </option>
-            ))}
-          </select>
+      <select
+        value={project.category}
+        onChange={(e) => updateField("category", e.target.value)}
+        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+      >
+        {categories.map((cat) => (
+          <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">
+            {cat.name}
+          </option>
+        ))}
+      </select>
 
-          <input
-            type="date"
-            value={project.deadline}
-            onChange={(e) => updateField("deadline", e.target.value)}
-            className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
-          />
-          {/* NOTIFICATION DAYS */}
-          {project.deadline && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-[var(--text)]/50">Notifiche</span>
-              {[0, 1, 2, 3, 5, 7, 14, 30].map((d) => {
-                const selected = (project.notification_days ?? []).includes(d);
-                return (
-                  <button
-                    key={d}
-                    onClick={() => {
-                      const current = project.notification_days ?? [];
-                      const updated = selected
-                        ? current.filter((x) => x !== d)
-                        : [...current, d].sort((a, b) => b - a);
-                      updateField("notification_days", updated);
-                    }}
-                    className={`px-2.5 py-1 rounded-lg text-xs border transition-all ${
-                      selected
-                        ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
-                        : "border-[color:var(--border)] text-[var(--text)]/50"
-                    }`}
-                  >
-                    {d === 0 ? "Oggi" : `${d}g`}
-                  </button>
-                );
-              })}
-            </div>
+      <input
+        type="date"
+        value={project.deadline}
+        onChange={(e) => updateField("deadline", e.target.value)}
+        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+      />
+
+      {/* CAMPANELLA NOTIFICHE */}
+      {project.deadline && (
+        <button
+          onClick={() => setShowNotifPanel(!showNotifPanel)}
+          className={`relative w-9 h-9 rounded-xl border flex items-center justify-center transition-all ${
+            showNotifPanel
+              ? "bg-[var(--card)] border-[color:var(--border)]"
+              : "bg-[var(--card)] border-[color:var(--border)]"
+          }`}
+        >
+          <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          {/* PALLINO se ci sono notifiche attive */}
+          {(project.notification_days ?? []).length > 0 && (
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-white" />
           )}
+        </button>
+      )}
+    </div>
+
+    {/* PANNELLO NOTIFICHE */}
+    {project.deadline && showNotifPanel && (
+      <div className="mb-3 p-3 bg-[var(--card)] border border-[color:var(--border)] rounded-xl">
+        <p className="text-xs text-[var(--text)]/40 mb-2">Notifica prima della scadenza</p>
+        <div className="flex flex-wrap gap-1.5">
+          {[0, 1, 2, 3, 5, 7, 14, 30].map((d) => {
+            const selected = (project.notification_days ?? []).includes(d);
+            return (
+              <button
+                key={d}
+                onClick={() => {
+                  const current = project.notification_days ?? [];
+                  const updated = selected
+                    ? current.filter((x) => x !== d)
+                    : [...current, d].sort((a, b) => b - a);
+                  updateField("notification_days", updated);
+                }}
+                className={`px-2.5 py-1 rounded-lg text-xs border transition-all ${
+                  selected
+                    ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                    : "border-[color:var(--border)] text-[var(--text)]/50"
+                }`}
+              >
+                {d === 0 ? "Oggi" : `${d}g`}
+              </button>
+            );
+          })}
         </div>
-        
+      </div>
+    )}
+            
 
         {/* FOLDER */}
         <div className="flex items-center gap-2 mb-3">
