@@ -25,24 +25,28 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
   console.log("Permission:", permission);
   if (permission !== "granted") return false;
 
+try {
+  console.log("Getting SW registration...");
   const reg = await navigator.serviceWorker.ready;
+  console.log("SW ready:", reg);
 
+  console.log("Subscribing to push...");
   const sub = await reg.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
   });
+  console.log("Sub created:", sub);
 
   const body = sub.toJSON();
 
-  // 👉 USER preso direttamente da Supabase client browser
   const { createClient } = await import("@supabase/supabase-js");
-
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
   const { data: { user } } = await supabase.auth.getUser();
+  console.log("User:", user?.id);
 
   if (!user) {
     console.error("No user logged in");
@@ -52,17 +56,18 @@ export async function subscribeToPush(daysBefore: number): Promise<boolean> {
   const res = await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      subscription: body,
-      daysBefore,
-      userId: user.id,
-    }),
+    body: JSON.stringify({ subscription: body, daysBefore, userId: user.id }),
   });
 
   const json = await res.json();
   console.log("SUBSCRIBE RESPONSE:", json);
 
-  return true;
+  return res.ok;
+
+} catch (err) {
+  console.error("subscribeToPush FAILED:", err);
+  return false;
+}
 }
 
 export async function unsubscribeFromPush(): Promise<void> {
