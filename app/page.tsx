@@ -277,7 +277,7 @@ useEffect(() => {
   {/* RIGA 1 — Logo + Titolo + Ricerca */}
   <div className="flex items-center gap-3 mb-4">
     <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
-    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1 shrink-0">Workflow Manager</p>
+    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1 shrink-0 whitespace-nowrap">Workflow Manager</p>
 
     <div className="flex items-center gap-2 flex-shrink-0">
       <input
@@ -287,7 +287,7 @@ useEffect(() => {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Cerca..."
         className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
-          searchOpen ? "w-20 opacity-100" : "w-0 opacity-0 pointer-events-none"
+          searchOpen ? "w-25 opacity-100" : "w-0 opacity-0 pointer-events-none"
         }`}
       />
       <button
