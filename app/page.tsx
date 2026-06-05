@@ -274,13 +274,11 @@ useEffect(() => {
 {/* HEADER HOME */}
 <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3">
 
-  {/* RIGA 1 — Logo + Titolo */}
+  {/* RIGA 1 — Logo + Titolo + Ricerca */}
   <div className="flex items-center gap-3 mb-4">
     <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
     <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1">Workflow Manager</p>
-  </div>
 
-    {/* RICERCA */}
     <div className="flex items-center gap-2 flex-shrink-0">
       <input
         ref={searchInputRef}
@@ -289,7 +287,7 @@ useEffect(() => {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Cerca..."
         className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
-        searchOpen ? "w-28 opacity-100" : "w-0 opacity-0 pointer-events-none"
+          searchOpen ? "w-28 opacity-100" : "w-0 opacity-0 pointer-events-none"
         }`}
       />
       <button
@@ -304,27 +302,25 @@ useEffect(() => {
         </svg>
       </button>
     </div>
-
-  {/* RIGA 2 — Filtri categoria + Ricerca */}
-  <div className="flex items-center gap-2 mb-2">
-    <div className="flex gap-2 overflow-x-auto scrollbar-none flex-1">
-      {allFilters.map((f) => (
-        <button
-          key={f}
-          onClick={() => handleFilterChange(f)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl border flex-shrink-0 transition-all ${
-            filter === f
-              ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)] font-medium"
-              : "border-[color:var(--border)] text-[var(--text)]/50"
-          }`}
-        >
-          {f !== "All" && getCategoryIconSmall(f)}
-          {f}
-        </button>
-      ))}
-    </div>
   </div>
 
+  {/* RIGA 2 — Filtri categoria */}
+  <div className="flex gap-2 overflow-x-auto scrollbar-none mb-2">
+    {allFilters.map((f) => (
+      <button
+        key={f}
+        onClick={() => handleFilterChange(f)}
+        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl border flex-shrink-0 transition-all ${
+          filter === f
+            ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)] font-medium"
+            : "border-[color:var(--border)] text-[var(--text)]/50"
+        }`}
+      >
+        {f !== "All" && getCategoryIconSmall(f)}
+        {f}
+      </button>
+    ))}
+  </div>
 
   {/* RIGA 3 — Sottofiltri cartelle */}
   {availableFolders.length > 0 && (
@@ -358,8 +354,8 @@ useEffect(() => {
     </div>
   )}
 
-  {/* RIGA 4 — Sort discreto */}
-  <div className="flex justify-end">
+  {/* RIGA 4 — Sort a sinistra */}
+  <div className="flex justify-start">
     <select
       value={sort}
       onChange={(e) => setSort(e.target.value as SortOption)}
