@@ -1426,7 +1426,17 @@ const FONT_PRESETS: { name: string; lineHeightMin: number; lineHeightMax: number
   { name: "Custom", lineHeightMin: 1.1, lineHeightMax: 1.2, note: "Inserisci il tuo font" },
 ];
 
-const FONT_WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+const FONT_WEIGHTS: { value: number; label: string }[] = [
+  { value: 100, label: "Thin" },
+  { value: 200, label: "ExtraLight" },
+  { value: 300, label: "Light" },
+  { value: 400, label: "Regular" },
+  { value: 500, label: "Medium" },
+  { value: 600, label: "SemiBold" },
+  { value: 700, label: "Bold" },
+  { value: 800, label: "ExtraBold" },
+  { value: 900, label: "Black" },
+];
 
 const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
   A3: { w: 297, h: 420, label: "A3 — 297 × 420 mm" },
@@ -1435,14 +1445,22 @@ const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
   A6: { w: 105, h: 148, label: "A6 — 105 × 148 mm" },
 };
 
-function suggestFontSize(format: string, unit: "pt" | "px"): { min: number; max: number; ideal: number } {
-  const suggestions: Record<string, { min: number; max: number; ideal: number }> = {
-    A3: { min: 11, max: 14, ideal: 12 },
-    A4: { min: 9, max: 12, ideal: 10 },
-    A5: { min: 8, max: 10, ideal: 9 },
-    A6: { min: 7, max: 9, ideal: 8 },
-  };
-  const base = suggestions[format] ?? { min: 9, max: 12, ideal: 10 };
+function suggestFontSize(format: string, unit: "pt" | "px", customW?: number): { min: number; max: number; ideal: number } {
+  let base;
+  if (format === "Custom" && customW) {
+    if (customW >= 250) base = { min: 11, max: 14, ideal: 12 };
+    else if (customW >= 180) base = { min: 9, max: 12, ideal: 10 };
+    else if (customW >= 130) base = { min: 8, max: 10, ideal: 9 };
+    else base = { min: 7, max: 9, ideal: 8 };
+  } else {
+    const suggestions: Record<string, { min: number; max: number; ideal: number }> = {
+      A3: { min: 11, max: 14, ideal: 12 },
+      A4: { min: 9, max: 12, ideal: 10 },
+      A5: { min: 8, max: 10, ideal: 9 },
+      A6: { min: 7, max: 9, ideal: 8 },
+    };
+    base = suggestions[format] ?? { min: 9, max: 12, ideal: 10 };
+  }
   if (unit === "px") {
     return {
       min: parseFloat((base.min * (96 / 72)).toFixed(1)),
@@ -1461,9 +1479,11 @@ function TypographyTool() {
   const [unit, setUnit] = useState<"pt" | "px">("pt");
   const [lineHeightPercent, setLineHeightPercent] = useState(115);
   const [copied, setCopied] = useState<string | null>(null);
+  const [customW, setCustomW] = useState(210);
+  const [customH, setCustomH] = useState(297);
 
   const preset = FONT_PRESETS.find((f) => f.name === fontFamily) ?? FONT_PRESETS[0];
-  const suggested = suggestFontSize(pageFormat, unit);
+  const suggested = suggestFontSize(pageFormat, unit, customW);
 
   const lhMin = Math.round(preset.lineHeightMin * 100);
   const lhMax = Math.round(preset.lineHeightMax * 100);
@@ -1538,43 +1558,67 @@ function TypographyTool() {
       <div>
         <p className="text-xs text-[var(--text)]/40 mb-1.5">Peso</p>
         <div className="flex flex-wrap gap-1.5">
-          {FONT_WEIGHTS.map((w) => (
-            <button
-              key={w}
-              onClick={() => setFontWeight(w)}
-              className={`w-12 py-1.5 rounded-xl text-xs border transition-all ${
-                fontWeight === w
-                  ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
-                  : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
-              }`}
-              style={{ fontWeight: w }}
-            >
-              {w}
-            </button>
-          ))}
+        {FONT_WEIGHTS.map((w) => (
+          <button
+            key={w.value}
+            onClick={() => setFontWeight(w.value)}
+            className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+              fontWeight === w.value
+                ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+            }`}
+            style={{ fontWeight: w.value }}
+          >
+            {w.label}
+          </button>
+        ))}
         </div>
       </div>
 
-      {/* FORMATO PAGINA */}
-      <div>
-        <p className="text-xs text-[var(--text)]/40 mb-1.5">Formato pagina</p>
-        <div className="flex gap-2">
-          {Object.entries(PAGE_FORMATS).map(([key]) => (
-            <button
-              key={key}
-              onClick={() => setPageFormat(key)}
-              className={`flex-1 py-2 rounded-xl text-xs border transition-all ${
-                pageFormat === key
-                  ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
-                  : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
-              }`}
-            >
-              {key}
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-[var(--text)]/30 mt-1">{PAGE_FORMATS[pageFormat].label}</p>
+    {/* FORMATO PAGINA */}
+    <div>
+      <p className="text-xs text-[var(--text)]/40 mb-1.5">Formato pagina</p>
+      <div className="flex gap-2 flex-wrap">
+        {[...Object.keys(PAGE_FORMATS), "Custom"].map((key) => (
+          <button
+            key={key}
+            onClick={() => setPageFormat(key)}
+            className={`px-3 py-2 rounded-xl text-xs border transition-all ${
+              pageFormat === key
+                ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
+                : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+            }`}
+          >
+            {key}
+          </button>
+        ))}
       </div>
+
+      {pageFormat !== "Custom" && (
+        <p className="text-xs text-[var(--text)]/30 mt-1">{PAGE_FORMATS[pageFormat]?.label}</p>
+      )}
+
+      {pageFormat === "Custom" && (
+        <div className="flex items-center gap-2 mt-2">
+          <input
+            type="number"
+            value={customW}
+            onChange={(e) => setCustomW(Number(e.target.value))}
+            className="flex-1 text-center bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] focus:outline-none"
+            placeholder="Largh."
+          />
+          <span className="text-[var(--text)]/30 text-xs">×</span>
+          <input
+            type="number"
+            value={customH}
+            onChange={(e) => setCustomH(Number(e.target.value))}
+            className="flex-1 text-center bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-2 text-sm text-[var(--text)] focus:outline-none"
+            placeholder="Alt."
+          />
+          <span className="text-[var(--text)]/30 text-xs">mm</span>
+        </div>
+      )}
+    </div>
 
       {/* RAPPORTO INTERLINEA */}
       <div>
