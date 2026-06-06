@@ -1445,12 +1445,12 @@ const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
   A6: { w: 105, h: 148, label: "A6 — 105 × 148 mm" },
 };
 
-function suggestFontSize(format: string, unit: "pt" | "px", customW?: number): { min: number; max: number; ideal: number } {
+function suggestFontSize(format: string, unit: "pt" | "px", customW?: number, customH?: number): { min: number; max: number; ideal: number } {
   let idealPt: number;
 
   if (format === "Custom" && customW && customW > 0) {
-    // calcolo proporzionale: A4 (210mm) → 10pt, scala linearmente
-    idealPt = parseFloat(((customW / 210) * 10).toFixed(1));
+    const diagonal = Math.sqrt(customW * customW + (customH ?? customW) * (customH ?? customW));
+    idealPt = parseFloat(((diagonal / 360) * 10).toFixed(1));
   } else {
     const suggestions: Record<string, number> = {
       A3: 12, A4: 10, A5: 9, A6: 8,
@@ -1484,7 +1484,7 @@ function TypographyTool() {
   const [customH, setCustomH] = useState(297);
 
   const preset = FONT_PRESETS.find((f) => f.name === fontFamily) ?? FONT_PRESETS[0];
-  const suggested = suggestFontSize(pageFormat, unit, customW);
+  const suggested = suggestFontSize(pageFormat, unit, customW, customH);
 
   const lhMin = Math.round(preset.lineHeightMin * 100);
   const lhMax = Math.round(preset.lineHeightMax * 100);
