@@ -1446,29 +1446,30 @@ const PAGE_FORMATS: Record<string, { w: number; h: number; label: string }> = {
 };
 
 function suggestFontSize(format: string, unit: "pt" | "px", customW?: number): { min: number; max: number; ideal: number } {
-  let base;
-  if (format === "Custom" && customW) {
-    if (customW >= 250) base = { min: 11, max: 14, ideal: 12 };
-    else if (customW >= 180) base = { min: 9, max: 12, ideal: 10 };
-    else if (customW >= 130) base = { min: 8, max: 10, ideal: 9 };
-    else base = { min: 7, max: 9, ideal: 8 };
+  let idealPt: number;
+
+  if (format === "Custom" && customW && customW > 0) {
+    // calcolo proporzionale: A4 (210mm) → 10pt, scala linearmente
+    idealPt = parseFloat(((customW / 210) * 10).toFixed(1));
   } else {
-    const suggestions: Record<string, { min: number; max: number; ideal: number }> = {
-      A3: { min: 11, max: 14, ideal: 12 },
-      A4: { min: 9, max: 12, ideal: 10 },
-      A5: { min: 8, max: 10, ideal: 9 },
-      A6: { min: 7, max: 9, ideal: 8 },
+    const suggestions: Record<string, number> = {
+      A3: 12, A4: 10, A5: 9, A6: 8,
     };
-    base = suggestions[format] ?? { min: 9, max: 12, ideal: 10 };
+    idealPt = suggestions[format] ?? 10;
   }
+
+  const minPt = parseFloat((idealPt * 0.85).toFixed(1));
+  const maxPt = parseFloat((idealPt * 1.2).toFixed(1));
+
   if (unit === "px") {
     return {
-      min: parseFloat((base.min * (96 / 72)).toFixed(1)),
-      max: parseFloat((base.max * (96 / 72)).toFixed(1)),
-      ideal: parseFloat((base.ideal * (96 / 72)).toFixed(1)),
+      min: parseFloat((minPt * (96 / 72)).toFixed(1)),
+      max: parseFloat((maxPt * (96 / 72)).toFixed(1)),
+      ideal: parseFloat((idealPt * (96 / 72)).toFixed(1)),
     };
   }
-  return base;
+
+  return { min: minPt, max: maxPt, ideal: idealPt };
 }
 
 function TypographyTool() {
