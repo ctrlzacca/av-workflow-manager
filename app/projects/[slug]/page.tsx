@@ -257,6 +257,7 @@ export default function ProjectPage() {
     setProject((prev) => (prev ? { ...prev, [field]: value } : prev));
     setShowSaved(true);
     setTimeout(() => setShowSaved(false), 2000);
+
       // LOG ATTIVITÀ
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
@@ -268,6 +269,27 @@ export default function ProjectPage() {
       field: String(field),
     });
   }
+
+  // NOTIFICA COLLABORATORI
+const collabCheck = await supabase
+  .from("project_collaborators")
+  .select("id")
+  .eq("project_slug", slug)
+  .eq("status", "accepted")
+  .limit(1);
+
+if (user && (collabCheck.data ?? []).length > 0) {
+  fetch("https://yjcozojajbvtykxbveou.supabase.co/functions/v1/notify-collaborators", {
+    // ...
+    body: JSON.stringify({
+      project_slug: slug,
+      project_title: project.title,
+      modified_by_email: user.email ?? "",
+      field: String(field),
+    }),
+  });
+}
+
   }
 
   // ── UPDATE CUSTOM FIELD ───────────────────────────────────────────────────

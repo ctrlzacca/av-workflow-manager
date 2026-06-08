@@ -102,20 +102,36 @@ export default function TeamPage() {
     status: "pending",
     });
 
-    if (error) {
-      setInviteError("Errore nell'invio dell'invito.");
-    } else {
-      setInviteSuccess(true);
-      setInviteEmail("");
-      setInviteProject("");
-      setTimeout(() => {
-        setShowInvite(false);
-        setInviteSuccess(false);
-        loadAll();
-      }, 1500);
-    }
-    setInviteLoading(false);
+if (error) {
+  setInviteError("Errore nell'invio dell'invito.");
+} else {
+  // notifica l'utente invitato
+  if (userId) {
+    fetch("https://yjcozojajbvtykxbveou.supabase.co/functions/v1/notify-collaborators", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({
+        project_slug: inviteProject,
+        project_title: myProjects.find((p) => p.slug === inviteProject)?.title ?? inviteProject,
+        modified_by_email: user.email,
+        field: "invito",
+        notify_only: [userId],
+      }),
+    });
   }
+  setInviteSuccess(true);
+  setInviteEmail("");
+  setInviteProject("");
+  setTimeout(() => {
+    setShowInvite(false);
+    setInviteSuccess(false);
+    loadAll();
+  }, 1500);
+}
+}
 
   // ── ACCEPT / REJECT ───────────────────────────────────────────────────────
 
