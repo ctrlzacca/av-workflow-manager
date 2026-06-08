@@ -257,6 +257,17 @@ export default function ProjectPage() {
     setProject((prev) => (prev ? { ...prev, [field]: value } : prev));
     setShowSaved(true);
     setTimeout(() => setShowSaved(false), 2000);
+      // LOG ATTIVITÀ
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    await supabase.from("project_activity").insert({
+      project_slug: slug,
+      user_id: user.id,
+      user_email: user.email,
+      action: "modified",
+      field: String(field),
+    });
+  }
   }
 
   // ── UPDATE CUSTOM FIELD ───────────────────────────────────────────────────

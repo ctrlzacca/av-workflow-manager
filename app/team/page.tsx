@@ -35,6 +35,7 @@ export default function TeamPage() {
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteError, setInviteError] = useState("");
   const [inviteSuccess, setInviteSuccess] = useState(false);
+  const [activity, setActivity] = useState<any[]>([]);
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
@@ -43,6 +44,15 @@ export default function TeamPage() {
   }, []);
 
   async function loadAll() {
+
+    const activityRes = await supabase
+  .from("project_activity")
+  .select("*, project:projects(title)")
+  .order("created_at", { ascending: false })
+  .limit(50);
+
+    setActivity(activityRes.data ?? []);
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
     setUser(user);
@@ -218,6 +228,7 @@ export default function TeamPage() {
                 <p className="text-[var(--text)]/20 text-sm py-4 text-center">
                   Non hai ancora condiviso nessun progetto
                 </p>
+                
               ) : (
                 <div className="space-y-2">
                   {myCollaborators.map((collab) => (
@@ -251,11 +262,46 @@ export default function TeamPage() {
                         </button>
                       </div>
                     </div>
+                    
                   ))}
                 </div>
               )}
             </section>
+              {/* ── CRONOLOGIA MODIFICHE ── */}
+<section>
+  <h2 className="text-xs font-semibold text-[var(--text)]/30 uppercase tracking-widest mb-3">
+    Cronologia modifiche
+  </h2>
 
+  {activity.length === 0 ? (
+    <p className="text-[var(--text)]/20 text-sm py-4 text-center">Nessuna attività ancora</p>
+  ) : (
+    <div className="space-y-2">
+      {activity.map((a) => (
+        <div key={a.id} className="border border-[color:var(--border)] rounded-2xl px-4 py-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-sm font-medium truncate">
+                {(a.project as any)?.title ?? a.project_slug}
+              </p>
+              <p className="text-xs text-[var(--text)]/40 mt-0.5">
+                {a.user_email} · campo <span className="font-mono">{a.field}</span>
+              </p>
+            </div>
+            <p className="text-xs text-[var(--text)]/25 flex-shrink-0">
+              {new Date(a.created_at).toLocaleDateString("it-IT", {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
           </>
         )}
       </div>
