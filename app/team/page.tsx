@@ -110,7 +110,7 @@ if (error) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqY296b2phamJ2dHlreGJ2ZW91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDAyMDUsImV4cCI6MjA5MzQ3NjIwNX0.-1bvIw4lEgVs2hgczR4645A9oOmrXKASHJf9fQSsefk`,
       },
       body: JSON.stringify({
         project_slug: inviteProject,
@@ -152,7 +152,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+          "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlqY296b2phamJ2dHlreGJ2ZW91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDAyMDUsImV4cCI6MjA5MzQ3NjIwNX0.-1bvIw4lEgVs2hgczR4645A9oOmrXKASHJf9fQSsefk`,
         },
         body: JSON.stringify({
           project_slug: collab.project_slug,
