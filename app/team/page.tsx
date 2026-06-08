@@ -149,6 +149,8 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
       .select("user_id")
       .eq("user_id", collab.owner_id)
       .limit(1);
+      console.log("ownerSubsRes data:", ownerSubsRes.data);
+
 
     if ((ownerSubsRes.data ?? []).length > 0) {
       fetch("https://yjcozojajbvtykxbveou.supabase.co/functions/v1/notify-collaborators", {
