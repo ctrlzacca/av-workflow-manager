@@ -81,14 +81,13 @@ export default function TeamPage() {
     const { userId } = await res.json();
 
     // controlla se esiste già una collaborazione
-    const { data: existing } = await supabase
+    const { data: existingList } = await supabase
       .from("project_collaborators")
       .select("id")
       .eq("project_slug", inviteProject)
-      .eq("collaborator_email", inviteEmail.trim())
-      .single();
+      .eq("collaborator_email", inviteEmail.trim());
 
-    if (existing) {
+    if (existingList && existingList.length > 0) {
       setInviteError("Hai già invitato questo utente per questo progetto.");
       setInviteLoading(false);
       return;
