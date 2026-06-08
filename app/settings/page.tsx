@@ -577,12 +577,12 @@ export default function SettingsPage() {
               >
                 {pushEnabled ? "Disattiva" : "Attiva"}
               </button>
-              {pushEnabled && (
+            </div>
+                {pushEnabled && (
                 <p className="text-xs text-[var(--text)]/30 px-4 pb-3">
                   Su Android potrebbe essere necessario chiudere e aprire l'app una volta dopo l'attivazione per ricevere le prime notifiche.
                 </p>
               )}
-            </div>
           </div>
         </section>
 
