@@ -135,10 +135,39 @@ if (error) {
 
   // ── ACCEPT / REJECT ───────────────────────────────────────────────────────
 
-  async function respondToInvite(id: string, status: "accepted" | "rejected") {
-    await supabase.from("project_collaborators").update({ status }).eq("id", id);
-    loadAll();
+async function respondToInvite(id: string, status: "accepted" | "rejected") {
+  await supabase.from("project_collaborators").update({ status }).eq("id", id);
+
+  // trova i dettagli della collaborazione per notificare l'owner
+  const collab = sharedWithMe.find((c) => c.id === id);
+  if (collab) {
+    // trova la subscription dell'owner
+    const ownerSubsRes = await supabase
+      .from("push_subscriptions")
+      .select("user_id")
+      .eq("user_id", collab.owner_id)
+      .limit(1);
+
+    if ((ownerSubsRes.data ?? []).length > 0) {
+      fetch("https://yjcozojajbvtykxbveou.supabase.co/functions/v1/notify-collaborators", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          project_slug: collab.project_slug,
+          project_title: (collab.project as any)?.title ?? collab.project_slug,
+          modified_by_email: user.email,
+          field: status === "accepted" ? "invito_accettato" : "invito_rifiutato",
+          notify_only: [collab.owner_id],
+        }),
+      });
+    }
   }
+
+  loadAll();
+}
 
   // ── REMOVE COLLABORATOR ───────────────────────────────────────────────────
 
