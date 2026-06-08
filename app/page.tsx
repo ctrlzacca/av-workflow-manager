@@ -118,23 +118,32 @@ export default function Home() {
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { canInstall, isInstalled, install } = usePwaInstall();
+  const [sharedSlugs, setSharedSlugs] = useState<string[]>([]);
 
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
 
-  async function loadData() {
-    const [projectsRes, categoriesRes] = await Promise.all([
-      supabase.from("projects").select("*").order("created_at", { ascending: false }),
-      supabase.from("categories").select("*").order("created_at", { ascending: true }),
-    ]);
+async function loadData() {
+  const { data: { user } } = await supabase.auth.getUser();
 
-    if (projectsRes.error) { console.error("Error loading projects:", projectsRes.error.message); }
-    else { setProjects(projectsRes.data ?? []); }
+  const [projectsRes, categoriesRes, collabsRes] = await Promise.all([
+    supabase.from("projects").select("*").order("created_at", { ascending: false }),
+    supabase.from("categories").select("*").order("created_at", { ascending: true }),
+    user
+      ? supabase.from("project_collaborators").select("project_slug").eq("collaborator_id", user.id).eq("status", "accepted")
+      : Promise.resolve({ data: [] }),
+  ]);
 
-    if (!categoriesRes.error) { setCategories(categoriesRes.data ?? []); }
+  if (projectsRes.error) { console.error("Error loading projects:", projectsRes.error.message); }
+  else { setProjects(projectsRes.data ?? []); }
 
-    setLoading(false);
-  }
+  if (!categoriesRes.error) { setCategories(categoriesRes.data ?? []); }
+
+  setSharedSlugs((collabsRes.data ?? []).map((c: any) => c.project_slug));
+
+  setLoading(false);
+}
+  
 
 useEffect(() => {
   if (searchOpen) {
@@ -422,6 +431,11 @@ useEffect(() => {
                     </div>
                     <span className="font-semibold text-base truncate text-white">{project.title}</span>
                   </div>
+                  {sharedSlugs.includes(project.slug) && (
+                    <svg className="w-3.5 h-3.5 text-[var(--text)]/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  )}
                   <div className="flex items-center gap-2 flex-shrink-0 mt-1">
                     <span className={`w-2 h-2 rounded-full ${STATUS_DOT[project.status]}`} />
                     <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[project.priority]}`} />
