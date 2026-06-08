@@ -274,36 +274,16 @@ useEffect(() => {
 {/* HEADER HOME */}
 <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3">
 
-  {/* RIGA 1 — Logo + Titolo + Ricerca */}
+  {/* RIGA 1 — Logo + Titolo + Settings */}
   <div className="flex items-center gap-3 mb-4">
     <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
-    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1 truncate">
-      Workflow Manager
-    </p>
-
-    <div className="flex items-center gap-2 flex-shrink-0">
-      <input
-        ref={searchInputRef}
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Cerca..."
-        className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
-          searchOpen ? "w-30 opacity-100" : "w-0 opacity-0 pointer-events-none"
-        }`}
-      />
-      <button
-        onClick={() => {
-          if (searchOpen) { setSearch(""); setSearchOpen(false); }
-          else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
-        }}
-        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
-      >
-        <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </button>
-    </div>
+    <p className="text-[var(--text)] font-bold text-xl tracking-tight flex-1">Workflow Manager</p>
+    <Link href="/settings" className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0">
+      <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </Link>
   </div>
 
   {/* RIGA 2 — Filtri categoria */}
@@ -356,8 +336,8 @@ useEffect(() => {
     </div>
   )}
 
-  {/* RIGA 4 — Sort a sinistra */}
-  <div className="flex justify-start">
+  {/* RIGA 4 — Ordinamento + Ricerca */}
+  <div className="flex items-center justify-between gap-2">
     <select
       value={sort}
       onChange={(e) => setSort(e.target.value as SortOption)}
@@ -367,6 +347,30 @@ useEffect(() => {
         <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
       ))}
     </select>
+
+    <div className="flex items-center gap-2 flex-shrink-0">
+      <input
+        ref={searchInputRef}
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Cerca..."
+        className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
+          searchOpen ? "w-32 opacity-100" : "w-0 opacity-0 pointer-events-none"
+        }`}
+      />
+      <button
+        onClick={() => {
+          if (searchOpen) { setSearch(""); setSearchOpen(false); }
+          else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
+        }}
+        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
+      >
+        <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+    </div>
   </div>
 
 </header>
@@ -525,44 +529,47 @@ useEffect(() => {
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-4">
         <Link href="/" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
           <span className="text-xs text-[var(--text)]/60 font-medium">Home</span>
         </Link>
+
         <Link href="/calendar" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
           <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
+
         <button onClick={() => setShowAdd(true)} className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center text-[var(--text)]">
+          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
             </svg>
           </div>
           <span className="text-xs text-[var(--text)]/30 font-medium">Nuovo</span>
         </button>
+
         <Link href="/tools" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
           <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
-        <Link href="/settings" className="flex flex-col items-center gap-1.5">
+
+        <Link href="/team" className="flex flex-col items-center gap-1.5">
           <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Settings</span>
+          <span className="text-xs text-[var(--text)]/30 font-medium">Team</span>
         </Link>
       </nav>
     </main>
