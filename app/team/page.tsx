@@ -135,10 +135,13 @@ if (error) {
   // ── ACCEPT / REJECT ───────────────────────────────────────────────────────
 
 async function respondToInvite(id: string, status: "accepted" | "rejected") {
+    console.log("respondToInvite called:", id, status);
   await supabase.from("project_collaborators").update({ status }).eq("id", id);
 
   // trova i dettagli della collaborazione per notificare l'owner
   const collab = sharedWithMe.find((c) => c.id === id);
+    console.log("collab found:", collab);
+  console.log("ownerSubsRes will check user_id:", collab?.owner_id);
   if (collab) {
     // trova la subscription dell'owner
     const ownerSubsRes = await supabase
