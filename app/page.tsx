@@ -419,7 +419,7 @@ useEffect(() => {
                 key={project.slug}
                 href={`/projects/${project.slug}`}
                 style={{ background: getProjectBackground(project, categories)}}
-                className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-[color:var(--border)] active:brightness-110 transition-all"
+                className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-[color:var(--border)] active:brightness-110 active:scale-[0.98] transition-all duration-200"
               >
                 {/* TOP ROW */}
                 <div className="flex items-start justify-between gap-3">
