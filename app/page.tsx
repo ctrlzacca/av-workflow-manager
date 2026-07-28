@@ -87,6 +87,9 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   Blocked: "Bloccato",
 };
 
+const [swipedSlug, setSwipedSlug] = useState<string | null>(null);
+const touchStartX = useRef(0);
+
 
 // ─── SORT ────────────────────────────────────────────────────────────────────
 
@@ -419,60 +422,84 @@ useEffect(() => {
         <div className="space-y-3">
           {sorted.map((project) => {
             const progress = getProgress(project);
+            const isSwipedOpen = swipedSlug === project.slug;
             return (
-              <Link
-                key={project.slug}
-                href={`/projects/${project.slug}`}
+              <div key={project.slug} className="relative overflow-hidden rounded-2xl">
+
+                {/* DELETE BUTTON DIETRO */}
+                <div className="absolute inset-y-0 right-0 w-20 bg-red-500 flex items-center justify-center rounded-r-2xl">
+                  <button
+                    onClick={() => { deleteProject(project.slug, project.title); setSwipedSlug(null); }}
+                    className="text-white text-xs font-semibold"
+                  >
+                    Elimina
+                  </button>
+                </div>
+
+                {/* CARD */}
+                <Link
+                  href={`/projects/${project.slug}`}
                   style={{
-                  background: getProjectBackground(project, categories),
-                  boxShadow: "var(--shadow-sm)",
-                }}
-                className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-[color:var(--border)] active:brightness-110 active:scale-[0.98] transition-all duration-200"
-              >
-                {/* TOP ROW */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center">
-                      <div className="[&_img]:invert [&_img]:opacity-70">
-                        {getCategoryIcon(project.category)}
+                    background: getProjectBackground(project, categories),
+                    boxShadow: "var(--shadow-sm)",
+                    transform: isSwipedOpen ? "translateX(-80px)" : "translateX(0)",
+                  }}
+                  className="block border border-[color:var(--border)] rounded-2xl p-5 active:brightness-110 transition-transform duration-200"
+                  onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+                  onTouchEnd={(e) => {
+                    const diff = touchStartX.current - e.changedTouches[0].clientX;
+                    if (diff > 50) setSwipedSlug(project.slug);
+                    else if (diff < -20) setSwipedSlug(null);
+                  }}
+                  onClick={(e) => {
+                    if (isSwipedOpen) { e.preventDefault(); setSwipedSlug(null); }
+                  }}
+                >
+                  {/* TOP ROW */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-[var(--card)] flex items-center justify-center">
+                        <div className="[&_img]:invert [&_img]:opacity-70">
+                          {getCategoryIcon(project.category)}
+                        </div>
                       </div>
+                      <span className="font-semibold text-base truncate text-white">{project.title}</span>
                     </div>
-                    <span className="font-semibold text-base truncate text-white">{project.title}</span>
-                  </div>
-                  {sharedSlugs.includes(project.slug) && (
-                    <svg className="w-3.5 h-3.5 text-[var(--text)]/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  )}
-                  <div className="flex items-center gap-2 flex-shrink-0 mt-1">
-                    <span className={`w-2 h-2 rounded-full ${STATUS_DOT[project.status]}`} />
-                    <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[project.priority]}`} />
-                  </div>
-                </div>
-
-                {/* META ROW */}
-                <div className="flex items-center gap-2 mt-3 ml-11">
-                  {project.folder?.trim() && (
-                    <span className="text-xs text-white/30 border border-white/20 px-2 py-0.5 rounded-full">
-                      {project.folder}
-                    </span>
-                  )}
-                  {project.deadline && (
-                    <span className="text-xs text-white/25">{project.deadline}</span>
-                  )}
-                  <span className="text-xs text-white/20 ml-auto">{STATUS_LABEL[project.status]}</span>
-                </div>
-
-                {/* PROGRESS */}
-                <div className="mt-3 ml-11">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-                      <div className="h-full bg-white/50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                    {sharedSlugs.includes(project.slug) && (
+                      <svg className="w-3.5 h-3.5 text-[var(--text)]/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    )}
+                    <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+                      <span className={`w-2 h-2 rounded-full ${STATUS_DOT[project.status]}`} />
+                      <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[project.priority]}`} />
                     </div>
-                    <span className="text-xs text-white/25 flex-shrink-0">{progress}%</span>
                   </div>
-                </div>
-              </Link>
+
+                  {/* META ROW */}
+                  <div className="flex items-center gap-2 mt-3 ml-11">
+                    {project.folder?.trim() && (
+                      <span className="text-xs text-white/30 border border-white/20 px-2 py-0.5 rounded-full">
+                        {project.folder}
+                      </span>
+                    )}
+                    {project.deadline && (
+                      <span className="text-xs text-white/25">{project.deadline}</span>
+                    )}
+                    <span className="text-xs text-white/20 ml-auto">{STATUS_LABEL[project.status]}</span>
+                  </div>
+
+                  {/* PROGRESS */}
+                  <div className="mt-3 ml-11">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div className="h-full bg-white/50 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                      </div>
+                      <span className="text-xs text-white/25 flex-shrink-0">{progress}%</span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
             );
           })}
         </div>
