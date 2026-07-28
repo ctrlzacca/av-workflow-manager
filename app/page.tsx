@@ -86,9 +86,6 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   Blocked: "Bloccato",
 };
 
-const [swipedSlug, setSwipedSlug] = useState<string | null>(null);
-const touchStartX = useRef(0);
-
 
 // ─── SORT ────────────────────────────────────────────────────────────────────
 
@@ -122,6 +119,8 @@ export default function Home() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { canInstall, isInstalled, install } = usePwaInstall();
   const [sharedSlugs, setSharedSlugs] = useState<string[]>([]);
+  const [swipedSlug, setSwipedSlug] = useState<string | null>(null);
+  const touchStartX = useRef(0);
 
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
