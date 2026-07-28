@@ -120,7 +120,10 @@ export default function Home() {
   const { canInstall, isInstalled, install } = usePwaInstall();
   const [sharedSlugs, setSharedSlugs] = useState<string[]>([]);
   const [swipedSlug, setSwipedSlug] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const touchStartX = useRef(0);
+  const draggingSlug = useRef<string | null>(null);
 
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
@@ -440,14 +443,29 @@ useEffect(() => {
                   style={{
                     background: getProjectBackground(project, categories),
                     boxShadow: "var(--shadow-sm)",
-                    transform: isSwipedOpen ? "translateX(-80px)" : "translateX(0)",
+                    transform: `translateX(${
+                      draggingSlug.current === project.slug ? dragOffset : (isSwipedOpen ? -80 : 0)
+                    }px)`,
+                    transition: isDragging && draggingSlug.current === project.slug ? "none" : "transform 200ms ease-out",
                   }}
-                  className="block border border-[color:var(--border)] rounded-2xl p-5 active:brightness-110 transition-transform duration-200"
-                  onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-                  onTouchEnd={(e) => {
-                    const diff = touchStartX.current - e.changedTouches[0].clientX;
-                    if (diff > 50) setSwipedSlug(project.slug);
-                    else if (diff < -20) setSwipedSlug(null);
+                  className="block border border-[color:var(--border)] rounded-2xl p-5 active:brightness-110"
+                  onTouchStart={(e) => {
+                    touchStartX.current = e.touches[0].clientX;
+                    draggingSlug.current = project.slug;
+                    setIsDragging(true);
+                  }}
+                  onTouchMove={(e) => {
+                    if (draggingSlug.current !== project.slug) return;
+                    const diff = e.touches[0].clientX - touchStartX.current;
+                    const base = isSwipedOpen ? -80 : 0;
+                    const next = Math.min(0, Math.max(-100, base + diff));
+                    setDragOffset(next);
+                  }}
+                  onTouchEnd={() => {
+                    setIsDragging(false);
+                    if (dragOffset < -40) setSwipedSlug(project.slug);
+                    else setSwipedSlug(null);
+                    draggingSlug.current = null;
                   }}
                   onClick={(e) => {
                     if (isSwipedOpen) { e.preventDefault(); setSwipedSlug(null); }
