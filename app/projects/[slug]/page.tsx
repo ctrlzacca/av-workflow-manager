@@ -7,6 +7,7 @@ import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
+import { hapticFeedback } from "@/app/lib/haptics";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -313,11 +314,12 @@ if (user && (collabCheck.data ?? []).length > 0) {
 
   // ── TOGGLE TASK ───────────────────────────────────────────────────────────
 
-  async function toggleTask(index: number) {
-    if (!project) return;
-    const updatedTasks = project.tasks.map((t, i) => i === index ? { ...t, done: !t.done } : t);
-    await updateField("tasks", updatedTasks);
-  }
+async function toggleTask(index: number) {
+  if (!project) return;
+  hapticFeedback("light");
+  const updatedTasks = project.tasks.map((t, i) => i === index ? { ...t, done: !t.done } : t);
+  await updateField("tasks", updatedTasks);
+}
 
   // ── DELETE TASK ───────────────────────────────────────────────────────────
 
@@ -572,6 +574,7 @@ if (user && (collabCheck.data ?? []).length > 0) {
                     updateField("folder", "");
                   }}
                   className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center text-[var(--text)]/60 hover:text-red-400 transition-colors text-xs"
+                  style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   ✕
                 </button>

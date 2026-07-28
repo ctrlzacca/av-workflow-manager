@@ -8,6 +8,7 @@ import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 import { useRef } from "react";
 import { usePwaInstall } from "@/app/hooks/usePwaInstall";
+import { hapticFeedback } from "@/app/lib/haptics";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -174,6 +175,7 @@ useEffect(() => {
 
   async function addProject() {
   if (!newProject.trim()) return;
+  hapticFeedback("success")
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
