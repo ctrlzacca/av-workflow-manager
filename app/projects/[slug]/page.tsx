@@ -103,6 +103,7 @@ function MoodForm({ onAdd }: { onAdd: (item: { title: string; url: string; note:
         <button
           onClick={handleAdd}
           className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+          style={{ boxShadow: "var(--shadow-sm)" }}
         >
           Aggiungi
         </button>
@@ -159,6 +160,7 @@ function MoodItem({
           <button
             onClick={() => { onSave({ title: title.trim(), url: url.trim(), note: note.trim() }); setEditing(false); }}
             className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+            style={{ boxShadow: "var(--shadow-sm)" }}
           >
             Salva
           </button>
@@ -531,6 +533,7 @@ if (user && (collabCheck.data ?? []).length > 0) {
                     ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
                     : "border-[color:var(--border)] text-[var(--text)]/50"
                 }`}
+                style={{ boxShadow: "var(--shadow-sm)" }}
               >
                 {d === 0 ? "Giorno scadenza" : `${d}g`}
               </button>
@@ -600,6 +603,7 @@ if (user && (collabCheck.data ?? []).length > 0) {
                 setShowNewFolder(false);
               }}
               className="bg-[var(--button-bg)] text-[var(--button-text)] text-xs px-3 py-2 rounded-xl font-semibold flex-shrink-0"
+              style={{ boxShadow: "var(--shadow-sm)" }}
             >
               OK
             </button>
@@ -690,6 +694,7 @@ if (user && (collabCheck.data ?? []).length > 0) {
               ? "bg-[var(--button-bg)] border-[color:var(--border)]"
               : "border-[color:var(--border)]/20"
             }`}
+          style={{ boxShadow: "var(--shadow-sm)" }}
           >
             {task.done && (
               <svg className="w-3 h-3 text-[var(--button-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

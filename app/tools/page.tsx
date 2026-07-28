@@ -164,6 +164,7 @@ function HarmonicTool() {
               className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
                 rootIndex === i ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
               }`}
+            style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {note}
             </button>
@@ -182,6 +183,7 @@ function HarmonicTool() {
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                 scaleKey === key ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
               }`}
+              style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {name}
             </button>
@@ -200,6 +202,7 @@ function HarmonicTool() {
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                 extension === ext.id ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
               }`}
+              style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {ext.label}
             </button>
@@ -293,6 +296,7 @@ function BpmTool() {
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
             activeSection === "bpm" ? "bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "text-[var(--text)]/40 "
           }`}
+          style={{ boxShadow: "var(--shadow-sm)" }}
         >
           BPM → ms
         </button>
@@ -301,6 +305,7 @@ function BpmTool() {
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
             activeSection === "notefreq" ? "bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "text-[var(--text)]/40"
           }`}
+          style={{ boxShadow: "var(--shadow-sm)" }}
         >
           Nota ↔ Hz
         </button>
@@ -371,6 +376,7 @@ function BpmTool() {
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all${
                     selectedNote === note ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
                   }`}
+                  style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   {note}
                 </button>
@@ -385,6 +391,7 @@ function BpmTool() {
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
                     selectedOctave === oct ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
                   }`}
+                  style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   {oct}
                 </button>
@@ -408,6 +415,7 @@ function BpmTool() {
                 onChange={(e) => setInputFreq(e.target.value)}
                 placeholder="es. 440"
                 className="flex-1 text-center text-2xl font-bold bg-[var(--card)] border border-[color:var(--border)] rounded-xl py-3 focus:outline-none focus:border-[color:var(--border)]/30 text-[var(--text)]"
+                style={{ boxShadow: "var(--shadow-sm)" }}
               />
               <span className="text-[var(--text)]/40 text-sm">Hz</span>
             </div>
@@ -614,6 +622,7 @@ function deletePalette(id: number) {
       <button
         onClick={generatePalette}
         className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm active:scale-95 transition-transform"
+        style={{ boxShadow: "var(--shadow-sm)" }}
       >
         🎲 Genera nuova palette
       </button>
@@ -621,6 +630,7 @@ function deletePalette(id: number) {
       <button
       onClick={saveCurrentPalette}
       className="w-full py-3 border border-[color:var(--border)] rounded-xl text-sm text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
+      style={{ boxShadow: "var(--shadow-sm)" }}
     >
       💾 Salva palette
     </button>
@@ -700,6 +710,7 @@ function deletePalette(id: number) {
     <button
       onClick={copyAll}
       className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 text-sm hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
+      style={{ boxShadow: "var(--shadow-sm)" }}
     >
       {copied === "all" ? "✓ Tutti copiati" : "Copia tutti gli hex"}
     </button>
@@ -856,6 +867,7 @@ function ResolutionTool() {
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all border ${
                 outputType === t ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50 active:scale-95 transition-transform"
               }`}
+              style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {t === "monitor" ? "🖥 Monitor" : "📽 Proiettore"}
             </button>
@@ -905,6 +917,7 @@ function ResolutionTool() {
                   ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]"
                   : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50 hover:border-[color:var(--border)]/30"
               }`}
+              style={{ boxShadow: "var(--shadow-sm)" }}
             >
               {p.label}
             </button>
@@ -955,6 +968,7 @@ function ResolutionTool() {
                 key={r.label}
                 className="flex justify-between items-center cursor-pointer hover:bg-[var(--card)] px-2 py-1 rounded-lg transition-colors"
                 onClick={() => { setWidth(r.w); setHeight(r.h); }}
+                style={{ boxShadow: "var(--shadow-sm)" }}
               >
                 <span className="text-xs text-[var(--text)]/50">{r.label}</span>
                 <span className="text-xs font-mono text-[var(--text)]/70">{r.w} × {r.h}</span>
@@ -1061,6 +1075,7 @@ function FpsBudgetTool() {
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all active:scale-95 transition-transform ${
                 gpuTier === g.id ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
+              style={{ boxShadow: "var(--shadow-sm)" }}
             >
               <span>{g.label}</span>
               <span className="text-xs opacity-60">×{g.multiplier}</span>
@@ -1134,6 +1149,7 @@ function FpsBudgetTool() {
                   <div
                     key={op.label}
                     className="flex items-center gap-3 border border-[color:var(--border)]/8 rounded-xl px-3 py-2.5"
+                    style={{ boxShadow: "var(--shadow-sm)" }}
                   >
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-[var(--text)]/70 truncate">{op.label}</p>
@@ -1143,11 +1159,13 @@ function FpsBudgetTool() {
                       <button
                         onClick={() => updateOp(op.label, count - 1)}
                         className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center active:scale-95 transition-transform"
+                        style={{ boxShadow: "var(--shadow-sm)" }}
                       >−</button>
                       <span className="text-sm font-mono w-4 text-center text-[var(--text)]/70">{count}</span>
                       <button
                         onClick={() => updateOp(op.label, count + 1)}
                         className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center active:scale-95 transition-transform"
+                        style={{ boxShadow: "var(--shadow-sm)" }}
                       >+</button>
                     </div>
                   </div>

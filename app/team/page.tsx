@@ -197,6 +197,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
           <button
             onClick={() => { setShowInvite(true); setInviteError(""); setInviteSuccess(false); }}
             className="flex items-center gap-2 px-4 py-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+            style={{ boxShadow: "var(--shadow-sm)" }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -247,6 +248,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                             <button
                               onClick={() => respondToInvite(collab.id, "accepted")}
                               className="px-3 py-1.5 text-xs bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-medium active:scale-95 transition-transform"
+                              style={{ boxShadow: "var(--shadow-sm)" }}
                             >
                               Accetta
                             </button>
@@ -256,6 +258,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                           <Link
                             href={`/projects/${collab.project_slug}`}
                             className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 flex-shrink-0"
+                            style={{ boxShadow: "var(--shadow-sm)" }}
                           >
                             Apri →
                           </Link>
@@ -358,7 +361,9 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
       {/* INVITE MODAL */}
       {showInvite && (
         <div className="fixed inset-0 z-20 bg-[var(--bg)]/80 backdrop-blur flex items-end">
-          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl space-y-4 modal-enter">
+          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl space-y-4 modal-enter"
+            style={{ boxShadow: "var(--shadow-modal)" }}
+            >
             <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto" />
             <h2 className="text-base font-semibold">Invita collaboratore</h2>
 
@@ -406,6 +411,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                     onClick={sendInvite}
                     disabled={inviteLoading || !inviteEmail.trim() || !inviteProject}
                     className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold disabled:opacity-40"
+                    style={{ boxShadow: "var(--shadow-sm)" }}
                   >
                     {inviteLoading ? "Invio..." : "Invia invito"}
                   </button>

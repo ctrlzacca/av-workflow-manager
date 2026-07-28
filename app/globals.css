@@ -62,6 +62,18 @@ body {
   opacity: 0.7;
 }
 
+:root {
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 -8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.light {
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0 -8px 32px rgba(0, 0, 0, 0.15);
+}
+
 /* Icona sempre bianca — usata su sfondi sempre scuri (es. card progetto) */
 .icon-always-white {
   filter: invert(1);

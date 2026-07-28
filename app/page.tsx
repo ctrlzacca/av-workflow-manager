@@ -396,6 +396,7 @@ useEffect(() => {
             <button
               onClick={install}
               className="px-3 py-1.5 rounded-lg bg-[var(--button-bg)] text-[var(--button-text)] text-xs font-medium active:scale-95 transition-transform"
+            style={{ boxShadow: "var(--shadow-sm)" }}
             >
               Installa
             </button>
@@ -418,7 +419,10 @@ useEffect(() => {
               <Link
                 key={project.slug}
                 href={`/projects/${project.slug}`}
-                style={{ background: getProjectBackground(project, categories)}}
+                  style={{
+                  background: getProjectBackground(project, categories),
+                  boxShadow: "var(--shadow-sm)",
+                }}
                 className="block border border-[color:var(--border)] rounded-2xl p-5 hover:border-[color:var(--border)] active:brightness-110 active:scale-[0.98] transition-all duration-200"
               >
                 {/* TOP ROW */}
@@ -473,7 +477,9 @@ useEffect(() => {
       {/* ADD PROJECT MODAL */}
       {showAdd && (
         <div className="fixed inset-0 z-20 bg-[var(--bg)] backdrop-blur flex items-end">
-          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl modal-enter">
+          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl modal-enter"
+            style={{ boxShadow: "var(--shadow-modal)" }}
+          >
             <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto mb-5" />
             <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 
@@ -494,6 +500,7 @@ useEffect(() => {
                   href="/settings"
                   onClick={() => setShowAdd(false)}
                   className="block w-full py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+                style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   Vai a Settings →
                 </Link>
@@ -506,6 +513,7 @@ useEffect(() => {
                     type="button"
                     onClick={() => setNewProjectCategory(cat.name)}
                     className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-[color:var(--button-bg)] bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "border-[color:var(--border)] text-[var(--text)]"}`}
+                    style={{ boxShadow: "var(--shadow-sm)" }}
                   >
                     {cat.name}
                   </button>
@@ -516,6 +524,7 @@ useEffect(() => {
             href="/settings"
             onClick={() => setShowAdd(false)}
             className="block text-center text-xs text-[var(--text)] hover:text-[var(--text-hover)] transition-colors mt-2 py-2"
+            style={{ boxShadow: "var(--shadow-sm)" }}
           >
             Gestisci categorie →
           </Link>
@@ -523,6 +532,7 @@ useEffect(() => {
               <button
                 onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
                 className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[color:var(--text-soft)] text-sm font-medium active:scale-95 transition-transform"
+                style={{ boxShadow: "var(--shadow-sm)" }}
               >
                 Annulla
               </button>
@@ -530,6 +540,7 @@ useEffect(() => {
                   onClick={addProject}
                   disabled={categories.length === 0 || !newProjectCategory}
                   className="flex-1 py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30 active:scale-95 transition-transform"
+                  style={{ boxShadow: "var(--shadow-sm)" }}
                 >
                   Crea progetto
                 </button>
