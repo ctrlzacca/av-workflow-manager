@@ -281,12 +281,12 @@ useEffect(() => {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
 {/* HEADER HOME */}
-<header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3">
+<header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3"
+  style={{ boxShadow: "var(--shadow-sm)" }}
+>
 
   {/* RIGA 1 — Logo + Titolo + Settings */}
-  <div className="flex items-center gap-3 mb-4"
-  style={{ boxShadow: "var(--shadow-sm)" }}
-  >
+  <div className="flex items-center gap-3 mb-4">
     <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
     <p className="text-[var(--text)] font-bold text-xl tracking-tighter flex-1">Workflow Manager</p>
     <Link href="/settings" className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0">

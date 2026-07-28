@@ -198,7 +198,9 @@ export default function SettingsPage() {
     <main className="h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col overflow-hidden">
 
   {/* HEADER */}
-  <div className="fixed top-0 left-0 right-0 w-full z-50 bg-[var(--bg)] border-b border-[color:var(--border)]">
+  <div className="fixed top-0 left-0 right-0 w-full z-50 bg-[var(--bg)] border-b border-[color:var(--border)]"
+    style={{ boxShadow: "var(--shadow-sm)" }}
+>
     
     <div
       className="px-5 pb-4"
