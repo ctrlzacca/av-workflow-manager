@@ -473,7 +473,7 @@ useEffect(() => {
       {/* ADD PROJECT MODAL */}
       {showAdd && (
         <div className="fixed inset-0 z-20 bg-[var(--bg)] backdrop-blur flex items-end">
-          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl">
+          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl modal-enter">
             <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto mb-5" />
             <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 

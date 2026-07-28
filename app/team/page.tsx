@@ -358,7 +358,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
       {/* INVITE MODAL */}
       {showInvite && (
         <div className="fixed inset-0 z-20 bg-[var(--bg)]/80 backdrop-blur flex items-end">
-          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl space-y-4">
+          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl space-y-4 modal-enter">
             <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto" />
             <h2 className="text-base font-semibold">Invita collaboratore</h2>
 

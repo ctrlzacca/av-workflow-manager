@@ -71,3 +71,12 @@ body {
 button, a, select, input {
   transition: all 150ms ease;
 }
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-enter {
+  animation: slideUp 250ms ease-out;
+}
