@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
-import { useRef } from "react";
 import { usePwaInstall } from "@/app/hooks/usePwaInstall";
 import { hapticFeedback } from "@/app/lib/haptics";
 
