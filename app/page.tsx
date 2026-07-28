@@ -478,7 +478,6 @@ useEffect(() => {
             <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 
             <input
-              autoFocus
               value={newProject}
               onChange={(e) => setNewProject(e.target.value)}
               onKeyDown={handleKeyDown}
