@@ -12,6 +12,21 @@
   --text-placeholder: rgba(255, 255, 255, 0.20);
 }
 
+:root {
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.03em;
+}
+
+h1, .text-title {
+  letter-spacing: var(--tracking-tighter);
+  font-weight: 700;
+}
+
+h2, .text-subtitle {
+  letter-spacing: var(--tracking-tight);
+  font-weight: 600;
+}
+
 /* LIGHT MODE */
 .light {
   --bg: #f5f5f5;

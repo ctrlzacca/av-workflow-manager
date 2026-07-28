@@ -430,7 +430,7 @@ if (user && (collabCheck.data ?? []).length > 0) {
             {getCategoryIcon(project.category)}
           </div>
 
-          <h1 className="font-bold text-base flex-1 truncate">{project.title}</h1>
+          <h1 className="font-bold text-base tracking-tight flex-1 truncate">{project.title}</h1>
 
           {/* SAVE FEEDBACK */}
           <div className={`flex-shrink-0 flex items-center gap-1.5 text-xs transition-all duration-300 ${
