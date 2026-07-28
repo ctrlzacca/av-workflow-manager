@@ -8,6 +8,7 @@ import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 import { usePwaInstall } from "@/app/hooks/usePwaInstall";
 import { hapticFeedback } from "@/app/lib/haptics";
+import { usePullToRefresh } from "@/app/hooks/usePullToRefresh";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -124,6 +125,7 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const touchStartX = useRef(0);
   const draggingSlug = useRef<string | null>(null);
+  const { pullDistance, isRefreshing, handlers } = usePullToRefresh(loadData);
 
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
@@ -414,7 +416,22 @@ useEffect(() => {
       )}
 
       {/* PROJECT LIST */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 pb-36">
+      <div className="flex-1 overflow-y-auto px-5 py-4 pb-36"
+        {...handlers}
+      >
+          {/* INDICATORE PULL TO REFRESH */}
+            <div
+              className="flex items-center justify-center overflow-hidden transition-all"
+              style={{ height: pullDistance, opacity: pullDistance / 60 }}
+            >
+              <svg
+                className={`w-5 h-5 text-[var(--text)]/40 ${isRefreshing ? "animate-spin" : ""}`}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                style={{ transform: `rotate(${pullDistance * 3}deg)` }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
         {loading && <p className="text-[var(--text)]/20 text-sm text-center mt-16">Caricamento...</p>}
         {!loading && sorted.length === 0 && (
           <p className="text-[var(--text)]/20 text-sm text-center mt-16">Nessun progetto ancora.</p>

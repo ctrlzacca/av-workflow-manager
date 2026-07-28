@@ -7,6 +7,7 @@ import { supabase } from "@/app/lib/supabase";
 import type { Project } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import type { Category } from "@/app/types/project";
+import { usePullToRefresh } from "@/app/hooks/usePullToRefresh";
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -49,27 +50,29 @@ export default function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
+ // ── LOAD ──────────────────────────────────────────────────────────────────
 
-  // ── LOAD ──────────────────────────────────────────────────────────────────
+async function loadProjects() {
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .not("deadline", "is", null)
+    .neq("deadline", "");
+  const { data: catsData } = await supabase
+    .from("categories")
+    .select("*");
+  setCategories(catsData ?? []);
 
-  useEffect(() => {
-    async function loadProjects() {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .not("deadline", "is", null)
-        .neq("deadline", "");
-        const { data: catsData } = await supabase
-          .from("categories")
-          .select("*");
-        setCategories(catsData ?? []);
+  if (error) { console.error("Error loading projects:", error.message); }
+  setProjects(data ?? []);
+  setLoading(false);
+}
 
-      if (error) { console.error("Error loading projects:", error.message); }
-      setProjects(data ?? []);
-      setLoading(false);
-    }
-    loadProjects();
-  }, []);
+const { pullDistance, isRefreshing, handlers } = usePullToRefresh(loadProjects);
+
+useEffect(() => {
+  loadProjects();
+}, []);
 
   // ── NAVIGATION ────────────────────────────────────────────────────────────
 

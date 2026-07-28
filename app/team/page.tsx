@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
+import { usePullToRefresh } from "@/app/hooks/usePullToRefresh";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -27,6 +28,7 @@ export default function TeamPage() {
   const [sharedWithMe, setSharedWithMe] = useState<Collaborator[]>([]);
   const [myCollaborators, setMyCollaborators] = useState<Collaborator[]>([]);
   const [loading, setLoading] = useState(true);
+  const { pullDistance, isRefreshing, handlers } = usePullToRefresh(loadAll);
 
   // ── INVITE MODAL ──────────────────────────────────────────────────────────
   const [showInvite, setShowInvite] = useState(false);
@@ -42,6 +44,7 @@ export default function TeamPage() {
   useEffect(() => {
     loadAll();
   }, []);
+
 
   async function loadAll() {
 
