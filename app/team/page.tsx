@@ -240,13 +240,13 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                           <div className="flex gap-2 flex-shrink-0">
                             <button
                               onClick={() => respondToInvite(collab.id, "rejected")}
-                              className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 hover:text-red-400 hover:border-red-400/30 transition-colors"
+                              className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 hover:text-red-400 hover:border-red-400/30 transition-colors active:scale-95 transition-transform"
                             >
                               Rifiuta
                             </button>
                             <button
                               onClick={() => respondToInvite(collab.id, "accepted")}
-                              className="px-3 py-1.5 text-xs bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-medium"
+                              className="px-3 py-1.5 text-xs bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-medium active:scale-95 transition-transform"
                             >
                               Accetta
                             </button>

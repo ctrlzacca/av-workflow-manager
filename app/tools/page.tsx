@@ -162,7 +162,7 @@ function HarmonicTool() {
               key={note}
               onClick={() => { setRootIndex(i); setSelectedChord(null); }}
               className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                rootIndex === i ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                rootIndex === i ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
               }`}
             >
               {note}
@@ -180,7 +180,7 @@ function HarmonicTool() {
               key={key}
               onClick={() => { setScaleKey(key); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                scaleKey === key ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                scaleKey === key ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
               }`}
             >
               {name}
@@ -198,7 +198,7 @@ function HarmonicTool() {
               key={ext.id}
               onClick={() => { setExtension(ext.id); setSelectedChord(null); }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                extension === ext.id ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                extension === ext.id ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
               }`}
             >
               {ext.label}
@@ -232,7 +232,7 @@ function HarmonicTool() {
             <button
               key={i}
               onClick={() => setSelectedChord(selectedChord === i ? null : i)}
-              className={`border rounded-xl px-4 py-3 text-left transition-all ${
+              className={`border rounded-xl px-4 py-3 text-left transition-all active:scale-95 transition-transform ${
                 selectedChord === i ? "border-[color:var(--border)]/40 bg-[var(--card)]" : "border-[color:var(--border)] hover:border-[color:var(--border)]/20"
               }`}
             >
@@ -291,7 +291,7 @@ function BpmTool() {
         <button
           onClick={() => setActiveSection("bpm")}
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            activeSection === "bpm" ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "text-[var(--text)]/40"
+            activeSection === "bpm" ? "bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "text-[var(--text)]/40 "
           }`}
         >
           BPM → ms
@@ -299,7 +299,7 @@ function BpmTool() {
         <button
           onClick={() => setActiveSection("notefreq")}
           className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            activeSection === "notefreq" ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "text-[var(--text)]/40"
+            activeSection === "notefreq" ? "bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "text-[var(--text)]/40"
           }`}
         >
           Nota ↔ Hz
@@ -314,7 +314,7 @@ function BpmTool() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setBpm(b => Math.max(1, b - 1))}
-                className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors active:scale-95 transition-transform"
               >−</button>
               <input
                 type="number"
@@ -324,7 +324,7 @@ function BpmTool() {
               />
               <button
                 onClick={() => setBpm(b => Math.min(300, b + 1))}
-                className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-lg hover:border-[color:var(--border)]/30 transition-colors active:scale-95 transition-transform"
               >+</button>
             </div>
             <input
@@ -369,7 +369,7 @@ function BpmTool() {
                   key={note}
                   onClick={() => setSelectedNote(note)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all${
-                    selectedNote === note ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                    selectedNote === note ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
                   }`}
                 >
                   {note}
@@ -383,7 +383,7 @@ function BpmTool() {
                   key={oct}
                   onClick={() => setSelectedOctave(oct)}
                   className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                    selectedOctave === oct ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+                    selectedOctave === oct ? "bg-[var(--button-bg)] text-[var(--button-text)]" : "bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
                   }`}
                 >
                   {oct}
@@ -613,14 +613,14 @@ function deletePalette(id: number) {
 
       <button
         onClick={generatePalette}
-        className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm"
+        className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm active:scale-95 transition-transform"
       >
         🎲 Genera nuova palette
       </button>
 
       <button
       onClick={saveCurrentPalette}
-      className="w-full py-3 border border-[color:var(--border)] rounded-xl text-sm text-[var(--text)]/60 hover:border-[color:var(--border)]/30"
+      className="w-full py-3 border border-[color:var(--border)] rounded-xl text-sm text-[var(--text)]/60 hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
     >
       💾 Salva palette
     </button>
@@ -699,7 +699,7 @@ function deletePalette(id: number) {
 
     <button
       onClick={copyAll}
-      className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 text-sm hover:border-[color:var(--border)]/30"
+      className="w-full py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/50 text-sm hover:border-[color:var(--border)]/30 active:scale-95 transition-transform"
     >
       {copied === "all" ? "✓ Tutti copiati" : "Copia tutti gli hex"}
     </button>
@@ -731,7 +731,7 @@ function deletePalette(id: number) {
 
             <button
               onClick={() => loadPalette(saved.colors)}
-              className="text-sm font-medium text-left flex-1 hover:text-[var(--text)]"
+              className="text-sm font-medium text-left flex-1 hover:text-[var(--text)] active:scale-95 transition-transform"
             >
               {saved.name}
             </button>
@@ -739,14 +739,14 @@ function deletePalette(id: number) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => renamePalette(saved.id)}
-                className="text-xs text-[var(--text)]/40 hover:text-[var(--text)]"
+                className="text-xs text-[var(--text)]/40 hover:text-[var(--text)] active:scale-95 transition-transform"
               >
                 ✏️
               </button>
 
               <button
                 onClick={() => deletePalette(saved.id)}
-                className="text-xs text-[var(--text)]/40 hover:text-red-400"
+                className="text-xs text-[var(--text)]/40 hover:text-red-400 active:scale-95 transition-transform"
               >
                 🗑
               </button>
@@ -854,7 +854,7 @@ function ResolutionTool() {
               key={t}
               onClick={() => setOutputType(t)}
               className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all border ${
-                outputType === t ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
+                outputType === t ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50 active:scale-95 transition-transform"
               }`}
             >
               {t === "monitor" ? "🖥 Monitor" : "📽 Proiettore"}
@@ -900,7 +900,7 @@ function ResolutionTool() {
             <button
               key={p.label}
               onClick={() => { setWidth(p.w); setHeight(p.h); }}
-              className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs border transition-all active:scale-95 transition-transform ${
                 width === p.w && height === p.h
                   ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]"
                   : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50 hover:border-[color:var(--border)]/30"
@@ -1058,7 +1058,7 @@ function FpsBudgetTool() {
             <button
               key={g.id}
               onClick={() => setGpuTier(g.id)}
-              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all ${
+              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm transition-all active:scale-95 transition-transform ${
                 gpuTier === g.id ? "bg-[var(--button-bg)] text-[var(--button-text)] border-[color:var(--border)]" : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
               }`}
             >
@@ -1142,12 +1142,12 @@ function FpsBudgetTool() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <button
                         onClick={() => updateOp(op.label, count - 1)}
-                        className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center active:scale-95 transition-transform"
                       >−</button>
                       <span className="text-sm font-mono w-4 text-center text-[var(--text)]/70">{count}</span>
                       <button
                         onClick={() => updateOp(op.label, count + 1)}
-                        className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded-lg bg-[var(--card)] text-[var(--text)]/40 text-sm flex items-center justify-center active:scale-95 transition-transform"
                       >+</button>
                     </div>
                   </div>
@@ -1298,7 +1298,7 @@ function GlslTool() {
         <div className="flex items-center justify-between">
           <button
             onClick={closeDetail}
-            className="flex items-center gap-2 text-[var(--text)]/40 hover:text-[var(--text)] text-sm transition-colors"
+            className="flex items-center gap-2 text-[var(--text)]/40 hover:text-[var(--text)] text-sm transition-colors active:scale-95 transition-transform"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1308,7 +1308,7 @@ function GlslTool() {
           {selectedId !== null && (
             <button
               onClick={() => deleteEntry(selectedId)}
-              className="text-xs text-[var(--text)]/20 hover:text-red-400 transition-colors"
+              className="text-xs text-[var(--text)]/20 hover:text-red-400 transition-colors active:scale-95 transition-transform"
             >
               Elimina
             </button>
@@ -1320,7 +1320,7 @@ function GlslTool() {
           value={draft.title ?? ""}
           onChange={(e) => setDraft({ ...draft, title: e.target.value })}
           placeholder="Nome snippet..."
-          className="w-full bg-transparent border-b border-[color:var(--border)] text-[var(--text)] font-bold text-lg focus:outline-none focus:border-[color:var(--border)]/30 pb-1 transition-colors"
+          className="w-full bg-transparent border-b border-[color:var(--border)] text-[var(--text)] font-bold text-lg focus:outline-none focus:border-[color:var(--border)]/30 pb-1 transition-colors active:scale-95 transition-transform"
         />
 
         {/* CODICE */}
@@ -1329,7 +1329,7 @@ function GlslTool() {
             <p className="text-xs text-[var(--text)]/40 uppercase tracking-widest">Codice GLSL</p>
             <button
               onClick={copyCode}
-              className="text-xs text-[var(--text)]/30 hover:text-[var(--text)] transition-colors"
+              className="text-xs text-[var(--text)]/30 hover:text-[var(--text)] transition-colors active:scale-95 transition-transform"
             >
               {copied ? "✓ Copiato" : "Copia"}
             </button>
@@ -1338,7 +1338,7 @@ function GlslTool() {
             value={draft.code ?? ""}
             onChange={(e) => setDraft({ ...draft, code: e.target.value })}
             placeholder={"// Incolla o scrivi il tuo codice GLSL...\nvoid main() {\n  \n}"}
-            className="w-full bg-[var(--card)] border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors"
+            className="w-full bg-[var(--card)] border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors active:scale-95 transition-transform"
             rows={14}
             spellCheck={false}
           />
@@ -1351,7 +1351,7 @@ function GlslTool() {
             value={draft.notes ?? ""}
             onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
             placeholder="Descrizione, operatori usati, come funziona..."
-            className="w-full bg-[var(--card)] border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-sm text-[var(--text)]/70 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors"
+            className="w-full bg-[var(--card)] border border-[color:var(--border)]/8 rounded-xl px-4 py-3 text-sm text-[var(--text)]/70 focus:outline-none focus:border-[color:var(--border)]/20 resize-none leading-relaxed transition-colors active:scale-95 transition-transform"
             rows={4}
           />
         </div>
@@ -1360,7 +1360,7 @@ function GlslTool() {
         <button
           onClick={saveEntry}
           disabled={!draft.title?.trim()}
-          className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-40 transition-opacity"
+          className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-40 transition-opacity active:scale-95 transition-transform"
         >
           {isNew ? "Crea snippet" : "Salva modifiche"}
         </button>
@@ -1375,7 +1375,7 @@ function GlslTool() {
 
       <button
         onClick={openNew}
-        className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+        className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
@@ -1393,7 +1393,7 @@ function GlslTool() {
             <button
               key={entry.id}
               onClick={() => openEntry(entry)}
-              className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)] transition-all text-left"
+              className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)] active:scale-95 transition-all text-left"
             >
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">{entry.title}</p>
@@ -1510,7 +1510,7 @@ function TypographyTool() {
           <button
             key={u}
             onClick={() => setUnit(u)}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all ${
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-all active:scale-95 transition-transform ${
               unit === u
                 ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
                 : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
@@ -1532,7 +1532,7 @@ function TypographyTool() {
                 setFontFamily(f.name);
                 setLineHeightPercent(Math.round((f.lineHeightMin + f.lineHeightMax) / 2 * 100));
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs border transition-all active:scale-95 transition-transform ${
                 fontFamily === f.name
                   ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
                   : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
@@ -1563,7 +1563,7 @@ function TypographyTool() {
           <button
             key={w.value}
             onClick={() => setFontWeight(w.value)}
-            className={`px-3 py-1.5 rounded-xl text-xs border transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs border transition-all active:scale-95 transition-transform ${
               fontWeight === w.value
                 ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
                 : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
@@ -1584,7 +1584,7 @@ function TypographyTool() {
           <button
             key={key}
             onClick={() => setPageFormat(key)}
-            className={`px-3 py-2 rounded-xl text-xs border transition-all ${
+            className={`px-3 py-2 rounded-xl text-xs border transition-all active:scale-95 transition-transform ${
               pageFormat === key
                 ? "bg-[var(--button-bg)] text-[var(--button-text)] border-transparent"
                 : "bg-[var(--card)] border-[color:var(--border)] text-[var(--text)]/50"
@@ -1658,7 +1658,7 @@ function TypographyTool() {
               <div
                 key={item.label}
                 onClick={() => copyValue(`${item.value}${unit}`)}
-                className={`flex-1 rounded-xl p-3 text-center cursor-pointer transition-all border ${
+                className={`flex-1 rounded-xl p-3 text-center cursor-pointer transition-all border active:scale-95 transition-transform ${
                   item.highlight
                     ? "bg-[var(--card)] border-[color:var(--border)]"
                     : "border-[color:var(--border)]/30"
@@ -1853,7 +1853,7 @@ export default function ToolsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTool(null)}
-              className="w-9 h-9 rounded-xl bg-[var(--card)] flex items-center justify-center flex-shrink-0"
+              className="w-9 h-9 rounded-xl bg-[var(--card)] flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
             >
               <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1904,7 +1904,7 @@ export default function ToolsPage() {
                         <button
                           key={String(tool.id)}
                           onClick={() => setActiveTool(tool.id)}
-                          className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)] transition-all text-left"
+                          className="w-full flex items-center justify-between border border-[color:var(--border)] rounded-2xl px-5 py-4 hover:border-[color:var(--border)]/20 active:bg-[var(--card)] active:scale-95 transition-all transition-transform text-left"
                         >
                           <div>
                             <p className="text-sm font-semibold">{tool.name}</p>

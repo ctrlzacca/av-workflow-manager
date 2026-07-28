@@ -301,7 +301,7 @@ useEffect(() => {
       <button
         key={f}
         onClick={() => handleFilterChange(f)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl border flex-shrink-0 transition-all ${
+        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl border flex-shrink-0 transition-all active:scale-95 transition-transform ${
           filter === f
             ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)] font-medium"
             : "border-[color:var(--border)] text-[var(--text)]/50"
@@ -318,7 +318,7 @@ useEffect(() => {
     <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none mb-2">
       <button
         onClick={() => setActiveFolder(null)}
-        className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all ${
+        className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all active:scale-95 transition-transform ${
           activeFolder === null
             ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]"
             : "border-[color:var(--border)] text-[var(--text)]/25"
@@ -332,11 +332,11 @@ useEffect(() => {
           <button
             key={folder}
             onClick={() => setActiveFolder(folder)}
-            className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all ${
+            className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all active:scale-95 transition-transform ${
               activeFolder === folder
                 ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]"
-                : "border-[color:var(--border)] text-[var(--text)]/25"
-            }`}
+                : "border-[color:var(--border)] text-[var(--text)]/25" 
+}`}
           >
             {folder} <span className="opacity-50 ml-1">({count})</span>
           </button>
@@ -373,7 +373,7 @@ useEffect(() => {
           if (searchOpen) { setSearch(""); setSearchOpen(false); }
           else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
         }}
-        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
+        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
       >
         <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -395,7 +395,7 @@ useEffect(() => {
 
             <button
               onClick={install}
-              className="px-3 py-1.5 rounded-lg bg-[var(--button-bg)] text-[var(--button-text)] text-xs font-medium"
+              className="px-3 py-1.5 rounded-lg bg-[var(--button-bg)] text-[var(--button-text)] text-xs font-medium active:scale-95 transition-transform"
             >
               Installa
             </button>
@@ -506,7 +506,7 @@ useEffect(() => {
                     key={cat.id ?? cat.name}
                     type="button"
                     onClick={() => setNewProjectCategory(cat.name)}
-                    className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-[color:var(--button-bg)] bg-[var(--button-bg)] text-[var(--button-text)]" : "border-[color:var(--border)] text-[var(--text)]"}`}
+                    className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-[color:var(--button-bg)] bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "border-[color:var(--border)] text-[var(--text)]"}`}
                   >
                     {cat.name}
                   </button>
@@ -523,14 +523,14 @@ useEffect(() => {
             <div className="flex gap-3">
               <button
                 onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
-                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[color:var(--text-soft)] text-sm font-medium"
+                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[color:var(--text-soft)] text-sm font-medium active:scale-95 transition-transform"
               >
                 Annulla
               </button>
                 <button
                   onClick={addProject}
                   disabled={categories.length === 0 || !newProjectCategory}
-                  className="flex-1 py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30"
+                  className="flex-1 py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30 active:scale-95 transition-transform"
                 >
                   Crea progetto
                 </button>
@@ -559,7 +559,7 @@ useEffect(() => {
           <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
 
-        <button onClick={() => setShowAdd(true)} className="flex flex-col items-center gap-1.5">
+        <button onClick={() => setShowAdd(true)} className="flex flex-col items-center gap-1.5 active:scale-95 transition-transform">
           <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
             <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
