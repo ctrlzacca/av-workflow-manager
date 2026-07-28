@@ -188,10 +188,10 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-4">
-        <div className="flex items-center justify-between"
-        style={{ boxShadow: "var(--shadow-sm)" }}
-        >
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-4"
+      style={{ boxShadow: "var(--shadow-sm)" }}
+      >
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold tracking-tight ">Team</h1>
             <p className="text-[var(--text)]/30 text-xs mt-0.5">Collaborazioni e progetti condivisi</p>

@@ -1897,10 +1897,10 @@ export default function ToolsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col"
-    style={{ boxShadow: "var(--shadow-sm)" }}
-    >
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]/8 px-5 pt-14 pb-4">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)]/8 px-5 pt-14 pb-4"
+        style={{ boxShadow: "var(--shadow-sm)" }}
+>
         <h1 className="text-xl font-bold tracking-tight">Tools</h1>
         <p className="text-[var(--text)]/30 text-xs mt-0.5">Strumenti per la produzione</p>
       </header>
