@@ -305,55 +305,61 @@ useEffect(() => {
     </Link>
   </div>
 
-  {/* RIGA 2 — Filtri categoria */}
-  <div className="flex gap-2 overflow-x-auto scrollbar-none mb-2">
-    {allFilters.map((f) => (
-      <button
-        key={f}
-        onClick={() => handleFilterChange(f)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl border flex-shrink-0 transition-all active:scale-95 transition-transform ${
-          filter === f
-            ? "border-[color:var(--border)] text-[var(--text)] bg-[var(--card)] font-medium"
-            : "border-[color:var(--border)] text-[var(--text)]/50"
-        }`}
-      >
-        {f !== "All" && getCategoryIconSmall(f)}
-        {f}
-      </button>
-    ))}
-  </div>
+{/* RIGA 2 — Filtri categoria */}
+<div className="flex gap-1.5 overflow-x-auto scrollbar-none mb-2.5">
+  {allFilters.map((f) => (
+    <button
+      key={f}
+      onClick={() => handleFilterChange(f)}
+      className={`flex items-center gap-1.5 px-3.5 py-2 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
+        filter === f
+          ? "bg-[var(--text)] text-[var(--bg)] font-semibold"
+          : "bg-[var(--card)] text-[var(--text)]/50 border border-[color:var(--border)]"
+      }`}
+      style={filter === f ? { boxShadow: "var(--shadow-sm)" } : undefined}
+    >
+      {f !== "All" && getCategoryIconSmall(f)}
+      {f}
+    </button>
+  ))}
+</div>
 
   {/* RIGA 3 — Sottofiltri cartelle */}
-  {availableFolders.length > 0 && (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none mb-2">
-      <button
-        onClick={() => setActiveFolder(null)}
-        className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all active:scale-95 transition-transform ${
-          activeFolder === null
-            ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]"
-            : "border-[color:var(--border)] text-[var(--text)]/25"
-        }`}
-      >
-        Tutte
-      </button>
-      {availableFolders.map((folder) => {
-        const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
-        return (
-          <button
-            key={folder}
-            onClick={() => setActiveFolder(folder)}
-            className={`px-3 py-1 text-xs rounded-lg border flex-shrink-0 transition-all active:scale-95 transition-transform ${
-              activeFolder === folder
-                ? "border-[color:var(--border)] text-[var(--text)]/50 bg-[var(--card)]"
-                : "border-[color:var(--border)] text-[var(--text)]/25" 
-}`}
-          >
-            {folder} <span className="opacity-50 ml-1">({count})</span>
-          </button>
-        );
-      })}
-    </div>
-  )}
+{availableFolders.length > 0 && (
+  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none mb-2.5">
+    <button
+      onClick={() => setActiveFolder(null)}
+      className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
+        activeFolder === null
+          ? "bg-[var(--card)] text-[var(--text)] font-medium border border-[color:var(--border)]"
+          : "text-[var(--text)]/30"
+      }`}
+    >
+      Tutte
+    </button>
+    {availableFolders.map((folder) => {
+      const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
+      const isActive = activeFolder === folder;
+      return (
+        <button
+          key={folder}
+          onClick={() => setActiveFolder(folder)}
+          className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
+            isActive
+              ? "bg-[var(--card)] text-[var(--text)] font-medium border border-[color:var(--border)]"
+              : "text-[var(--text)]/30"
+          }`}
+        >
+          <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          </svg>
+          {folder}
+          <span className="opacity-40">({count})</span>
+        </button>
+      );
+    })}
+  </div>
+)}
 
   {/* RIGA 4 — Ordinamento + Ricerca */}
   <div className="flex items-center justify-between gap-2">
