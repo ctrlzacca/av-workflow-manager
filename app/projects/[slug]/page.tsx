@@ -452,21 +452,21 @@ async function toggleTask(index: number) {
         </div>
 
     {/* META CONTROLS */}
-    <div className="flex gap-2 flex-wrap mb-3">
+    <div className="flex gap-1.5 flex-wrap mb-3">
       <select
         value={project.status}
         onChange={(e) => updateField("status", e.target.value as Project["status"])}
-        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/70 text-xs px-3 py-1.5 rounded-full focus:outline-none font-medium"
       >
-        <option value="Active" className="bg-[var(--bg)]">Active</option>
-        <option value="Paused" className="bg-[var(--bg)]">Paused</option>
-        <option value="Blocked" className="bg-[var(--bg)]">Blocked</option>
+        <option value="Active" className="bg-[var(--bg)]">● Active</option>
+        <option value="Paused" className="bg-[var(--bg)]">● Paused</option>
+        <option value="Blocked" className="bg-[var(--bg)]">● Blocked</option>
       </select>
 
       <select
         value={project.priority}
         onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
-        className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-2 rounded-xl focus:outline-none ${PRIORITY_COLOR[project.priority]}`}
+        className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-1.5 rounded-full focus:outline-none font-medium ${PRIORITY_COLOR[project.priority]}`}
       >
         <option value="Low" className="bg-[var(--bg)]">Low</option>
         <option value="Medium" className="bg-[var(--bg)]">Medium</option>
@@ -476,7 +476,7 @@ async function toggleTask(index: number) {
       <select
         value={project.category}
         onChange={(e) => updateField("category", e.target.value)}
-        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-1.5 rounded-full focus:outline-none"
       >
         {categories.map((cat) => (
           <option key={cat.id} value={cat.name} className="bg-[var(--bg)]">
@@ -489,25 +489,20 @@ async function toggleTask(index: number) {
         type="date"
         value={project.deadline}
         onChange={(e) => updateField("deadline", e.target.value)}
-        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none"
+        className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-1.5 rounded-full focus:outline-none"
       />
 
       {/* CAMPANELLA NOTIFICHE */}
       {project.deadline && (
         <button
           onClick={() => setShowNotifPanel(!showNotifPanel)}
-          className={`relative w-9 h-9 rounded-xl border flex items-center justify-center transition-all ${
-            showNotifPanel
-              ? "bg-[var(--card)] border-[color:var(--border)]"
-              : "bg-[var(--card)] border-[color:var(--border)]"
-          }`}
+          className="relative w-8 h-8 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center transition-all active:scale-95"
         >
-          <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
-          {/* PALLINO se ci sono notifiche attive */}
           {(project.notification_days ?? []).length > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-white" />
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[var(--text)]" />
           )}
         </button>
       )}
@@ -546,73 +541,70 @@ async function toggleTask(index: number) {
     )}
             
 
-        {/* FOLDER */}
-        <div className="flex items-center gap-2 mb-3">
-          {!showNewFolder ? (
-            <>
-              <select
-                value={project.folder?.trim() || ""}
-                onChange={(e) => {
-                  if (e.target.value === "__new__") { setShowNewFolder(true); updateField("folder", ""); }
-                  else { updateField("folder", e.target.value); }
-                }}
-                className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/40 text-xs px-3 py-2 rounded-xl focus:outline-none"
-              >
-                <option value="" className="bg-[var(--bg)]">Nessuna cartella</option>
-                {availableFolders.map((f) => (
-                  <option key={f} value={f} className="bg-[var(--bg)]">{f}</option>
-                ))}
-                <option value="__new__" className="bg-[var(--bg)]">+ Nuova cartella...</option>
-              </select>
-
-              {project.folder?.trim() && (
-                <button
-                  onClick={async () => {
-                    const confirmed = window.confirm(`Eliminare la cartella "${project.folder}" da tutti i progetti?`);
-                    if (!confirmed) return;
-                    await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
-                    updateField("folder", "");
+          {/* FOLDER */}
+          <div className="flex items-center gap-2 mb-3">
+            {!showNewFolder ? (
+              <>
+                <select
+                  value={project.folder?.trim() || ""}
+                  onChange={(e) => {
+                    if (e.target.value === "__new__") { setShowNewFolder(true); updateField("folder", ""); }
+                    else { updateField("folder", e.target.value); }
                   }}
-                  className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center text-[var(--text)]/60 hover:text-red-400 transition-colors text-xs"
-                  style={{ boxShadow: "var(--shadow-sm)" }}
+                  className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-1.5 rounded-full focus:outline-none"
                 >
-                  ✕
+                  <option value="" className="bg-[var(--bg)]">📁 Nessuna cartella</option>
+                  {availableFolders.map((f) => (
+                    <option key={f} value={f} className="bg-[var(--bg)]">📁 {f}</option>
+                  ))}
+                  <option value="__new__" className="bg-[var(--bg)]">+ Nuova cartella...</option>
+                </select>
+
+                {project.folder?.trim() && (
+                  <button
+                    onClick={async () => {
+                      const confirmed = window.confirm(`Eliminare la cartella "${project.folder}" da tutti i progetti?`);
+                      if (!confirmed) return;
+                      await supabase.from("projects").update({ folder: "" }).eq("folder", project.folder).eq("category", project.category);
+                      updateField("folder", "");
+                    }}
+                    className="w-7 h-7 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center text-[var(--text)]/40 hover:text-red-400 transition-colors text-xs active:scale-95"
+                  >
+                    ✕
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className="flex items-center gap-2 w-full">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Nome cartella..."
+                  className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/70 text-xs px-3 py-2 rounded-full focus:outline-none flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      const val = (e.target as HTMLInputElement).value.trim();
+                      if (val) updateField("folder", val);
+                      setShowNewFolder(false);
+                    }
+                    if (e.key === "Escape") setShowNewFolder(false);
+                  }}
+                  id="new-folder-input"
+                />
+                <button
+                  onClick={() => {
+                    const input = document.getElementById("new-folder-input") as HTMLInputElement;
+                    const val = input?.value.trim();
+                    if (val) updateField("folder", val);
+                    setShowNewFolder(false);
+                  }}
+                  className="bg-[var(--button-bg)] text-[var(--button-text)] text-xs px-4 py-2 rounded-full font-semibold flex-shrink-0"
+                >
+                  OK
                 </button>
-              )}
-            </>
-          ) : (
-            <div className="flex items-center gap-2">
-            <input
-              autoFocus
-              type="text"
-              placeholder="Nome cartella..."
-              className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/50 text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-[color:var(--border)]/20 flex-1"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  const val = (e.target as HTMLInputElement).value.trim();
-                  if (val) updateField("folder", val);
-                  setShowNewFolder(false);
-                }
-                if (e.key === "Escape") setShowNewFolder(false);
-              }}
-              ref={(input) => { if (input) (input as any)._ref = input; }}
-              id="new-folder-input"
-            />
-            <button
-              onClick={() => {
-                const input = document.getElementById("new-folder-input") as HTMLInputElement;
-                const val = input?.value.trim();
-                if (val) updateField("folder", val);
-                setShowNewFolder(false);
-              }}
-              className="bg-[var(--button-bg)] text-[var(--button-text)] text-xs px-3 py-2 rounded-xl font-semibold flex-shrink-0"
-              style={{ boxShadow: "var(--shadow-sm)" }}
-            >
-              OK
-            </button>
+              </div>
+            )}
           </div>
-          )}
-        </div>
 
         {/* PROGRESS */}
         <div className="mb-4">
