@@ -126,6 +126,7 @@ export default function Home() {
   const touchStartX = useRef(0);
   const draggingSlug = useRef<string | null>(null);
   const { pullDistance, isRefreshing, handlers } = usePullToRefresh(loadData);
+  const [showFilters, setShowFilters] = useState(false);
 
 
   // ── LOAD ──────────────────────────────────────────────────────────────────
@@ -289,90 +290,31 @@ useEffect(() => {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
 {/* HEADER HOME */}
-<header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3"
-  style={{ boxShadow: "var(--shadow-sm)" }}
->
+<header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3" style={{ boxShadow: "var(--shadow-sm)" }}>
 
-  {/* RIGA 1 — Logo + Titolo + Settings */}
-  <div className="flex items-center gap-3 mb-4">
-    <img src="/icon-512.png" alt="AV" className="w-12 h-12 rounded-xl flex-shrink-0" />
-    <p className="text-[var(--text)] font-bold text-xl tracking-tighter flex-1">Workflow Manager</p>
-    <Link href="/settings" className="w-9 h-9 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0">
-      <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+  {/* RIGA UNICA — Logo + Titolo + Filtri + Ricerca */}
+  <div className="flex items-center gap-2">
+    <img src="/icon-512.png" alt="AV" className="w-10 h-10 rounded-xl flex-shrink-0" />
+    <p className="text-[var(--text)] font-bold text-lg tracking-tighter flex-1 truncate">Workflow Manager</p>
+
+    {/* BOTTONE FILTRI */}
+    <button
+      onClick={() => setShowFilters(!showFilters)}
+      className={`relative w-9 h-9 rounded-full border flex items-center justify-center flex-shrink-0 transition-all active:scale-95 ${
+        filter !== "All" || activeFolder
+          ? "bg-[var(--text)] border-transparent"
+          : "bg-[var(--card)] border-[color:var(--border)]"
+      }`}
+    >
+      <svg className={`w-4 h-4 ${filter !== "All" || activeFolder ? "text-[var(--bg)]" : "text-[var(--text)]/50"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 4h18M6 8h12M9 12h6M11 16h2" />
       </svg>
-    </Link>
-  </div>
-
-{/* RIGA 2 — Filtri categoria */}
-<div className="flex gap-1.5 overflow-x-auto scrollbar-none mb-2.5">
-  {allFilters.map((f) => (
-    <button
-      key={f}
-      onClick={() => handleFilterChange(f)}
-      className={`flex items-center gap-1.5 px-3.5 py-2 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
-        filter === f
-          ? "bg-[var(--text)] text-[var(--bg)] font-semibold"
-          : "bg-[var(--card)] text-[var(--text)]/50 border border-[color:var(--border)]"
-      }`}
-      style={filter === f ? { boxShadow: "var(--shadow-sm)" } : undefined}
-    >
-      {f !== "All" && getCategoryIconSmall(f)}
-      {f}
+      {(filter !== "All" || activeFolder) && (
+        <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-red-400 border border-[var(--bg)]" />
+      )}
     </button>
-  ))}
-</div>
 
-  {/* RIGA 3 — Sottofiltri cartelle */}
-{availableFolders.length > 0 && (
-  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none mb-2.5">
-    <button
-      onClick={() => setActiveFolder(null)}
-      className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
-        activeFolder === null
-          ? "bg-[var(--card)] text-[var(--text)] font-medium border border-[color:var(--border)]"
-          : "text-[var(--text)]/30"
-      }`}
-    >
-      Tutte
-    </button>
-    {availableFolders.map((folder) => {
-      const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
-      const isActive = activeFolder === folder;
-      return (
-        <button
-          key={folder}
-          onClick={() => setActiveFolder(folder)}
-          className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
-            isActive
-              ? "bg-[var(--card)] text-[var(--text)] font-medium border border-[color:var(--border)]"
-              : "text-[var(--text)]/30"
-          }`}
-        >
-          <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-          </svg>
-          {folder}
-          <span className="opacity-40">({count})</span>
-        </button>
-      );
-    })}
-  </div>
-)}
-
-  {/* RIGA 4 — Ordinamento + Ricerca */}
-  <div className="flex items-center justify-between gap-2">
-    <select
-      value={sort}
-      onChange={(e) => setSort(e.target.value as SortOption)}
-      className="bg-transparent text-[var(--text)]/30 text-xs focus:outline-none cursor-pointer"
-    >
-      {SORT_OPTIONS.map((o) => (
-        <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
-      ))}
-    </select>
-
+    {/* RICERCA */}
     <div className="flex items-center gap-2 flex-shrink-0">
       <input
         ref={searchInputRef}
@@ -380,8 +322,8 @@ useEffect(() => {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Cerca..."
-        className={`h-8 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
-          searchOpen ? "w-32 opacity-100" : "w-0 opacity-0 pointer-events-none"
+        className={`h-9 bg-[var(--card)] border border-[color:var(--border)] rounded-full px-3 text-xs text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
+          searchOpen ? "w-28 opacity-100" : "w-0 opacity-0 pointer-events-none"
         }`}
       />
       <button
@@ -389,14 +331,93 @@ useEffect(() => {
           if (searchOpen) { setSearch(""); setSearchOpen(false); }
           else { setSearchOpen(true); setTimeout(() => searchInputRef.current?.focus(), 50); }
         }}
-        className="w-8 h-8 rounded-xl bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
+        className="w-9 h-9 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
       >
-        <svg className="w-3.5 h-3.5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </button>
     </div>
+
+    <Link href="/settings" className="w-9 h-9 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0">
+      <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </Link>
   </div>
+
+  {/* PANNELLO FILTRI — si apre sotto */}
+  {showFilters && (
+    <div className="mt-3 pt-3 border-t border-[color:var(--border)] space-y-3">
+      <div>
+        <p className="text-xs text-[var(--text)]/30 mb-1.5">Categoria</p>
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+          {allFilters.map((f) => (
+            <button
+              key={f}
+              onClick={() => handleFilterChange(f)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
+                filter === f
+                  ? "bg-[var(--text)] text-[var(--bg)] font-semibold"
+                  : "bg-[var(--card)] text-[var(--text)]/50 border border-[color:var(--border)]"
+              }`}
+            >
+              {f !== "All" && getCategoryIconSmall(f)}
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {availableFolders.length > 0 && (
+        <div>
+          <p className="text-xs text-[var(--text)]/30 mb-1.5">Cartella</p>
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+            <button
+              onClick={() => setActiveFolder(null)}
+              className={`px-3 py-1.5 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
+                activeFolder === null
+                  ? "bg-[var(--card)] text-[var(--text)] font-medium border border-[color:var(--border)]"
+                  : "text-[var(--text)]/30"
+              }`}
+            >
+              Tutte
+            </button>
+            {availableFolders.map((folder) => {
+              const count = filteredByCategory.filter((p) => p.folder?.trim() === folder).length;
+              return (
+                <button
+                  key={folder}
+                  onClick={() => setActiveFolder(folder)}
+                  className={`px-3 py-1.5 text-xs rounded-full flex-shrink-0 transition-all active:scale-95 ${
+                    activeFolder === folder
+                      ? "bg-[var(--card)] text-[var(--text)] font-medium border border-[color:var(--border)]"
+                      : "text-[var(--text)]/30"
+                  }`}
+                >
+                  {folder} <span className="opacity-40">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between pt-1">
+        <p className="text-xs text-[var(--text)]/30">Ordina per</p>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/60 text-xs px-3 py-1.5 rounded-full focus:outline-none"
+        >
+          {SORT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value} className="bg-[var(--bg)]">{o.label}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+  )}
 
 </header>
 
