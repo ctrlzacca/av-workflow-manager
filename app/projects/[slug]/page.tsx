@@ -469,9 +469,9 @@ async function toggleTask(index: number) {
   </select>
 
   {project.deadline && (
-    <span className="text-xs text-[var(--text)]/40 truncate min-w-0">
-      📅 {project.deadline}
-    </span>
+  <span className="text-xs text-[var(--text)]/40 whitespace-nowrap">
+    {project.deadline}
+  </span>
   )}
 
   <button
