@@ -418,14 +418,14 @@ useEffect(() => {
 
 
 {/* RICERCA FLUTTUANTE */}
-<div className="fixed bottom-28 right-5 z-40 flex items-center gap-2">
+<div className="fixed bottom-36 right-5 z-40 flex items-center gap-2">
   <input
     ref={searchInputRef}
     type="text"
     value={search}
     onChange={(e) => setSearch(e.target.value)}
     placeholder="Cerca..."
-    className={`h-11 bg-[var(--card)] border border-[color:var(--border)] rounded-full px-4 text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
+    className={`h-11 bg-[var(--bg)] border border-[color:var(--border)] rounded-full px-4 text-sm text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none transition-all duration-200 ${
       searchOpen ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none px-0"
     }`}
     style={{ boxShadow: searchOpen ? "var(--shadow-md)" : "none" }}
