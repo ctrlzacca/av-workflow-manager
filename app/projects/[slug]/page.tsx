@@ -447,43 +447,43 @@ async function toggleTask(index: number) {
   </div>
 
   {/* RIGA CHIP — Status + Priority + Deadline (sempre visibili) + bottone Dettagli */}
-  <div className="flex items-center gap-1.5 mb-3">
-    <select
-      value={project.status}
-      onChange={(e) => updateField("status", e.target.value as Project["status"])}
-      className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/70 text-xs px-3 py-1.5 rounded-full focus:outline-none font-medium"
-    >
-      <option value="Active" className="bg-[var(--bg)]">● Active</option>
-      <option value="Paused" className="bg-[var(--bg)]">● Paused</option>
-      <option value="Blocked" className="bg-[var(--bg)]">● Blocked</option>
-    </select>
+<div className="flex items-center gap-1.5 mb-3">
+  <select
+    value={project.status}
+    onChange={(e) => updateField("status", e.target.value as Project["status"])}
+    className="bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)]/70 text-xs px-3 py-1.5 rounded-full focus:outline-none font-medium flex-shrink-0"
+  >
+    <option value="Active" className="bg-[var(--bg)]">● Active</option>
+    <option value="Paused" className="bg-[var(--bg)]">● Paused</option>
+    <option value="Blocked" className="bg-[var(--bg)]">● Blocked</option>
+  </select>
 
-    <select
-      value={project.priority}
-      onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
-      className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-1.5 rounded-full focus:outline-none font-medium ${PRIORITY_COLOR[project.priority]}`}
-    >
-      <option value="Low" className="bg-[var(--bg)]">Low</option>
-      <option value="Medium" className="bg-[var(--bg)]">Medium</option>
-      <option value="High" className="bg-[var(--bg)]">High</option>
-    </select>
+  <select
+    value={project.priority}
+    onChange={(e) => updateField("priority", e.target.value as Project["priority"])}
+    className={`bg-[var(--card)] border border-[color:var(--border)] text-xs px-3 py-1.5 rounded-full focus:outline-none font-medium flex-shrink-0 ${PRIORITY_COLOR[project.priority]}`}
+  >
+    <option value="Low" className="bg-[var(--bg)]">Low</option>
+    <option value="Medium" className="bg-[var(--bg)]">Medium</option>
+    <option value="High" className="bg-[var(--bg)]">High</option>
+  </select>
 
-    {project.deadline && (
-      <span className="text-xs text-[var(--text)]/40 px-1">
-        📅 {project.deadline}
-      </span>
-    )}
+  {project.deadline && (
+    <span className="text-xs text-[var(--text)]/40 truncate min-w-0">
+      📅 {project.deadline}
+    </span>
+  )}
 
-    <button
-      onClick={() => setShowDetails(!showDetails)}
-      className="ml-auto flex items-center gap-1 text-xs text-[var(--text)]/40 px-3 py-1.5 rounded-full border border-[color:var(--border)] bg-[var(--card)] active:scale-95 transition-transform flex-shrink-0"
-    >
-      Dettagli
-      <svg className={`w-3 h-3 transition-transform ${showDetails ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
-  </div>
+  <button
+    onClick={() => setShowDetails(!showDetails)}
+    className="ml-auto flex items-center gap-1 text-xs text-[var(--text)]/40 px-3 py-1.5 rounded-full border border-[color:var(--border)] bg-[var(--card)] active:scale-95 transition-transform flex-shrink-0"
+  >
+    Dettagli
+    <svg className={`w-3 h-3 transition-transform ${showDetails ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+</div>
 
   {/* PANNELLO DETTAGLI — categoria, deadline editabile, cartella, notifiche */}
   {showDetails && (
