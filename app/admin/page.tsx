@@ -4,7 +4,20 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 
-// ─── COMMON FILE SHORTCUTS ──────────────────────────────────────────────────
+// ─── TYPES ────────────────────────────────────────────────────────────────────
+
+type StagedFile = {
+  path: string;
+  content: string;
+  originalContent: string;
+};
+
+type CommitInfo = {
+  sha: string;
+  message: string;
+  date: string;
+  author: string;
+};
 
 const COMMON_FILES = [
   "app/page.tsx",
@@ -24,91 +37,185 @@ export default function AdminPage() {
   const router = useRouter();
   const [authorized, setAuthorized] = useState<boolean | null>(null);
 
-  const [path, setPath] = useState("");
-  const [content, setContent] = useState("");
-  const [message, setMessage] = useState("");
+  const [view, setView] = useState<"editor" | "history">("editor");
+
+  // ── STAGED FILES (batch) ────────────────────────────────────────────────────
+  const [stagedFiles, setStagedFiles] = useState<StagedFile[]>([]);
+  const [activeFileIndex, setActiveFileIndex] = useState<number | null>(null);
+
+  // ── NEW FILE INPUT ───────────────────────────────────────────────────────────
+  const [newPath, setNewPath] = useState("");
+  const [showFilePicker, setShowFilePicker] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // ── COMMIT ───────────────────────────────────────────────────────────────────
+  const [commitMessage, setCommitMessage] = useState("");
   const [committing, setCommitting] = useState(false);
   const [status, setStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [showFilePicker, setShowFilePicker] = useState(false);
+
+  // ── HISTORY ──────────────────────────────────────────────────────────────────
+  const [historyPath, setHistoryPath] = useState("");
+  const [commits, setCommits] = useState<CommitInfo[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [previewCommit, setPreviewCommit] = useState<{ sha: string; content: string } | null>(null);
 
   // ── AUTH CHECK ────────────────────────────────────────────────────────────
 
-useEffect(() => {
-  async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/login"); return; }
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); return; }
 
-    // verifica lato client (UX) — il vero controllo è comunque nelle API
-    const res = await fetch("/api/admin/check");
-    const data = await res.json();
+      const res = await fetch("/api/admin/check");
+      const data = await res.json();
+      if (!data.authorized) { router.push("/"); return; }
+      setAuthorized(true);
+    }
+    checkAuth();
+  }, [router]);
 
-    if (!data.authorized) {
-      router.push("/");
+  // ── ADD FILE TO BATCH ─────────────────────────────────────────────────────
+
+  async function addFileToBatch(filePath: string) {
+    const trimmed = filePath.trim();
+    if (!trimmed) return;
+
+    if (stagedFiles.some((f) => f.path === trimmed)) {
+      setActiveFileIndex(stagedFiles.findIndex((f) => f.path === trimmed));
+      setNewPath("");
+      setShowFilePicker(false);
       return;
     }
-    setAuthorized(true);
-  }
-  checkAuth();
-}, [router]);
 
-  // ── LOAD FILE ─────────────────────────────────────────────────────────────
-
-  async function loadFile(filePath: string) {
-    if (!filePath.trim()) return;
     setLoading(true);
-    setStatus(null);
     setShowFilePicker(false);
+    setStatus(null);
 
     try {
-      const res = await fetch(`/api/admin/read?path=${encodeURIComponent(filePath.trim())}`);
+      const res = await fetch(`/api/admin/read?path=${encodeURIComponent(trimmed)}`);
       const data = await res.json();
+      const content = data.content ?? "";
 
-      if (data.error && !data.content) {
-        setContent("");
-        setStatus({ type: "error", text: "File non trovato — verrà creato al commit." });
-      } else {
-        setContent(data.content ?? "");
-      }
-      setPath(filePath.trim());
-    } catch (err) {
+      const newFile: StagedFile = { path: trimmed, content, originalContent: content };
+      setStagedFiles((prev) => [...prev, newFile]);
+      setActiveFileIndex(stagedFiles.length);
+      setNewPath("");
+    } catch {
       setStatus({ type: "error", text: "Errore nel caricamento del file." });
     }
     setLoading(false);
   }
 
-  // ── COMMIT ────────────────────────────────────────────────────────────────
+  function updateActiveFileContent(newContent: string) {
+    if (activeFileIndex === null) return;
+    setStagedFiles((prev) =>
+      prev.map((f, i) => (i === activeFileIndex ? { ...f, content: newContent } : f))
+    );
+  }
 
-  async function commitFile() {
-    if (!path.trim() || !message.trim()) {
-      setStatus({ type: "error", text: "Path e messaggio di commit sono obbligatori." });
+  function removeFileFromBatch(index: number) {
+    setStagedFiles((prev) => prev.filter((_, i) => i !== index));
+    if (activeFileIndex === index) setActiveFileIndex(null);
+    else if (activeFileIndex !== null && activeFileIndex > index) setActiveFileIndex(activeFileIndex - 1);
+  }
+
+  const changedFiles = stagedFiles.filter((f) => f.content !== f.originalContent);
+
+  // ── COMMIT BATCH ───────────────────────────────────────────────────────────
+
+  async function commitBatch() {
+    if (changedFiles.length === 0) {
+      setStatus({ type: "error", text: "Nessuna modifica da pubblicare." });
+      return;
+    }
+    if (!commitMessage.trim()) {
+      setStatus({ type: "error", text: "Scrivi un messaggio di commit." });
       return;
     }
 
-    const confirmed = window.confirm(`Confermi il commit su "${path}"?\n\nQuesto farà partire il deploy automatico su Vercel.`);
+    const confirmed = window.confirm(
+      `Confermi il commit di ${changedFiles.length} file?\n\n${changedFiles.map((f) => `• ${f.path}`).join("\n")}\n\nQuesto farà partire il deploy automatico su Vercel.`
+    );
     if (!confirmed) return;
 
     setCommitting(true);
     setStatus(null);
 
     try {
-      const res = await fetch("/api/admin/commit", {
+      const res = await fetch("/api/admin/commit-multi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: path.trim(), content, message: message.trim() }),
+        body: JSON.stringify({
+          files: changedFiles.map((f) => ({ path: f.path, content: f.content })),
+          message: commitMessage.trim(),
+        }),
       });
       const data = await res.json();
 
       if (!res.ok) {
         setStatus({ type: "error", text: data.error ?? "Errore nel commit." });
       } else {
-        setStatus({ type: "success", text: "✓ Commit effettuato! Deploy in corso su Vercel." });
-        setMessage("");
+        setStatus({ type: "success", text: `✓ ${data.filesCount} file pubblicati! Deploy in corso su Vercel.` });
+        setCommitMessage("");
+        setStagedFiles([]);
+        setActiveFileIndex(null);
       }
-    } catch (err) {
+    } catch {
       setStatus({ type: "error", text: "Errore di rete durante il commit." });
     }
     setCommitting(false);
+  }
+
+  // ── HISTORY ──────────────────────────────────────────────────────────────────
+
+  async function loadHistory(filePath: string) {
+    if (!filePath.trim()) return;
+    setLoadingHistory(true);
+    setCommits([]);
+    setPreviewCommit(null);
+
+    try {
+      const res = await fetch(`/api/admin/history?path=${encodeURIComponent(filePath.trim())}`);
+      const data = await res.json();
+      setCommits(data.commits ?? []);
+      setHistoryPath(filePath.trim());
+    } catch {
+      setStatus({ type: "error", text: "Errore nel caricamento della cronologia." });
+    }
+    setLoadingHistory(false);
+  }
+
+  async function previewVersion(sha: string) {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/read-version?path=${encodeURIComponent(historyPath)}&sha=${sha}`);
+      const data = await res.json();
+      if (data.content !== undefined) {
+        setPreviewCommit({ sha, content: data.content });
+      }
+    } catch {
+      setStatus({ type: "error", text: "Errore nel caricamento della versione." });
+    }
+    setLoading(false);
+  }
+
+  function restoreVersion() {
+    if (!previewCommit) return;
+    const existing = stagedFiles.findIndex((f) => f.path === historyPath);
+    if (existing >= 0) {
+      setStagedFiles((prev) =>
+        prev.map((f, i) => (i === existing ? { ...f, content: previewCommit.content } : f))
+      );
+      setActiveFileIndex(existing);
+    } else {
+      setStagedFiles((prev) => [
+        ...prev,
+        { path: historyPath, content: previewCommit.content, originalContent: "" },
+      ]);
+      setActiveFileIndex(stagedFiles.length);
+    }
+    setView("editor");
+    setStatus({ type: "success", text: "Versione caricata nell'editor — rivedi e pubblica quando vuoi." });
   }
 
   // ─── RENDER ───────────────────────────────────────────────────────────────
@@ -121,12 +228,14 @@ useEffect(() => {
     );
   }
 
+  const activeFile = activeFileIndex !== null ? stagedFiles[activeFileIndex] : null;
+
   return (
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-4">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3">
+        <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => router.push("/settings")}
             className="w-9 h-9 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
@@ -135,107 +244,233 @@ useEffect(() => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div>
+          <div className="flex-1 min-w-0">
             <h1 className="text-lg font-bold tracking-tight">Admin — Editor</h1>
             <p className="text-[var(--text)]/30 text-xs">Modifica file e pubblica su GitHub</p>
           </div>
         </div>
+
+        {/* TABS */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setView("editor")}
+            className={`flex-1 py-2 rounded-full text-xs font-medium transition-all ${
+              view === "editor" ? "bg-[var(--text)] text-[var(--bg)]" : "bg-[var(--card)] text-[var(--text)]/50 border border-[color:var(--border)]"
+            }`}
+          >
+            Editor {changedFiles.length > 0 && `(${changedFiles.length})`}
+          </button>
+          <button
+            onClick={() => setView("history")}
+            className={`flex-1 py-2 rounded-full text-xs font-medium transition-all ${
+              view === "history" ? "bg-[var(--text)] text-[var(--bg)]" : "bg-[var(--card)] text-[var(--text)]/50 border border-[color:var(--border)]"
+            }`}
+          >
+            Cronologia
+          </button>
+        </div>
       </header>
 
-      {/* CONTENT */}
-      <div className="flex-1 overflow-y-auto px-5 py-5 pb-10 space-y-4">
+      {/* ── EDITOR VIEW ── */}
+      {view === "editor" && (
+        <div className="flex-1 overflow-y-auto px-5 py-5 pb-10 space-y-4">
 
-        {/* FILE PATH */}
-        <div>
-          <p className="text-xs text-[var(--text)]/40 mb-1.5">Percorso file</p>
-          <div className="flex gap-2">
-            <input
-              value={path}
-              onChange={(e) => setPath(e.target.value)}
-              placeholder="es. app/page.tsx"
-              className="flex-1 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm font-mono text-[var(--text)] focus:outline-none"
-            />
+          {/* ADD FILE */}
+          <div>
+            <p className="text-xs text-[var(--text)]/40 mb-1.5">Aggiungi file al batch</p>
+            <div className="flex gap-2">
+              <input
+                value={newPath}
+                onChange={(e) => setNewPath(e.target.value)}
+                placeholder="es. app/page.tsx"
+                onKeyDown={(e) => { if (e.key === "Enter") addFileToBatch(newPath); }}
+                className="flex-1 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm font-mono text-[var(--text)] focus:outline-none"
+              />
+              <button
+                onClick={() => setShowFilePicker(!showFilePicker)}
+                className="px-3 py-3 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-xs text-[var(--text)]/50 flex-shrink-0"
+              >
+                Scegli
+              </button>
+            </div>
+
+            {showFilePicker && (
+              <div className="mt-2 border border-[color:var(--border)] rounded-xl divide-y divide-[color:var(--border)] overflow-hidden">
+                {COMMON_FILES.map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => addFileToBatch(f)}
+                    className="w-full text-left px-3 py-2.5 text-xs font-mono text-[var(--text)]/60 hover:bg-[var(--card)] transition-colors"
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <button
-              onClick={() => setShowFilePicker(!showFilePicker)}
-              className="px-3 py-3 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-xs text-[var(--text)]/50 flex-shrink-0"
+              onClick={() => addFileToBatch(newPath)}
+              disabled={loading || !newPath.trim()}
+              className="w-full mt-2 py-2.5 border border-[color:var(--border)] rounded-xl text-xs text-[var(--text)]/50 disabled:opacity-30"
             >
-              Scegli
+              {loading ? "Caricamento..." : "Aggiungi al batch"}
             </button>
           </div>
 
-          {showFilePicker && (
-            <div className="mt-2 border border-[color:var(--border)] rounded-xl divide-y divide-[color:var(--border)] overflow-hidden">
-              {COMMON_FILES.map((f) => (
-                <button
-                  key={f}
-                  onClick={() => loadFile(f)}
-                  className="w-full text-left px-3 py-2.5 text-xs font-mono text-[var(--text)]/60 hover:bg-[var(--card)] transition-colors"
-                >
-                  {f}
-                </button>
+          {/* STAGED FILES LIST */}
+          {stagedFiles.length > 0 && (
+            <div>
+              <p className="text-xs text-[var(--text)]/40 mb-1.5">File nel batch ({stagedFiles.length})</p>
+              <div className="space-y-1.5">
+                {stagedFiles.map((f, i) => {
+                  const isChanged = f.content !== f.originalContent;
+                  const isActive = activeFileIndex === i;
+                  return (
+                    <div
+                      key={f.path}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all ${
+                        isActive ? "border-[color:var(--text)]/30 bg-[var(--card)]" : "border-[color:var(--border)]"
+                      }`}
+                    >
+                      <button
+                        onClick={() => setActiveFileIndex(i)}
+                        className="flex-1 text-left min-w-0"
+                      >
+                        <p className="text-xs font-mono truncate">{f.path}</p>
+                        <p className="text-xs text-[var(--text)]/30">
+                          {isChanged ? "● modificato" : "invariato"}
+                        </p>
+                      </button>
+                      <button
+                        onClick={() => removeFileFromBatch(i)}
+                        className="text-[var(--text)]/20 hover:text-red-400 transition-colors w-7 h-7 flex items-center justify-center rounded-lg flex-shrink-0"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ACTIVE FILE EDITOR */}
+          {activeFile && (
+            <div>
+              <p className="text-xs text-[var(--text)]/40 mb-1.5 font-mono">{activeFile.path}</p>
+              <textarea
+                value={activeFile.content}
+                onChange={(e) => updateActiveFileContent(e.target.value)}
+                className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none resize-none leading-relaxed"
+                rows={16}
+                spellCheck={false}
+              />
+              <p className="text-xs text-[var(--text)]/20 mt-1">{activeFile.content.length.toLocaleString()} caratteri</p>
+            </div>
+          )}
+
+          {/* COMMIT MESSAGE + BUTTON */}
+          {changedFiles.length > 0 && (
+            <>
+              <div>
+                <p className="text-xs text-[var(--text)]/40 mb-1.5">Messaggio commit (per tutti i file)</p>
+                <input
+                  value={commitMessage}
+                  onChange={(e) => setCommitMessage(e.target.value)}
+                  placeholder="es. fix header e aggiornamento tool"
+                  className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] focus:outline-none"
+                />
+              </div>
+
+              <button
+                onClick={commitBatch}
+                disabled={committing || !commitMessage.trim()}
+                className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30"
+              >
+                {committing ? "Pubblicazione..." : `Commit ${changedFiles.length} file e Deploy`}
+              </button>
+            </>
+          )}
+
+          {status && (
+            <div className={`p-3 rounded-xl text-xs ${
+              status.type === "success"
+                ? "bg-green-500/10 border border-green-500/20 text-green-400"
+                : "bg-red-500/10 border border-red-500/20 text-red-400"
+            }`}>
+              {status.text}
+            </div>
+          )}
+
+          <p className="text-xs text-[var(--text)]/20 text-center">
+            Il commit va direttamente su <span className="font-mono">main</span> — Vercel farà il deploy automaticamente in 1-2 minuti.
+          </p>
+        </div>
+      )}
+
+      {/* ── HISTORY VIEW ── */}
+      {view === "history" && (
+        <div className="flex-1 overflow-y-auto px-5 py-5 pb-10 space-y-4">
+
+          <div>
+            <p className="text-xs text-[var(--text)]/40 mb-1.5">File di cui vedere la cronologia</p>
+            <div className="flex gap-2">
+              <input
+                value={historyPath}
+                onChange={(e) => setHistoryPath(e.target.value)}
+                placeholder="es. app/page.tsx"
+                onKeyDown={(e) => { if (e.key === "Enter") loadHistory(historyPath); }}
+                className="flex-1 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm font-mono text-[var(--text)] focus:outline-none"
+              />
+              <button
+                onClick={() => loadHistory(historyPath)}
+                disabled={loadingHistory || !historyPath.trim()}
+                className="px-4 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-xs font-semibold flex-shrink-0 disabled:opacity-30"
+              >
+                {loadingHistory ? "..." : "Cerca"}
+              </button>
+            </div>
+          </div>
+
+          {commits.length > 0 && (
+            <div className="space-y-1.5">
+              {commits.map((c) => (
+                <div key={c.sha} className="border border-[color:var(--border)] rounded-xl p-3">
+                  <p className="text-sm font-medium truncate">{c.message}</p>
+                  <p className="text-xs text-[var(--text)]/30 mt-0.5">
+                    {c.author} · {new Date(c.date).toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                  <button
+                    onClick={() => previewVersion(c.sha)}
+                    className="mt-2 text-xs text-[var(--text)]/50 border border-[color:var(--border)] px-3 py-1.5 rounded-full"
+                  >
+                    Vedi questa versione
+                  </button>
+                </div>
               ))}
             </div>
           )}
 
-          <button
-            onClick={() => loadFile(path)}
-            disabled={loading || !path.trim()}
-            className="w-full mt-2 py-2.5 border border-[color:var(--border)] rounded-xl text-xs text-[var(--text)]/50 disabled:opacity-30"
-          >
-            {loading ? "Caricamento..." : "Carica contenuto attuale"}
-          </button>
+          {previewCommit && (
+            <div className="border border-[color:var(--border)] rounded-xl p-3 space-y-2">
+              <p className="text-xs text-[var(--text)]/40">Anteprima versione {previewCommit.sha.slice(0, 7)}</p>
+              <textarea
+                readOnly
+                value={previewCommit.content}
+                className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-xs font-mono text-[var(--text)]/70 resize-none"
+                rows={12}
+              />
+              <button
+                onClick={restoreVersion}
+                className="w-full py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+              >
+                Ripristina questa versione nell'editor
+              </button>
+            </div>
+          )}
         </div>
+      )}
 
-        {/* CONTENT EDITOR */}
-        <div>
-          <p className="text-xs text-[var(--text)]/40 mb-1.5">Contenuto file</p>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Il contenuto del file apparirà qui dopo il caricamento, oppure incolla direttamente il nuovo codice..."
-            className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-xs font-mono text-[var(--text)]/80 focus:outline-none resize-none leading-relaxed"
-            rows={16}
-            spellCheck={false}
-          />
-          <p className="text-xs text-[var(--text)]/20 mt-1">{content.length.toLocaleString()} caratteri</p>
-        </div>
-
-        {/* COMMIT MESSAGE */}
-        <div>
-          <p className="text-xs text-[var(--text)]/40 mb-1.5">Messaggio commit</p>
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="es. fix header home mobile"
-            className="w-full bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm text-[var(--text)] focus:outline-none"
-          />
-        </div>
-
-        {/* STATUS */}
-        {status && (
-          <div className={`p-3 rounded-xl text-xs ${
-            status.type === "success"
-              ? "bg-green-500/10 border border-green-500/20 text-green-400"
-              : "bg-red-500/10 border border-red-500/20 text-red-400"
-          }`}>
-            {status.text}
-          </div>
-        )}
-
-        {/* COMMIT BUTTON */}
-        <button
-          onClick={commitFile}
-          disabled={committing || !path.trim() || !message.trim()}
-          className="w-full py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30"
-        >
-          {committing ? "Pubblicazione..." : "Commit e Deploy"}
-        </button>
-
-        <p className="text-xs text-[var(--text)]/20 text-center">
-          Il commit va direttamente su <span className="font-mono">main</span> — Vercel farà il deploy automaticamente in 1-2 minuti.
-        </p>
-
-      </div>
     </main>
   );
 }
