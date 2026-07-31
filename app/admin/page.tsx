@@ -58,6 +58,7 @@ export default function AdminPage() {
   const [commits, setCommits] = useState<CommitInfo[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [previewCommit, setPreviewCommit] = useState<{ sha: string; content: string } | null>(null);
+  const [showHistoryPicker, setShowHistoryPicker] = useState(false);
 
   // ── AUTH CHECK ────────────────────────────────────────────────────────────
 
@@ -409,24 +410,45 @@ async function previewVersion(sha: string) {
         <div className="flex-1 overflow-y-auto px-5 py-5 pb-10 space-y-4">
 
           <div>
-            <p className="text-xs text-[var(--text)]/40 mb-1.5">File di cui vedere la cronologia</p>
-            <div className="flex gap-2">
-              <input
-                value={historyPath}
-                onChange={(e) => setHistoryPath(e.target.value)}
-                placeholder="es. app/page.tsx"
-                onKeyDown={(e) => { if (e.key === "Enter") loadHistory(historyPath); }}
-                className="flex-1 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm font-mono text-[var(--text)] focus:outline-none"
-              />
-              <button
-                onClick={() => loadHistory(historyPath)}
-                disabled={loadingHistory || !historyPath.trim()}
-                className="px-4 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-xs font-semibold flex-shrink-0 disabled:opacity-30"
-              >
-                {loadingHistory ? "..." : "Cerca"}
-              </button>
-            </div>
+          <p className="text-xs text-[var(--text)]/40 mb-1.5">File di cui vedere la cronologia</p>
+          <div className="flex gap-2">
+            <input
+              value={historyPath}
+              onChange={(e) => setHistoryPath(e.target.value)}
+              placeholder="es. app/page.tsx"
+              onKeyDown={(e) => { if (e.key === "Enter") loadHistory(historyPath); }}
+              className="flex-1 bg-[var(--card)] border border-[color:var(--border)] rounded-xl px-3 py-3 text-sm font-mono text-[var(--text)] focus:outline-none"
+            />
+            <button
+              onClick={() => setShowHistoryPicker(!showHistoryPicker)}
+              className="px-3 py-3 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-xs text-[var(--text)]/50 flex-shrink-0"
+            >
+              Scegli
+            </button>
           </div>
+
+          {showHistoryPicker && (
+            <div className="mt-2 border border-[color:var(--border)] rounded-xl divide-y divide-[color:var(--border)] overflow-hidden">
+              {COMMON_FILES.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => { setHistoryPath(f); setShowHistoryPicker(false); loadHistory(f); }}
+                  className="w-full text-left px-3 py-2.5 text-xs font-mono text-[var(--text)]/60 hover:bg-[var(--card)] transition-colors"
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <button
+            onClick={() => loadHistory(historyPath)}
+            disabled={loadingHistory || !historyPath.trim()}
+            className="w-full mt-2 py-2.5 border border-[color:var(--border)] rounded-xl text-xs text-[var(--text)]/50 disabled:opacity-30"
+          >
+            {loadingHistory ? "Caricamento..." : "Cerca cronologia"}
+          </button>
+        </div>
 
           {commits.length > 0 && (
             <div className="space-y-1.5">
