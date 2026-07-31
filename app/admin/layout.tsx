@@ -1,3 +1,5 @@
+import AdminSplash from "./components/AdminSplash";
+
 export const metadata = {
   title: "AV Workflow Admin",
   description: "Admin Editor",
@@ -14,5 +16,10 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <AdminSplash />
+      {children}
+    </>
+  );
 }

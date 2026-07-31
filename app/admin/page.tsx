@@ -235,20 +235,10 @@ export default function AdminPage() {
 
       {/* HEADER */}
       <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[color:var(--border)] px-5 pt-14 pb-3">
-        <div className="flex items-center gap-3 mb-3">
-          <button
-            onClick={() => router.push("/settings")}
-            className="w-9 h-9 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center flex-shrink-0"
-          >
-            <svg className="w-4 h-4 text-[var(--text)]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-bold tracking-tight">Admin — Editor</h1>
-            <p className="text-[var(--text)]/30 text-xs">Modifica file e pubblica su GitHub</p>
-          </div>
-        </div>
+      <div className="mb-3">
+        <h1 className="text-lg font-bold tracking-tight">Admin — Editor</h1>
+        <p className="text-[var(--text)]/30 text-xs">Modifica file e pubblica su GitHub</p>
+      </div>
 
         {/* TABS */}
         <div className="flex gap-2">
