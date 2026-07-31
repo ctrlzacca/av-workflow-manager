@@ -185,19 +185,25 @@ export default function AdminPage() {
     setLoadingHistory(false);
   }
 
-  async function previewVersion(sha: string) {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/read-version?path=${encodeURIComponent(historyPath)}&sha=${sha}`);
-      const data = await res.json();
-      if (data.content !== undefined) {
-        setPreviewCommit({ sha, content: data.content });
-      }
-    } catch {
-      setStatus({ type: "error", text: "Errore nel caricamento della versione." });
+async function previewVersion(sha: string) {
+  setLoading(true);
+  setStatus(null);
+  try {
+    const res = await fetch(`/api/admin/read-version?path=${encodeURIComponent(historyPath)}&sha=${sha}`);
+    const data = await res.json();
+    if (!res.ok) {
+      setStatus({ type: "error", text: data.error ?? "Errore nel caricamento versione." });
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+    if (data.content !== undefined) {
+      setPreviewCommit({ sha, content: data.content });
+    }
+  } catch (err: any) {
+    setStatus({ type: "error", text: "Errore di rete: " + err.message });
   }
+  setLoading(false);
+}
 
   function restoreVersion() {
     if (!previewCommit) return;
