@@ -34,15 +34,23 @@ export default function AdminPage() {
 
   // ── AUTH CHECK ────────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
-      // il controllo vero è lato server nelle API, qui è solo UX
-      setAuthorized(true);
+useEffect(() => {
+  async function checkAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push("/login"); return; }
+
+    // verifica lato client (UX) — il vero controllo è comunque nelle API
+    const res = await fetch("/api/admin/check");
+    const data = await res.json();
+
+    if (!data.authorized) {
+      router.push("/");
+      return;
     }
-    checkAuth();
-  }, [router]);
+    setAuthorized(true);
+  }
+  checkAuth();
+}, [router]);
 
   // ── LOAD FILE ─────────────────────────────────────────────────────────────
 
