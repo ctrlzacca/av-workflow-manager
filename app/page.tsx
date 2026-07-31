@@ -295,7 +295,7 @@ useEffect(() => {
   {/* RIGA UNICA — Logo + Titolo + Filtri + Ricerca */}
 <div className="flex items-center gap-2">
   <img src="/icon-512.png" alt="AV" className="w-10 h-10 rounded-xl flex-shrink-0" />
-  <p className="text-[var(--text)] font-bold text-lg tracking-tighter flex-1 truncate min-w-0">Workflow Manager</p>
+  <p className="text-[var(--text)] font-bold text-lg tracking-tighter flex-1 truncate min-w-0">Workflow Manager CIAOOO</p>
 
   <button
     onClick={() => setShowFilters(!showFilters)}
