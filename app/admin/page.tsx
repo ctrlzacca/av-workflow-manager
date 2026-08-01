@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
+import FilePicker from "./components/FilePicker";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -19,19 +20,6 @@ type CommitInfo = {
   author: string;
 };
 
-const COMMON_FILES = [
-  "app/page.tsx",
-  "app/projects/[slug]/page.tsx",
-  "app/calendar/page.tsx",
-  "app/tools/page.tsx",
-  "app/team/page.tsx",
-  "app/settings/page.tsx",
-  "app/globals.css",
-  "app/lib/renderIcon.tsx",
-  "app/lib/presetSoftwares.ts",
-  "app/types/project.ts",
-  "middleware.ts",
-];
 
 export default function AdminPage() {
   const router = useRouter();
@@ -291,20 +279,6 @@ async function previewVersion(sha: string) {
               </button>
             </div>
 
-            {showFilePicker && (
-              <div className="mt-2 border border-[color:var(--border)] rounded-xl divide-y divide-[color:var(--border)] overflow-hidden">
-                {COMMON_FILES.map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => addFileToBatch(f)}
-                    className="w-full text-left px-3 py-2.5 text-xs font-mono text-[var(--text)]/60 hover:bg-[var(--card)] transition-colors"
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            )}
-
             <button
               onClick={() => addFileToBatch(newPath)}
               disabled={loading || !newPath.trim()}
@@ -427,20 +401,6 @@ async function previewVersion(sha: string) {
             </button>
           </div>
 
-          {showHistoryPicker && (
-            <div className="mt-2 border border-[color:var(--border)] rounded-xl divide-y divide-[color:var(--border)] overflow-hidden">
-              {COMMON_FILES.map((f) => (
-                <button
-                  key={f}
-                  onClick={() => { setHistoryPath(f); setShowHistoryPicker(false); loadHistory(f); }}
-                  className="w-full text-left px-3 py-2.5 text-xs font-mono text-[var(--text)]/60 hover:bg-[var(--card)] transition-colors"
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-          )}
-
           <button
             onClick={() => loadHistory(historyPath)}
             disabled={loadingHistory || !historyPath.trim()}
@@ -487,6 +447,19 @@ async function previewVersion(sha: string) {
             </div>
           )}
         </div>
+      )}
+
+            {showFilePicker && (
+        <FilePicker
+          onSelect={(path) => { setShowFilePicker(false); addFileToBatch(path); }}
+          onClose={() => setShowFilePicker(false)}
+        />
+      )}
+      {showHistoryPicker && (
+        <FilePicker
+          onSelect={(path) => { setShowHistoryPicker(false); setHistoryPath(path); loadHistory(path); }}
+          onClose={() => setShowHistoryPicker(false)}
+        />
       )}
 
     </main>
