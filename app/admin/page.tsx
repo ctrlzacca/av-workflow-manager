@@ -405,11 +405,17 @@ export default function AdminPage() {
       )}
 
       {showFilePicker && (
-        <FilePicker onSelect={(path) => { setShowFilePicker(false); addFileToBatch(path); }} onClose={() => setShowFilePicker(false)} />
-      )}
-      {showHistoryPicker && (
-        <FilePicker onSelect={(path) => { setShowHistoryPicker(false); setHistoryPath(path); loadHistory(path); }} onClose={() => setShowHistoryPicker(false)} />
-      )}
+      <FilePicker
+        onSelect={(path) => { setShowFilePicker(false); setNewPath(path); }}
+        onClose={() => setShowFilePicker(false)}
+      />
+    )}
+    {showHistoryPicker && (
+      <FilePicker
+        onSelect={(path) => { setShowHistoryPicker(false); setHistoryPath(path); loadHistory(path); }}
+        onClose={() => setShowHistoryPicker(false)}
+      />
+    )}
 
     </main>
   );
