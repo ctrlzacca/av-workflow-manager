@@ -14,15 +14,11 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Non autorizzato" }, { status: 403 });
   }
 
-  const { searchParams } = new URL(req.url);
-  const sha = searchParams.get("sha");
-  if (!sha) return NextResponse.json({ error: "sha mancante" }, { status: 400 });
-
   const token = process.env.VERCEL_TOKEN;
   const projectId = process.env.VERCEL_PROJECT_ID;
 
   const res = await fetch(
-    `https://api.vercel.com/v6/deployments?projectId=${projectId}&limit=10`,
+    `https://api.vercel.com/v6/deployments?projectId=${projectId}&limit=1`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
 
@@ -31,12 +27,11 @@ export async function GET(req: Request) {
   }
 
   const data = await res.json();
-  const deployment = data.deployments?.find((d: any) => d.meta?.githubCommitSha === sha);
+  const deployment = data.deployments?.[0];
 
   if (!deployment) {
-    return NextResponse.json({ state: "pending" }); // deploy non ancora partito/rilevato
+    return NextResponse.json({ state: "pending" });
   }
 
-  // stati Vercel: QUEUED, BUILDING, READY, ERROR, CANCELED
   return NextResponse.json({ state: deployment.state, url: deployment.url });
 }
