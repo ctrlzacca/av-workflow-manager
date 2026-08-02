@@ -32,6 +32,9 @@ export default function AdminPage() {
   const [previewCommit, setPreviewCommit] = useState<{ sha: string; content: string } | null>(null);
   const [showHistoryPicker, setShowHistoryPicker] = useState(false);
 
+  const [deployState, setDeployState] = useState<"idle" | "pending" | "BUILDING" | "QUEUED" | "READY" | "ERROR" | "CANCELED">("idle");
+  const [deployUrl, setDeployUrl] = useState("");
+
   useEffect(() => {
     async function checkAuth() {
       const { data: { user } } = await supabase.auth.getUser();
