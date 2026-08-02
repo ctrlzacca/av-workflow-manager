@@ -356,7 +356,7 @@ useEffect(() => {
           </div>
         </Link>
 
-        <div classname="w-9 h-9" />
+        <div className="w-9 h-9" />
 
         <Link href="/tools" className="flex flex-col items-center gap-1">
           <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
