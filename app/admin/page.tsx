@@ -233,7 +233,7 @@ export default function AdminPage() {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".ts,.tsx,.js,.jsx,.css,.json,.md,text/*"
+        accept="*/*"
         onChange={handleFileUpload}
         className="hidden"
       />
