@@ -356,13 +356,7 @@ useEffect(() => {
           </div>
         </Link>
 
-        <button onClick={() => router.push("/")} className="flex flex-col items-center gap-1">
-          <div className="w-9 h-9 rounded-full bg-[var(--card)] border border-[color:var(--border)] flex items-center justify-center active:scale-95 transition-transform">
-            <svg className="w-4.5 h-4.5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-            </svg>
-          </div>
-        </button>
+        <div classname="w-9 h-9" />
 
         <Link href="/tools" className="flex flex-col items-center gap-1">
           <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
