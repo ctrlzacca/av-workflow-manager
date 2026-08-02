@@ -129,6 +129,28 @@ export default function AdminPage() {
     const confirmed = window.confirm(
       `Confermi il commit di ${changedFiles.length} file?\n\n${changedFiles.map((f) => `• ${f.path}`).join("\n")}\n\nQuesto farà partire il deploy automatico su Vercel.`
     );
+
+    function pollDeployStatus(sha: string) {
+      let attempts = 0;
+      const maxAttempts = 40; // ~2 minuti a 3s ciascuno
+
+      const interval = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await fetch(`/api/admin/deploy-status?sha=${sha}`);
+          const data = await res.json();
+          setDeployState(data.state);
+          if (data.url) setDeployUrl(data.url);
+
+          if (data.state === "READY" || data.state === "ERROR" || data.state === "CANCELED" || attempts >= maxAttempts) {
+            clearInterval(interval);
+          }
+        } catch {
+          if (attempts >= maxAttempts) clearInterval(interval);
+        }
+      }, 3000);
+    }
+
     if (!confirmed) return;
     setCommitting(true); setStatus(null);
     try {
@@ -139,10 +161,14 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setStatus({ type: "error", text: data.error ?? "Errore nel commit." });
-      } else {
-        setStatus({ type: "success", text: `✓ ${data.filesCount} file pubblicati! Deploy in corso su Vercel.` });
-        setCommitMessage(""); setStagedFiles([]); setActiveFileIndex(null);
+      setStatus({ type: "error", text: data.error ?? "Errore nel commit." });
+    } else {
+      setStatus({ type: "success", text: `✓ ${data.filesCount} file pubblicati! Deploy in corso su Vercel.` });
+      setCommitMessage(""); setStagedFiles([]); setActiveFileIndex(null);
+
+          // AVVIA POLLING DEPLOY STATUS
+        setDeployState("pending");
+        pollDeployStatus(data.commitSha);
       }
     } catch {
       setStatus({ type: "error", text: "Errore di rete durante il commit." });
@@ -232,6 +258,24 @@ export default function AdminPage() {
           </button>
         </div>
       </header>
+
+          {deployState !== "idle" && (
+      <div className="flex items-center gap-2 px-3 py-2 mb-2 rounded-xl bg-[var(--card)] border border-[color:var(--border)]">
+        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+          deployState === "READY" ? "bg-green-400" :
+          deployState === "ERROR" || deployState === "CANCELED" ? "bg-red-400" :
+          "bg-yellow-400 animate-pulse"
+        }`} />
+        <p className="text-xs text-[var(--text)]/60">
+          {deployState === "READY" ? "✓ Deploy completato" :
+          deployState === "ERROR" ? "✕ Deploy fallito" :
+          deployState === "CANCELED" ? "Deploy annullato" :
+          deployState === "BUILDING" ? "Building..." :
+          deployState === "QUEUED" ? "In coda..." :
+          "In attesa del deploy..."}
+        </p>
+      </div>
+    )}
 
       {view === "editor" && (
         <div className="flex-1 overflow-y-auto px-5 py-5 pb-10 space-y-4">
