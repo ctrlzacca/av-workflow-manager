@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
 import { usePullToRefresh } from "@/app/hooks/usePullToRefresh";
 
@@ -23,6 +23,9 @@ type Collaborator = {
 
 export default function TeamPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  function isActive(path: string) { return pathname === path; }
+
   const [user, setUser] = useState<any>(null);
   const [myProjects, setMyProjects] = useState<any[]>([]);
   const [sharedWithMe, setSharedWithMe] = useState<Collaborator[]>([]);
@@ -138,22 +141,15 @@ if (error) {
   // ── ACCEPT / REJECT ───────────────────────────────────────────────────────
 
 async function respondToInvite(id: string, status: "accepted" | "rejected") {
-    console.log("respondToInvite called:", id, status);
   await supabase.from("project_collaborators").update({ status }).eq("id", id);
 
-  // trova i dettagli della collaborazione per notificare l'owner
   const collab = sharedWithMe.find((c) => c.id === id);
-    console.log("collab found:", collab);
-  console.log("ownerSubsRes will check user_id:", collab?.owner_id);
   if (collab) {
-    // trova la subscription dell'owner
     const ownerSubsRes = await supabase
       .from("push_subscriptions")
       .select("user_id")
       .eq("user_id", collab.owner_id)
       .limit(1);
-      console.log("ownerSubsRes data:", ownerSubsRes.data);
-
 
     if ((ownerSubsRes.data ?? []).length > 0) {
       fetch("https://yjcozojajbvtykxbveou.supabase.co/functions/v1/notify-collaborators", {
@@ -201,7 +197,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
           </div>
           <button
             onClick={() => { setShowInvite(true); setInviteError(""); setInviteSuccess(false); }}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold active:scale-95 transition-transform"
             style={{ boxShadow: "var(--shadow-sm)" }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,25 +212,25 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
       <div className="flex-1 overflow-y-auto px-5 py-5 pb-36 space-y-8"
       {...handlers}
       >
-      
-        {/* INDICATORE PULL TO REFRESH */}
-  <div
-    className="flex items-center justify-center overflow-hidden transition-all"
-    style={{ height: pullDistance, opacity: pullDistance / 60 }}
-  >
-    <svg
-      className={`w-5 h-5 text-[var(--text)]/40 ${isRefreshing ? "animate-spin" : ""}`}
-      fill="none" stroke="currentColor" viewBox="0 0 24 24"
-      style={{ transform: `rotate(${pullDistance * 3}deg)` }}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-    </svg>
-  </div>
 
-  {loading ? (
-    <p className="text-[var(--text)]/20 text-sm text-center mt-16">Caricamento...</p>
-  ) : (
-    <>
+        {/* INDICATORE PULL TO REFRESH */}
+        <div
+          className="flex items-center justify-center overflow-hidden transition-all"
+          style={{ height: pullDistance, opacity: pullDistance / 60 }}
+        >
+          <svg
+            className={`w-5 h-5 text-[var(--text)]/40 ${isRefreshing ? "animate-spin" : ""}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            style={{ transform: `rotate(${pullDistance * 3}deg)` }}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </div>
+
+        {loading ? (
+          <p className="text-[var(--text)]/20 text-sm text-center mt-16">Caricamento...</p>
+        ) : (
+          <>
 
             {/* ── INVITI RICEVUTI ── */}
             <section>
@@ -262,13 +258,13 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                           <div className="flex gap-2 flex-shrink-0">
                             <button
                               onClick={() => respondToInvite(collab.id, "rejected")}
-                              className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 hover:text-red-400 hover:border-red-400/30 transition-colors active:scale-95 transition-transform"
+                              className="px-3 py-1.5 text-xs border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 hover:text-red-400 hover:border-red-400/30 transition-colors active:scale-95"
                             >
                               Rifiuta
                             </button>
                             <button
                               onClick={() => respondToInvite(collab.id, "accepted")}
-                              className="px-3 py-1.5 text-xs bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-medium active:scale-95 transition-transform"
+                              className="px-3 py-1.5 text-xs bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-medium active:scale-95"
                               style={{ boxShadow: "var(--shadow-sm)" }}
                             >
                               Accetta
@@ -301,7 +297,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                 <p className="text-[var(--text)]/20 text-sm py-4 text-center">
                   Non hai ancora condiviso nessun progetto
                 </p>
-                
+
               ) : (
                 <div className="space-y-2">
                   {myCollaborators.map((collab) => (
@@ -335,7 +331,7 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                         </button>
                       </div>
                     </div>
-                    
+
                   ))}
                 </div>
               )}
@@ -424,14 +420,14 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
                 <div className="flex gap-3">
                   <button
                     onClick={() => { setShowInvite(false); setInviteEmail(""); setInviteProject(""); }}
-                    className="flex-1 py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm"
+                    className="flex-1 py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm active:scale-95 transition-transform"
                   >
                     Annulla
                   </button>
                   <button
                     onClick={sendInvite}
                     disabled={inviteLoading || !inviteEmail.trim() || !inviteProject}
-                    className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold disabled:opacity-40"
+                    className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-transform"
                     style={{ boxShadow: "var(--shadow-sm)" }}
                   >
                     {inviteLoading ? "Invio..." : "Invia invito"}
@@ -444,47 +440,47 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
       )}
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-4">
-        <Link href="/" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center"
-          style={{ boxShadow: "0 -4px 12px rgba(0,0,0,0.3)" }}
-          >
-            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-3">
+        <Link href="/" className="flex flex-col items-center gap-1">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+            isActive("/") ? "bg-[var(--text)]" : "bg-transparent"
+          }`}>
+            <svg className={`w-4.5 h-4.5 ${isActive("/") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
         </Link>
-        <Link href="/calendar" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center"
-          style={{ boxShadow: "0 -4px 12px rgba(0,0,0,0.3)" }}
-          >
-            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+        <Link href="/calendar" className="flex flex-col items-center gap-1">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+            isActive("/calendar") ? "bg-[var(--text)]" : "bg-transparent"
+          }`}>
+            <svg className={`w-4.5 h-4.5 ${isActive("/calendar") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
         </Link>
-        <div className="w-10 h-10" />
-        <Link href="/tools" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center"
-          style={{ boxShadow: "0 -4px 12px rgba(0,0,0,0.3)" }}
-          >
-            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+        <div className="w-9 h-9" />
+
+        <Link href="/tools" className="flex flex-col items-center gap-1">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+            isActive("/tools") ? "bg-[var(--text)]" : "bg-transparent"
+          }`}>
+            <svg className={`w-4.5 h-4.5 ${isActive("/tools") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
             </svg>
           </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
         </Link>
-        <Link href="/team" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center"
-          style={{ boxShadow: "0 -4px 12px rgba(0,0,0,0.3)" }}
-          >
-            <svg className="w-5 h-5 text-[var(--text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+        <Link href="/team" className="flex flex-col items-center gap-1">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+            isActive("/team") ? "bg-[var(--text)]" : "bg-transparent"
+          }`}>
+            <svg className={`w-4.5 h-4.5 ${isActive("/team") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <span className="text-xs text-[var(--text)]/60 font-medium">Team</span>
         </Link>
       </nav>
     </main>
