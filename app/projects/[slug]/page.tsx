@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/app/lib/supabase";
 import type { Project, Category } from "@/app/types/project";
 import { renderIcon } from "@/app/lib/renderIcon";
 import { PRESET_SOFTWARES } from "@/app/lib/presetSoftwares";
 import { hapticFeedback } from "@/app/lib/haptics";
+
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -211,6 +212,8 @@ function MoodItem({
 export default function ProjectPage() {
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
+  function isActive(path: string) { return pathname === path; }
   const slug = params?.slug as string;
 
   const [project, setProject] = useState<Project | null>(null);
@@ -918,41 +921,49 @@ async function toggleTask(index: number) {
 
 
       {/* BOTTOM NAV */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)]/8 flex items-center justify-around px-6 pb-10 pt-4">
-        <Link href="/" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-          </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Home</span>
-        </Link>
-        <Link href="/calendar" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Calendario</span>
-        </Link>
-        <div className="w-10 h-10" />
-        <Link href="/tools" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
-            </svg>
-          </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Tools</span>
-        </Link>
-        <Link href="/team" className="flex flex-col items-center gap-1.5">
-          <div className="w-10 h-10 rounded-xl bg-[var(--card)] flex items-center justify-center">
-            <svg className="w-5 h-5 text-[var(--text)]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
-          <span className="text-xs text-[var(--text)]/30 font-medium">Team</span>
-        </Link>
-      </nav>
+<nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-3">
+  <Link href="/" className="flex flex-col items-center gap-1">
+    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+      isActive("/") ? "bg-[var(--text)]" : "bg-transparent"
+    }`}>
+      <svg className={`w-4.5 h-4.5 ${isActive("/") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+    </div>
+  </Link>
+
+  <Link href="/calendar" className="flex flex-col items-center gap-1">
+    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+      isActive("/calendar") ? "bg-[var(--text)]" : "bg-transparent"
+    }`}>
+      <svg className={`w-4.5 h-4.5 ${isActive("/calendar") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    </div>
+  </Link>
+
+  <div className="w-9 h-9" />
+
+  <Link href="/tools" className="flex flex-col items-center gap-1">
+    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+      isActive("/tools") ? "bg-[var(--text)]" : "bg-transparent"
+    }`}>
+      <svg className={`w-4.5 h-4.5 ${isActive("/tools") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5h7v6H4V5zm9 0h7v4h-7V5zM4 13h7v6H4v-6zm9-2h7v8h-7v-8z"/>
+      </svg>
+    </div>
+  </Link>
+
+  <Link href="/team" className="flex flex-col items-center gap-1">
+    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+      isActive("/team") ? "bg-[var(--text)]" : "bg-transparent"
+    }`}>
+      <svg className={`w-4.5 h-4.5 ${isActive("/team") ? "text-[var(--bg)]" : "text-[var(--text)]/40"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </div>
+  </Link>
+</nav>
     </main>
   );
 }
