@@ -574,79 +574,84 @@ useEffect(() => {
       </div>
 
       {/* ADD PROJECT MODAL */}
-      {showAdd && (
-        <div className="fixed inset-0 z-20 bg-[var(--bg)] backdrop-blur flex items-end">
-          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl modal-enter"
-            style={{ boxShadow: "var(--shadow-modal)" }}
-          >
-            <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto mb-5" />
-            <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
+{showAdd && (
+  <div className="fixed inset-0 z-20 bg-[var(--bg)] backdrop-blur flex items-end">
+    <div
+      className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl modal-enter"
+      style={{ boxShadow: "var(--shadow-modal)" }}
+    >
+      <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto mb-5" />
+      <h2 className="text-base font-semibold mb-4">Nuovo progetto</h2>
 
-            <input
-              value={newProject}
-              onChange={(e) => setNewProject(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Nome progetto..."
-              className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-xl text-[var(--text)] placeholder:text-[color:var(--text-placeholder)] focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
-            />
+      <input
+        value={newProject}
+        onChange={(e) => setNewProject(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Nome progetto..."
+        className="w-full p-4 bg-[var(--card)] border border-[color:var(--border)] rounded-2xl text-[var(--text)] placeholder:text-[var(--text)]/30 focus:outline-none focus:border-[color:var(--border)] text-base mb-4"
+      />
 
-        {/* CATEGORY SELECTOR */}
-            {categories.length === 0 ? (
-              <div className="border border-[color:var(--border)] rounded-xl p-4 mb-4 text-center space-y-3">
-                <p className="text-[var(--text)] text-sm">Nessuna categoria ancora.</p>
-                <p className="text-[var(--text)] text-xs">Aggiungi prima un software in Settings per poter creare un progetto.</p>
-                <Link
-                  href="/settings"
-                  onClick={() => setShowAdd(false)}
-                  className="block w-full py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold"
-                style={{ boxShadow: "var(--shadow-sm)" }}
-                >
-                  Vai a Settings →
-                </Link>
-              </div>
-            ) : (
-              <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id ?? cat.name}
-                    type="button"
-                    onClick={() => setNewProjectCategory(cat.name)}
-                    className={`px-4 py-3 rounded-xl border text-sm whitespace-nowrap ${newProjectCategory === cat.name ? "border-[color:var(--button-bg)] bg-[var(--button-bg)] text-[var(--button-text)] active:scale-95 transition-transform" : "border-[color:var(--border)] text-[var(--text)]"}`}
-                    style={{ boxShadow: "var(--shadow-sm)" }}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            )}
+      {/* CATEGORY SELECTOR */}
+      {categories.length === 0 ? (
+        <div className="border border-[color:var(--border)] rounded-2xl p-4 mb-4 text-center space-y-3">
+          <p className="text-[var(--text)] text-sm">Nessuna categoria ancora.</p>
+          <p className="text-[var(--text)]/50 text-xs">Aggiungi prima un software in Settings per poter creare un progetto.</p>
           <Link
             href="/settings"
             onClick={() => setShowAdd(false)}
-            className="block text-center text-xs text-[var(--text)] hover:text-[var(--text-hover)] transition-colors mt-2 py-2"
+            className="block w-full py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-full text-sm font-semibold active:scale-95 transition-transform"
             style={{ boxShadow: "var(--shadow-sm)" }}
           >
-            Gestisci categorie →
+            Vai a Settings →
           </Link>
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
-                className="flex-1 py-4 border border-[color:var(--border)] rounded-xl text-[color:var(--text-soft)] text-sm font-medium active:scale-95 transition-transform"
-                style={{ boxShadow: "var(--shadow-sm)" }}
-              >
-                Annulla
-              </button>
-                <button
-                  onClick={addProject}
-                  disabled={categories.length === 0 || !newProjectCategory}
-                  className="flex-1 py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl font-semibold text-sm disabled:opacity-30 active:scale-95 transition-transform"
-                  style={{ boxShadow: "var(--shadow-sm)" }}
-                >
-                  Crea progetto
-                </button>
-            </div>
-          </div>
+        </div>
+      ) : (
+        <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
+          {categories.map((cat) => (
+            <button
+              key={cat.id ?? cat.name}
+              type="button"
+              onClick={() => setNewProjectCategory(cat.name)}
+              className={`px-4 py-2.5 rounded-full border text-sm whitespace-nowrap flex-shrink-0 transition-all active:scale-95 ${
+                newProjectCategory === cat.name
+                  ? "border-transparent bg-[var(--button-bg)] text-[var(--button-text)] font-semibold"
+                  : "border-[color:var(--border)] bg-[var(--card)] text-[var(--text)]/50"
+              }`}
+              style={newProjectCategory === cat.name ? { boxShadow: "var(--shadow-sm)" } : undefined}
+            >
+              {cat.name}
+            </button>
+          ))}
         </div>
       )}
+
+      <Link
+        href="/settings"
+        onClick={() => setShowAdd(false)}
+        className="block text-center text-xs text-[var(--text)]/40 hover:text-[var(--text)]/70 transition-colors mt-2 py-2"
+      >
+        Gestisci categorie →
+      </Link>
+
+      <div className="flex gap-3 mt-2">
+        <button
+          onClick={() => { setShowAdd(false); setNewProject(""); setNewProjectCategory("Ableton"); }}
+          className="flex-1 py-4 border border-[color:var(--border)] rounded-full text-[var(--text)]/50 text-sm font-medium active:scale-95 transition-transform"
+        >
+          Annulla
+        </button>
+        <button
+          onClick={addProject}
+          disabled={categories.length === 0 || !newProjectCategory}
+          className="flex-1 py-4 bg-[var(--button-bg)] text-[var(--button-text)] rounded-full font-semibold text-sm disabled:opacity-30 active:scale-95 transition-transform"
+          style={{ boxShadow: "var(--shadow-sm)" }}
+        >
+          Crea progetto
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-3">
