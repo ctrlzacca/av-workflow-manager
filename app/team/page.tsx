@@ -376,68 +376,68 @@ async function respondToInvite(id: string, status: "accepted" | "rejected") {
       </div>
 
       {/* INVITE MODAL */}
-      {showInvite && (
-        <div className="fixed inset-0 z-20 bg-[var(--bg)]/80 backdrop-blur flex items-end">
-          <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl space-y-4 modal-enter"
-            style={{ boxShadow: "var(--shadow-modal)" }}
+{showInvite && (
+  <div className="fixed inset-0 z-20 bg-[var(--bg)]/80 backdrop-blur flex items-end">
+    <div className="w-full bg-[var(--bg)] border-t border-[color:var(--border)] p-6 rounded-t-3xl space-y-4 modal-enter"
+      style={{ boxShadow: "var(--shadow-modal)" }}
+      >
+      <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto" />
+      <h2 className="text-base font-semibold">Invita collaboratore</h2>
+
+      {inviteSuccess ? (
+        <p className="text-green-400 text-sm text-center py-4">✓ Invito inviato!</p>
+      ) : (
+        <>
+          <div>
+            <p className="text-xs text-[var(--text)]/40 mb-1.5">Progetto</p>
+            <select
+              value={inviteProject}
+              onChange={(e) => setInviteProject(e.target.value)}
+              className="w-full bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-3 rounded-2xl focus:outline-none"
             >
-            <div className="w-10 h-1 bg-[var(--card)] rounded-full mx-auto" />
-            <h2 className="text-base font-semibold">Invita collaboratore</h2>
-
-            {inviteSuccess ? (
-              <p className="text-green-400 text-sm text-center py-4">✓ Invito inviato!</p>
-            ) : (
-              <>
-                <div>
-                  <p className="text-xs text-[var(--text)]/40 mb-1.5">Progetto</p>
-                  <select
-                    value={inviteProject}
-                    onChange={(e) => setInviteProject(e.target.value)}
-                    className="w-full bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-3 rounded-xl focus:outline-none"
-                  >
-                    <option value="">Seleziona progetto...</option>
-                    {myProjects.map((p) => (
-                      <option key={p.slug} value={p.slug}>{p.title}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <p className="text-xs text-[var(--text)]/40 mb-1.5">Email collaboratore</p>
-                  <input
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="email@esempio.com"
-                    type="email"
-                    className="w-full bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-3 rounded-xl focus:outline-none focus:border-[color:var(--border)]/50"
-                  />
-                </div>
-
-                {inviteError && (
-                  <p className="text-red-400 text-xs">{inviteError}</p>
-                )}
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => { setShowInvite(false); setInviteEmail(""); setInviteProject(""); }}
-                    className="flex-1 py-3 border border-[color:var(--border)] rounded-xl text-[var(--text)]/40 text-sm active:scale-95 transition-transform"
-                  >
-                    Annulla
-                  </button>
-                  <button
-                    onClick={sendInvite}
-                    disabled={inviteLoading || !inviteEmail.trim() || !inviteProject}
-                    className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-transform"
-                    style={{ boxShadow: "var(--shadow-sm)" }}
-                  >
-                    {inviteLoading ? "Invio..." : "Invia invito"}
-                  </button>
-                </div>
-              </>
-            )}
+              <option value="">Seleziona progetto...</option>
+              {myProjects.map((p) => (
+                <option key={p.slug} value={p.slug}>{p.title}</option>
+              ))}
+            </select>
           </div>
-        </div>
+
+          <div>
+            <p className="text-xs text-[var(--text)]/40 mb-1.5">Email collaboratore</p>
+            <input
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="email@esempio.com"
+              type="email"
+              className="w-full bg-[var(--card)] border border-[color:var(--border)] text-[var(--text)] text-sm px-3 py-3 rounded-2xl focus:outline-none focus:border-[color:var(--border)]/50"
+            />
+          </div>
+
+          {inviteError && (
+            <p className="text-red-400 text-xs">{inviteError}</p>
+          )}
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => { setShowInvite(false); setInviteEmail(""); setInviteProject(""); }}
+              className="flex-1 py-3 border border-[color:var(--border)] rounded-full text-[var(--text)]/50 text-sm font-medium active:scale-95 transition-transform"
+            >
+              Annulla
+            </button>
+            <button
+              onClick={sendInvite}
+              disabled={inviteLoading || !inviteEmail.trim() || !inviteProject}
+              className="flex-1 py-3 bg-[var(--button-bg)] text-[var(--button-text)] rounded-full text-sm font-semibold disabled:opacity-40 active:scale-95 transition-transform"
+              style={{ boxShadow: "var(--shadow-sm)" }}
+            >
+              {inviteLoading ? "Invio..." : "Invia invito"}
+            </button>
+          </div>
+        </>
       )}
+    </div>
+  </div>
+)}
 
       {/* BOTTOM NAV */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 bg-[var(--bg)]/95 backdrop-blur border-t border-[color:var(--border)] flex items-center justify-around px-6 pb-10 pt-3">
